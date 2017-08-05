@@ -1,0 +1,3 @@
+rootProject.name = 'ReactPunchOut'
+
+include ':app'
