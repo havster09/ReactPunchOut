@@ -13,3 +13,8 @@ export const setNpcState = npcState => {
     dispatch({ type: types.SET_NPC_STATE, payload: npcState });
 };
 
+export const updateIncrement = () => {
+  return dispatch =>
+   dispatch({ type: types.INCREMENT, payload: {} });
+};
+

@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { StyleSheet, Dimensions, Text, View } from 'react-native';
 import { Loop, Stage } from 'react-game-kit/native';
 import PistonHurricane from './PistonHurricane';
-import { reduceNpcHealth, setNpcState } from './Actions';
+import { reduceNpcHealth, setNpcState, updateIncrement } from './Actions';
 
 class Main extends React.Component {
   constructor(props, context) {
@@ -12,6 +12,7 @@ class Main extends React.Component {
 
     this.handleNpcHit = this.handleNpcHit.bind(this);
     this.handleNpcStateChange = this.handleNpcStateChange.bind(this);
+    this.handleIncrement = this.handleIncrement.bind(this);
   }
 
   handleNpcHit(damage) {
@@ -22,8 +23,12 @@ class Main extends React.Component {
     this.props.setNpcState(state);
   }
 
+  handleIncrement() {
+    this.props.updateIncrement();
+  }
+
   render() {
-    const { npcHealth, npcState } = this.props;
+    const { npcHealth, npcState, counter } = this.props;
     return (
       <Loop>
         <Stage
@@ -33,6 +38,9 @@ class Main extends React.Component {
         >
           <Text style={{ marginTop: 40 }}>
             {npcHealth}
+          </Text>
+          <Text style={{ marginTop: 40 }}>
+            {counter}
           </Text>
           <View
             style={{
@@ -44,6 +52,7 @@ class Main extends React.Component {
           >
             <PistonHurricane
               npcState={npcState}
+              onIncrement={this.handleIncrement}
               onNpcStateChange={this.handleNpcStateChange}
               onNpcHit={this.handleNpcHit} />
           </View>
@@ -64,15 +73,19 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => ({
   npcHealth: state.npcHealth,
-  npcState: state.npcState
+  npcState: state.npcState,
+  counter: state.counter
 });
 
-const mapActionsToProps = dispatch => ({
+const mapActionsToProps = (dispatch, store) => ({
   reduceNpcHealth(damage) {
     dispatch(reduceNpcHealth(damage));
   },
   setNpcState(state) {
     dispatch(setNpcState(state));
+  },
+  updateIncrement() {
+    dispatch(updateIncrement());
   }
 });
 

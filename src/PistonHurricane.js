@@ -60,6 +60,7 @@ class PistonHurricane extends React.Component {
         repeat: this.toggleRepeat()
       };
       this.props.onNpcStateChange(randomState);
+      this.props.onIncrement();
     }
 
     // this.props.onNpcHit(30);
@@ -109,6 +110,7 @@ class PistonHurricane extends React.Component {
 PistonHurricane.propTypes = {
   onNpcHit: PropTypes.func,
   onNpcStateChange: PropTypes.func,
+  onIncrement: PropTypes.func,
   npcState: PropTypes.object
 };
 PistonHurricane.contextTypes = {

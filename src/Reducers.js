@@ -1,9 +1,9 @@
-import {combineReducers} from 'redux';
+import { combineReducers } from 'redux';
 import * as types from './Constants';
 
 const initialState = {
   npcHealth: 100,
-  npcState: {state: 0, ticksPerFrame: 10, direction: 0, repeat: true}
+  npcState: { state: 0, ticksPerFrame: 10, direction: 0, repeat: true }
 };
 
 const npcHealth = (state = initialState.npcHealth, action) => {
@@ -24,7 +24,19 @@ const npcState = (state = initialState.npcState, action) => {
   }
 };
 
+const counter = (state = 0, action) => {
+  switch (action.type) {
+    case 'INCREMENT':
+      return state + 1;
+    case 'DECREMENT':
+      return state - 1;
+    default:
+      return state;
+  }
+};
+
 export default combineReducers({
   npcHealth,
-  npcState
-})
+  npcState,
+  counter
+});
