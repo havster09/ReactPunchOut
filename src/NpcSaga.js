@@ -1,21 +1,25 @@
 import { delay } from 'redux-saga';
-import { put, takeEvery, all } from 'redux-saga/effects';
+import { call, put, takeEvery, all, takeLatest } from 'redux-saga/effects';
+import * as types from './Constants';
 
 const helloSaga = function*() {
   console.log('jjjjj');
 };
 
-const incrementAsync =  function*() {
-  yield delay(1000);
-  yield put({ type: 'INCREMENT' });
-};
+function* npcPatternOne() {
+  yield put({ type: types.SET_JAB_LEFT_STATE });
+  yield call(delay, 1000);
+  yield put({ type: types.SET_CROSS_LEFT_STATE });
+  yield call(delay, 1000);
+  yield put({ type: types.SET_JAB_LEFT_STATE });
+}
 
-const watchIncrementAsync = function*() {
-  yield takeEvery('INCREMENT_ASYNC', incrementAsync);
-};
+ function* watchSetTest() {
+  yield takeEvery('SET_TEST', npcPatternOne);
+}
 
 const rootSaga = function*() {
-  yield all([helloSaga(), watchIncrementAsync()]);
+  yield all([helloSaga(), watchSetTest()]);
 };
 
 export default rootSaga;

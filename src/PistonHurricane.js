@@ -42,12 +42,12 @@ class PistonHurricane extends React.Component {
   }
 
   toggleDirection = () => {
-    return this.props.npcState.direction > 0 ? 0: 1
+    return this.props.counter.direction > 0 ? 0: 1
   };
 
   toggleRepeat = () => {
-    console.log(this.props.npcState.repeat);
-    return !this.props.npcState.repeat;
+    // console.log(this.props.npcState.repeat);
+    return !this.props.counter.repeat;
   };
 
   aiLoop() {
@@ -59,8 +59,8 @@ class PistonHurricane extends React.Component {
         direction: this.toggleDirection(),
         repeat: this.toggleRepeat()
       };
-      this.props.onNpcStateChange(randomState);
-      this.props.onIncrement();
+      // this.props.onNpcStateChange(randomState);
+      this.props.onIncrement(randomState);
     }
 
     // this.props.onNpcHit(30);
@@ -79,16 +79,16 @@ class PistonHurricane extends React.Component {
   };
 
   render() {
-    const { npcState } = this.props;
+    const { npcState, counter } = this.props;
     return (
       <View>
         <Sprite
-          repeat={npcState.repeat}
+          repeat={counter.repeat}
           onPlayStateChanged={this.handlePlayStateChanged}
           onUpdateStepCount={this.handleUpdateStepCount}
           src={this.pistonHurricaneImage}
           scale={2}
-          state={npcState.state}
+          state={counter.state}
           steps={[
             3, //0 idle
             1, //1 jab
@@ -99,8 +99,8 @@ class PistonHurricane extends React.Component {
           offset={[0, 0]}
           tileWidth={216}
           tileHeight={216}
-          direction={npcState.direction}
-          ticksPerFrame={npcState.ticksPerFrame}
+          direction={counter.direction}
+          ticksPerFrame={counter.ticksPerFrame}
         />
       </View>
     );
@@ -111,7 +111,8 @@ PistonHurricane.propTypes = {
   onNpcHit: PropTypes.func,
   onNpcStateChange: PropTypes.func,
   onIncrement: PropTypes.func,
-  npcState: PropTypes.object
+  npcState: PropTypes.object,
+  counter: PropTypes.object
 };
 PistonHurricane.contextTypes = {
   loop: PropTypes.object,

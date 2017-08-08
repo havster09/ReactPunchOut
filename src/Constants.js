@@ -1,5 +1,7 @@
 export const REDUCE_NPC_HEALTH = 'REDUCE_NPC_HEALTH';
 export const SET_NPC_STATE = 'SET_NPC_STATE';
 export const INCREMENT = 'INCREMENT';
+export const SET_JAB_LEFT_STATE = 'SET_JAB_LEFT_STATE';
+export const SET_CROSS_LEFT_STATE = 'SET_CROSS_LEFT_STATE';
 
 

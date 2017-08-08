@@ -6,6 +6,11 @@ const initialState = {
   npcState: { state: 0, ticksPerFrame: 10, direction: 0, repeat: true }
 };
 
+const npsStates = {
+  jabLeft: { state: 1, ticksPerFrame: 10, direction: 0, repeat: true },
+  crossLeft: { state: 2, ticksPerFrame: 10, direction: 0, repeat: false }
+};
+
 const npcHealth = (state = initialState.npcHealth, action) => {
   switch (action.type) {
     case types.REDUCE_NPC_HEALTH:
@@ -24,10 +29,14 @@ const npcState = (state = initialState.npcState, action) => {
   }
 };
 
-const counter = (state = 0, action) => {
+const counter = (state = initialState.npcState, action) => {
   switch (action.type) {
-    case 'INCREMENT':
-      return state + 1;
+    case types.SET_JAB_LEFT_STATE:
+      return npsStates.jabLeft;
+    case types.SET_CROSS_LEFT_STATE:
+      return npsStates.crossLeft;
+    case 'INCREMENT_ASYNC':
+      return state;
     case 'DECREMENT':
       return state - 1;
     default:

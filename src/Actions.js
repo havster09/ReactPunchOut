@@ -9,12 +9,9 @@ export const reduceNpcHealth = damage => {
 };
 
 export const setNpcState = npcState => {
-  return dispatch =>
-    dispatch({ type: types.SET_NPC_STATE, payload: npcState });
+  return dispatch => dispatch({ type: types.SET_NPC_STATE, payload: npcState });
 };
 
-export const updateIncrement = () => {
-  return dispatch =>
-   dispatch({ type: types.INCREMENT, payload: {} });
+export const updateIncrement = npcState => {
+  return dispatch => dispatch({ type: 'SET_TEST', npcState });
 };
-

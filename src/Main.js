@@ -23,8 +23,8 @@ class Main extends React.Component {
     this.props.setNpcState(state);
   }
 
-  handleIncrement() {
-    this.props.updateIncrement();
+  handleIncrement(state) {
+    this.props.updateIncrement(state);
   }
 
   render() {
@@ -40,7 +40,7 @@ class Main extends React.Component {
             {npcHealth}
           </Text>
           <Text style={{ marginTop: 40 }}>
-            {counter}
+            {counter.state}
           </Text>
           <View
             style={{
@@ -52,6 +52,7 @@ class Main extends React.Component {
           >
             <PistonHurricane
               npcState={npcState}
+              counter={counter}
               onIncrement={this.handleIncrement}
               onNpcStateChange={this.handleNpcStateChange}
               onNpcHit={this.handleNpcHit} />
@@ -84,8 +85,8 @@ const mapActionsToProps = (dispatch, store) => ({
   setNpcState(state) {
     dispatch(setNpcState(state));
   },
-  updateIncrement() {
-    dispatch(updateIncrement());
+  updateIncrement(state) {
+    dispatch(updateIncrement(state));
   }
 });
 
