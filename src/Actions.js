@@ -15,3 +15,7 @@ export const setNpcState = npcState => {
 export const setNpcStateSaga = npcState => {
   return dispatch => dispatch({ type: types.SET_SAGA, payload: npcState });
 };
+
+export const setPatternOneStateSaga = npcState => {
+  return dispatch => dispatch({ type: types.SET_PATTERN_ONE_SAGA_STATE, payload: npcState });
+};

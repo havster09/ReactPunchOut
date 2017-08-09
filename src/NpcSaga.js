@@ -16,23 +16,26 @@ function* npcSetSagaState(action) {
   }
 }
 
-function* npcPatternOne() {
+function* npcPatternOne(action) {
+  console.log(action);
   yield put({ type: types.SET_JAB_LEFT_STATE });
-  yield call(delay, 1000);
-  yield put({ type: types.SET_CROSS_LEFT_STATE });
-  yield call(delay, 1000);
-  yield put({ type: types.SET_JAB_LEFT_STATE });
+  if(!action.payload.spritePlaying && action.payload.hasStopped === 1) {
+    yield put({ type: types.SET_CROSS_LEFT_STATE });
+  }
+
+  // yield call(delay, 1000);
+  // yield put({ type: types.SET_JAB_LEFT_STATE });
 }
 
 function* watchSetTest() {
-  yield takeEvery(types.SET_PATTERN_SAGA_STATE, npcPatternOne);
+  yield takeEvery(types.SET_PATTERN_ONE_SAGA_STATE, npcPatternOne);
 }
 
 function* npcSetSagaStateWatcher() {
   yield takeEvery(types.SET_SAGA, npcSetSagaState);
 }
 
-const rootSaga = function*(action) {
+const rootSaga = function*() {
   yield all([initSaga(), watchSetTest(), npcSetSagaStateWatcher()]);
 };
 

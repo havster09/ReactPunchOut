@@ -1,13 +1,13 @@
-import React from "react";
-import PropTypes from "prop-types";
-import Sprite from "./native/components/sprite";
-import { Text, View } from "react-native";
+import React from 'react';
+import PropTypes from 'prop-types';
+import Sprite from './native/components/sprite';
+import { Text, View } from 'react-native';
 
 class PistonHurricane extends React.Component {
   constructor(props, context) {
     super(props, context);
 
-    this.pistonHurricaneImage = require("../assets/piston_hurricane.png");
+    this.pistonHurricaneImage = require('../assets/piston_hurricane.png');
 
     this.loopID = null;
 
@@ -16,7 +16,6 @@ class PistonHurricane extends React.Component {
       loop: false,
       spritePlaying: true,
       ticksPerFrame: 10,
-      hatched: false,
       dead: false,
       direction: 1,
       hasStopped: 0,
@@ -33,8 +32,11 @@ class PistonHurricane extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const {npcState, npcStateSaga} = this.props;
-    if(nextProps.npcState !== this.npcState && nextProps.npcStateSaga === npcStateSaga) {
+    const { npcState, npcStateSaga } = this.props;
+    if (
+      nextProps.npcState !== this.npcState &&
+      nextProps.npcStateSaga === npcStateSaga
+    ) {
       return this.props.onSetNpcStateSaga(npcState);
     }
   }
@@ -45,7 +47,7 @@ class PistonHurricane extends React.Component {
   }
 
   toggleDirection = () => {
-    return this.props.npcStateSaga.direction > 0 ? 0: 1
+    return this.props.npcStateSaga.direction > 0 ? 0 : 1;
   };
 
   toggleRepeat = () => {
@@ -62,8 +64,9 @@ class PistonHurricane extends React.Component {
         direction: this.toggleDirection(),
         repeat: this.toggleRepeat()
       };
-      this.props.onNpcStateChange(randomState);
+      // this.props.onNpcStateChange(randomState);
       // this.props.onSetNpcStateSaga(randomState);
+      this.props.onSetPatternOneStateSaga(this.state, this.props.npcStateSaga);
     }
 
     // this.props.onNpcHit(30);
@@ -72,7 +75,8 @@ class PistonHurricane extends React.Component {
   handlePlayStateChanged = state => {
     this.setState(
       Object.assign({}, this.state, {
-        spritePlaying: state ? true : false
+        spritePlaying: state ? true : false,
+        hasStopped: state ? this.state.hasStopped : this.state.hasStopped + 1
       })
     );
   };
@@ -97,7 +101,7 @@ class PistonHurricane extends React.Component {
             1, //1 jab
             2, //2 cross
             2, //3 uppercut
-            1  //4 body_jab
+            1 //4 body_jab
           ]}
           offset={[0, 0]}
           tileWidth={216}
@@ -114,6 +118,7 @@ PistonHurricane.propTypes = {
   onNpcHit: PropTypes.func,
   onNpcStateChange: PropTypes.func,
   onSetNpcStateSaga: PropTypes.func,
+  onSetPatternOneStateSaga: PropTypes.func,
   npcState: PropTypes.object,
   npcStateSaga: PropTypes.object
 };

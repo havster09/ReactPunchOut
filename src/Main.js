@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { StyleSheet, Dimensions, Text, View } from 'react-native';
 import { Loop, Stage } from 'react-game-kit/native';
 import PistonHurricane from './PistonHurricane';
-import { reduceNpcHealth, setNpcState, setNpcStateSaga } from './Actions';
+import { reduceNpcHealth, setNpcState, setNpcStateSaga, setPatternOneStateSaga } from './Actions';
 
 class Main extends React.Component {
   constructor(props, context) {
@@ -13,6 +13,7 @@ class Main extends React.Component {
     this.handleNpcHit = this.handleNpcHit.bind(this);
     this.handleNpcStateChange = this.handleNpcStateChange.bind(this);
     this.handleSetNpcStateSaga = this.handleSetNpcStateSaga.bind(this);
+    this.handleSetPatternOneStateSaga = this.handleSetPatternOneStateSaga.bind(this);
   }
 
   handleNpcHit(damage) {
@@ -25,6 +26,10 @@ class Main extends React.Component {
 
   handleSetNpcStateSaga(state) {
     this.props.setNpcStateSaga(state);
+  }
+
+  handleSetPatternOneStateSaga(state) {
+    this.props.setPatternOneStateSaga(state);
   }
 
   render() {
@@ -55,6 +60,7 @@ class Main extends React.Component {
               npcStateSaga={npcStateSaga}
               onSetNpcStateSaga={this.handleSetNpcStateSaga}
               onNpcStateChange={this.handleNpcStateChange}
+              onSetPatternOneStateSaga={this.handleSetPatternOneStateSaga}
               onNpcHit={this.handleNpcHit} />
           </View>
         </Stage>
@@ -87,6 +93,9 @@ const mapActionsToProps = (dispatch, store) => ({
   },
   setNpcStateSaga(state) {
     dispatch(setNpcStateSaga(state));
+  },
+  setPatternOneStateSaga(state) {
+    dispatch(setPatternOneStateSaga(state));
   }
 });
 

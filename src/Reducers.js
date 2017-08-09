@@ -7,7 +7,7 @@ const initialState = {
 };
 
 const npsStates = {
-  jabLeft: { state: 1, ticksPerFrame: 10, direction: 0, repeat: true },
+  jabLeft: { state: 1, ticksPerFrame: 10, direction: 0, repeat: false },
   crossLeft: { state: 2, ticksPerFrame: 10, direction: 0, repeat: false }
 };
 
