@@ -29,16 +29,14 @@ const npcState = (state = initialState.npcState, action) => {
   }
 };
 
-const counter = (state = initialState.npcState, action) => {
+const npcStateSaga = (state = initialState.npcState, action) => {
   switch (action.type) {
     case types.SET_JAB_LEFT_STATE:
       return npsStates.jabLeft;
     case types.SET_CROSS_LEFT_STATE:
       return npsStates.crossLeft;
-    case 'INCREMENT_ASYNC':
-      return state;
-    case 'DECREMENT':
-      return state - 1;
+    case types.SET_SAGA_STATE:
+      return action.payload;
     default:
       return state;
   }
@@ -47,5 +45,5 @@ const counter = (state = initialState.npcState, action) => {
 export default combineReducers({
   npcHealth,
   npcState,
-  counter
+  npcStateSaga
 });

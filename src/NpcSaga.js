@@ -2,9 +2,19 @@ import { delay } from 'redux-saga';
 import { call, put, takeEvery, all, takeLatest } from 'redux-saga/effects';
 import * as types from './Constants';
 
-const helloSaga = function*() {
-  console.log('jjjjj');
+const initSaga = function*() {
+  console.log('init here');
 };
+
+function* npcSetSagaState(action) {
+  if (action) {
+    const payload = action.payload;
+    yield put({type: types.SET_SAGA_STATE, payload});
+  } else {
+    console.log('no action');
+    yield;
+  }
+}
 
 function* npcPatternOne() {
   yield put({ type: types.SET_JAB_LEFT_STATE });
@@ -14,12 +24,16 @@ function* npcPatternOne() {
   yield put({ type: types.SET_JAB_LEFT_STATE });
 }
 
- function* watchSetTest() {
-  yield takeEvery('SET_TEST', npcPatternOne);
+function* watchSetTest() {
+  yield takeEvery(types.SET_PATTERN_SAGA_STATE, npcPatternOne);
 }
 
-const rootSaga = function*() {
-  yield all([helloSaga(), watchSetTest()]);
+function* npcSetSagaStateWatcher() {
+  yield takeEvery(types.SET_SAGA, npcSetSagaState);
+}
+
+const rootSaga = function*(action) {
+  yield all([initSaga(), watchSetTest(), npcSetSagaStateWatcher()]);
 };
 
 export default rootSaga;

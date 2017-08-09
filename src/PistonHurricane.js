@@ -33,7 +33,10 @@ class PistonHurricane extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    // console.log(nextProps);
+    const {npcState, npcStateSaga} = this.props;
+    if(nextProps.npcState !== this.npcState && nextProps.npcStateSaga === npcStateSaga) {
+      return this.props.onSetNpcStateSaga(npcState);
+    }
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -42,12 +45,12 @@ class PistonHurricane extends React.Component {
   }
 
   toggleDirection = () => {
-    return this.props.counter.direction > 0 ? 0: 1
+    return this.props.npcStateSaga.direction > 0 ? 0: 1
   };
 
   toggleRepeat = () => {
     // console.log(this.props.npcState.repeat);
-    return !this.props.counter.repeat;
+    return !this.props.npcStateSaga.repeat;
   };
 
   aiLoop() {
@@ -59,8 +62,8 @@ class PistonHurricane extends React.Component {
         direction: this.toggleDirection(),
         repeat: this.toggleRepeat()
       };
-      // this.props.onNpcStateChange(randomState);
-      this.props.onIncrement(randomState);
+      this.props.onNpcStateChange(randomState);
+      // this.props.onSetNpcStateSaga(randomState);
     }
 
     // this.props.onNpcHit(30);
@@ -79,16 +82,16 @@ class PistonHurricane extends React.Component {
   };
 
   render() {
-    const { npcState, counter } = this.props;
+    const { npcState, npcStateSaga } = this.props;
     return (
       <View>
         <Sprite
-          repeat={counter.repeat}
+          repeat={npcStateSaga.repeat}
           onPlayStateChanged={this.handlePlayStateChanged}
           onUpdateStepCount={this.handleUpdateStepCount}
           src={this.pistonHurricaneImage}
           scale={2}
-          state={counter.state}
+          state={npcStateSaga.state}
           steps={[
             3, //0 idle
             1, //1 jab
@@ -99,8 +102,8 @@ class PistonHurricane extends React.Component {
           offset={[0, 0]}
           tileWidth={216}
           tileHeight={216}
-          direction={counter.direction}
-          ticksPerFrame={counter.ticksPerFrame}
+          direction={npcStateSaga.direction}
+          ticksPerFrame={npcStateSaga.ticksPerFrame}
         />
       </View>
     );
@@ -110,9 +113,9 @@ class PistonHurricane extends React.Component {
 PistonHurricane.propTypes = {
   onNpcHit: PropTypes.func,
   onNpcStateChange: PropTypes.func,
-  onIncrement: PropTypes.func,
+  onSetNpcStateSaga: PropTypes.func,
   npcState: PropTypes.object,
-  counter: PropTypes.object
+  npcStateSaga: PropTypes.object
 };
 PistonHurricane.contextTypes = {
   loop: PropTypes.object,

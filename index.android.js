@@ -9,7 +9,7 @@ import { AppRegistry, StyleSheet } from 'react-native';
 import { Provider } from 'react-redux';
 import configureStore from './src/Store';
 
-const store = configureStore();
+export const store = configureStore();
 import App from './App';
 
 export default class ReactPunchOut extends Component {

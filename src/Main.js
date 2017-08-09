@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { StyleSheet, Dimensions, Text, View } from 'react-native';
 import { Loop, Stage } from 'react-game-kit/native';
 import PistonHurricane from './PistonHurricane';
-import { reduceNpcHealth, setNpcState, updateIncrement } from './Actions';
+import { reduceNpcHealth, setNpcState, setNpcStateSaga } from './Actions';
 
 class Main extends React.Component {
   constructor(props, context) {
@@ -12,7 +12,7 @@ class Main extends React.Component {
 
     this.handleNpcHit = this.handleNpcHit.bind(this);
     this.handleNpcStateChange = this.handleNpcStateChange.bind(this);
-    this.handleIncrement = this.handleIncrement.bind(this);
+    this.handleSetNpcStateSaga = this.handleSetNpcStateSaga.bind(this);
   }
 
   handleNpcHit(damage) {
@@ -23,12 +23,12 @@ class Main extends React.Component {
     this.props.setNpcState(state);
   }
 
-  handleIncrement(state) {
-    this.props.updateIncrement(state);
+  handleSetNpcStateSaga(state) {
+    this.props.setNpcStateSaga(state);
   }
 
   render() {
-    const { npcHealth, npcState, counter } = this.props;
+    const { npcHealth, npcState, npcStateSaga } = this.props;
     return (
       <Loop>
         <Stage
@@ -40,7 +40,7 @@ class Main extends React.Component {
             {npcHealth}
           </Text>
           <Text style={{ marginTop: 40 }}>
-            {counter.state}
+            {npcStateSaga.state}
           </Text>
           <View
             style={{
@@ -52,8 +52,8 @@ class Main extends React.Component {
           >
             <PistonHurricane
               npcState={npcState}
-              counter={counter}
-              onIncrement={this.handleIncrement}
+              npcStateSaga={npcStateSaga}
+              onSetNpcStateSaga={this.handleSetNpcStateSaga}
               onNpcStateChange={this.handleNpcStateChange}
               onNpcHit={this.handleNpcHit} />
           </View>
@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
 const mapStateToProps = state => ({
   npcHealth: state.npcHealth,
   npcState: state.npcState,
-  counter: state.counter
+  npcStateSaga: state.npcStateSaga
 });
 
 const mapActionsToProps = (dispatch, store) => ({
@@ -85,8 +85,8 @@ const mapActionsToProps = (dispatch, store) => ({
   setNpcState(state) {
     dispatch(setNpcState(state));
   },
-  updateIncrement(state) {
-    dispatch(updateIncrement(state));
+  setNpcStateSaga(state) {
+    dispatch(setNpcStateSaga(state));
   }
 });
 
