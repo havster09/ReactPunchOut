@@ -57,10 +57,10 @@ class PistonHurricane extends React.Component {
 
   aiLoop() {
     // console.log(this.context.loop.loopID);
-    if (this.context.loop.loopID && this.context.loop.loopID % 100 === 1) {
+    if (this.context.loop.loopID && this.context.loop.loopID % 20 === 1) {
       const randomState = {
         state: Math.floor(Math.random() * 5),
-        ticksPerFrame: 10,
+        ticksPerFrame: 20,
         direction: this.toggleDirection(),
         repeat: this.toggleRepeat()
       };

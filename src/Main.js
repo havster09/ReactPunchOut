@@ -3,7 +3,12 @@ import { connect } from 'react-redux';
 import { StyleSheet, Dimensions, Text, View, PanResponder } from 'react-native';
 import { Loop, Stage } from 'react-game-kit/native';
 import PistonHurricane from './PistonHurricane';
-import { reduceNpcHealth, setNpcState, setNpcStateSaga, setPatternOneStateSaga } from './Actions';
+import {
+  reduceNpcHealth,
+  setNpcState,
+  setNpcStateSaga,
+  setPatternOneStateSaga
+} from './Actions';
 
 class Main extends React.Component {
   constructor(props, context) {
@@ -13,7 +18,9 @@ class Main extends React.Component {
     this.handleNpcHit = this.handleNpcHit.bind(this);
     this.handleNpcStateChange = this.handleNpcStateChange.bind(this);
     this.handleSetNpcStateSaga = this.handleSetNpcStateSaga.bind(this);
-    this.handleSetPatternOneStateSaga = this.handleSetPatternOneStateSaga.bind(this);
+    this.handleSetPatternOneStateSaga = this.handleSetPatternOneStateSaga.bind(
+      this
+    );
   }
 
   componentWillMount() {
@@ -31,8 +38,8 @@ class Main extends React.Component {
         // gestureState.d{x,y} will be set to zero now
         console.log(evt);
         const testTouchState = {
-          state: 3,
-          ticksPerFrame: 10,
+          state: [5, 6, 7][Math.floor(Math.random() * 3)],
+          ticksPerFrame: 1,
           direction: 0,
           repeat: false
         };
@@ -80,38 +87,39 @@ class Main extends React.Component {
   render() {
     const { npcHealth, npcState, npcStateSaga } = this.props;
     return (
-    <View {...this._panResponder.panHandlers}>
-      <Loop>
-        <Stage
-          width={this.dimensions.width}
-          height={this.dimensions.height}
-          style={{ backgroundColor: '#fff' }}
-        >
-          <Text style={{ marginTop: 40 }}>
-            {npcHealth}
-          </Text>
-          <Text style={{ marginTop: 40 }}>
-            {npcStateSaga.state}
-          </Text>
-          <View
-            style={{
-              flex: 1,
-              flexDirection: 'column',
-              justifyContent: 'center',
-              alignItems: 'center'
-            }}
+      <View {...this._panResponder.panHandlers}>
+        <Loop>
+          <Stage
+            width={this.dimensions.width}
+            height={this.dimensions.height}
+            style={{ backgroundColor: '#fff' }}
           >
-            <PistonHurricane
-              npcState={npcState}
-              npcStateSaga={npcStateSaga}
-              onSetNpcStateSaga={this.handleSetNpcStateSaga}
-              onNpcStateChange={this.handleNpcStateChange}
-              onSetPatternOneStateSaga={this.handleSetPatternOneStateSaga}
-              onNpcHit={this.handleNpcHit} />
-          </View>
-        </Stage>
-      </Loop>
-    </View>
+            <Text style={{ marginTop: 40 }}>
+              {npcHealth}
+            </Text>
+            <Text style={{ marginTop: 40 }}>
+              {npcStateSaga.state}
+            </Text>
+            <View
+              style={{
+                flex: 1,
+                flexDirection: 'column',
+                justifyContent: 'center',
+                alignItems: 'center'
+              }}
+            >
+              <PistonHurricane
+                npcState={npcState}
+                npcStateSaga={npcStateSaga}
+                onSetNpcStateSaga={this.handleSetNpcStateSaga}
+                onNpcStateChange={this.handleNpcStateChange}
+                onSetPatternOneStateSaga={this.handleSetPatternOneStateSaga}
+                onNpcHit={this.handleNpcHit}
+              />
+            </View>
+          </Stage>
+        </Loop>
+      </View>
     );
   }
 }
