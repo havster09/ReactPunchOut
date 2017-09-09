@@ -19,8 +19,13 @@ function* npcSetSagaState(action) {
 function* npcPatternOne(action) {
   console.log(action);
   yield put({ type: types.SET_JAB_LEFT_STATE });
-  if(!action.payload.spritePlaying && action.payload.hasStopped === 1) {
-    yield put({ type: types.SET_CROSS_LEFT_STATE });
+  if(!action.payload.spritePlaying) {
+    if(action.payload.hasStopped === 1) {
+      yield put({type: types.SET_CROSS_LEFT_STATE});
+    }
+    if(action.payload.hasStopped === 2) {
+      yield put({type: types.SET_JAB_LEFT_STATE});
+    }
   }
 
   // yield call(delay, 1000);

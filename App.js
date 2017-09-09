@@ -1,5 +1,6 @@
 import React from 'react';
 import Main from './src/Main';
+import GestureControls from './src/GestureControls';
 
 class App extends React.Component {
   constructor(props, context) {
@@ -8,6 +9,7 @@ class App extends React.Component {
 
   render() {
     return <Main />;
+    // return <GestureControls />;
   }
 }
 

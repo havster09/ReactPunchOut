@@ -64,9 +64,14 @@ class PistonHurricane extends React.Component {
         direction: this.toggleDirection(),
         repeat: this.toggleRepeat()
       };
-      // this.props.onNpcStateChange(randomState);
-      // this.props.onSetNpcStateSaga(randomState);
-      this.props.onSetPatternOneStateSaga(this.state, this.props.npcStateSaga);
+      const idleState = {
+        state: 0,
+        ticksPerFrame: 10,
+        direction: this.toggleDirection(),
+        repeat: true
+      };
+      this.props.onNpcStateChange(idleState);
+      // this.props.onSetPatternOneStateSaga(this.state, this.props.npcStateSaga);
     }
 
     // this.props.onNpcHit(30);

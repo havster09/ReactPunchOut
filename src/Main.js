@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { StyleSheet, Dimensions, Text, View } from 'react-native';
+import { StyleSheet, Dimensions, Text, View, PanResponder } from 'react-native';
 import { Loop, Stage } from 'react-game-kit/native';
 import PistonHurricane from './PistonHurricane';
 import { reduceNpcHealth, setNpcState, setNpcStateSaga, setPatternOneStateSaga } from './Actions';
@@ -14,6 +14,51 @@ class Main extends React.Component {
     this.handleNpcStateChange = this.handleNpcStateChange.bind(this);
     this.handleSetNpcStateSaga = this.handleSetNpcStateSaga.bind(this);
     this.handleSetPatternOneStateSaga = this.handleSetPatternOneStateSaga.bind(this);
+  }
+
+  componentWillMount() {
+    this._panResponder = PanResponder.create({
+      // Ask to be the responder:
+      onStartShouldSetPanResponder: (evt, gestureState) => true,
+      onStartShouldSetPanResponderCapture: (evt, gestureState) => true,
+      onMoveShouldSetPanResponder: (evt, gestureState) => true,
+      onMoveShouldSetPanResponderCapture: (evt, gestureState) => true,
+
+      onPanResponderGrant: (evt, gestureState) => {
+        // The gesture has started. Show visual feedback so the user knows
+        // what is happening!
+
+        // gestureState.d{x,y} will be set to zero now
+        console.log(evt);
+        const testTouchState = {
+          state: 3,
+          ticksPerFrame: 10,
+          direction: 0,
+          repeat: false
+        };
+        this.handleNpcStateChange(testTouchState);
+      },
+      onPanResponderMove: (evt, gestureState) => {
+        // The most recent move distance is gestureState.move{X,Y}
+        // The accumulated gesture distance since becoming responder is
+        // gestureState.d{x,y}
+      },
+      onPanResponderTerminationRequest: (evt, gestureState) => true,
+      onPanResponderRelease: (evt, gestureState) => {
+        // The user has released all touches while this view is the
+        // responder. This typically means a gesture has succeeded
+      },
+      onPanResponderTerminate: (evt, gestureState) => {
+        // Another component has become the responder, so this gesture
+        // should be cancelled
+      },
+      onShouldBlockNativeResponder: (evt, gestureState) => {
+        // Returns whether this component should block native components from becoming the JS
+        // responder. Returns true by default. Is currently only supported on android.
+        return true;
+      }
+    });
+    console.log('init done');
   }
 
   handleNpcHit(damage) {
@@ -35,6 +80,7 @@ class Main extends React.Component {
   render() {
     const { npcHealth, npcState, npcStateSaga } = this.props;
     return (
+    <View {...this._panResponder.panHandlers}>
       <Loop>
         <Stage
           width={this.dimensions.width}
@@ -65,6 +111,7 @@ class Main extends React.Component {
           </View>
         </Stage>
       </Loop>
+    </View>
     );
   }
 }
