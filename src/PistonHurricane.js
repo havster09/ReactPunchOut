@@ -106,7 +106,19 @@ class PistonHurricane extends React.Component {
             1, //1 jab
             2, //2 cross
             2, //3 uppercut
-            1 //4 body_jab
+            1, //4 body_jab
+            0, //5 hit_jab
+            0, //6 hit_cross
+            0, //7 hit_body
+            1, //8 dazed
+            0, //8 weave
+            0, //9 block_body
+            0, //9 block_jab
+            0, //10 block_uppercut
+            0, //11 block_cross
+            2, //12 knockdown
+            1, //13 get up
+            1, //14 pose
           ]}
           offset={[0, 0]}
           tileWidth={216}
