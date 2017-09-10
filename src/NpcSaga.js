@@ -9,7 +9,7 @@ const initSaga = function*() {
 function* npcSetSagaState(action) {
   if (action) {
     const payload = action.payload;
-    yield put({type: types.SET_SAGA_STATE, payload});
+    yield put({ type: types.SET_SAGA_STATE, payload });
   } else {
     console.log('no action');
     yield;
@@ -17,14 +17,19 @@ function* npcSetSagaState(action) {
 }
 
 function* npcPatternOne(action) {
-  console.log(action.payload.sagaOrder);
-  yield put({ type: types.SET_JAB_LEFT_STATE_PATTERN_ONE });
-  if(!action.payload.spritePlaying) {
-    if(action.payload.sagaOrder === 1) {
-      yield put({type: types.SET_CROSS_LEFT_STATE_PATTERN_ONE});
-  }
-    if(action.payload.sagaOrder === 2) {
-      yield put({type: types.SET_UPPERCUT_LEFT_STATE_PATTERN_ONE});
+  console.log('run saga pattern',action.payload.sagaOrder);
+  if (!action.payload.spritePlaying) {
+    if (action.payload.sagaOrder === 1) {
+      console.log('left jab');
+      yield put({ type: types.SET_JAB_LEFT_STATE_PATTERN_ONE });
+    }
+    if (action.payload.sagaOrder === 2) {
+      console.log('left cross');
+      yield put({ type: types.SET_CROSS_LEFT_STATE_PATTERN_ONE });
+    }
+    if (action.payload.sagaOrder === 3) {
+      console.log('left uppercut');
+      yield put({ type: types.SET_UPPERCUT_LEFT_STATE_PATTERN_ONE });
     }
   }
 

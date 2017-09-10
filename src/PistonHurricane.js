@@ -19,7 +19,7 @@ class PistonHurricane extends React.Component {
       hasHit: 0
     };
 
-    this.debug = true;
+    this.debug = false;
 
     this.aiLoop = this.aiLoop.bind(this);
     this.handleNpcIsAttacked = this.handleNpcIsAttacked.bind(this);
@@ -35,12 +35,7 @@ class PistonHurricane extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     const { npcStateSaga } = this.props;
-    if (
-      nextProps.npcStateSaga === npcStateSaga
-    ) {
-      console.log('resend saga');
-      return this.props.onSetNpcStateSaga(npcStateSaga);
-    }
+
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -75,13 +70,14 @@ class PistonHurricane extends React.Component {
     }
     else if(npcStateSaga.state === 0){
       const randomState = {
-        state: Math.floor(Math.random() * 5),
+        state: Math.floor(Math.random() * 10),
         ticksPerFrame: 20,
         direction: this.toggleDirection(),
-        repeat: this.toggleRepeat()
+        repeat: false
       };
-      this.props.onSetNpcStateSaga(randomState);
+      return this.props.onSetNpcStateSaga(randomState);
     }
+    return this.aiSetSagaSequence();
   }
 
   aiLoopAttacked() {
@@ -93,9 +89,15 @@ class PistonHurricane extends React.Component {
   }
 
   aiSetSagaSequence() {
-    this.props.onSetPatternOneStateSaga(Object.assign({}, this.props.npcStateSaga, {
-      sagaOrder: isNaN(this.props.npcStateSaga.sagaOrder)? 0: this.props.npcStateSaga.sagaOrder + 1,
-    }));
+    if(this.watcher.hasStopped < 4) {
+      console.log('has stopped',this.watcher.hasStopped);
+      return this.props.onSetPatternOneStateSaga(Object.assign({}, this.props.npcStateSaga, {
+        sagaOrder: isNaN(this.watcher.hasStopped)? 0: this.watcher.hasStopped + 1,
+      }));
+    }
+    else {
+      this.watcher.hasStopped = 0;
+    }
   }
 
   handlePlayStateChanged = state => {

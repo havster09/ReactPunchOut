@@ -12,8 +12,8 @@ export const npcStates = {
   upperLeft: { state: 4, ticksPerFrame: 12, direction: 0, repeat: false },
 
   jabLeftPatternOne: { state: 2, ticksPerFrame: 12, direction: 0, repeat: false },
-  crossLeftPatternOne: { state: 3, ticksPerFrame: 12, direction: 0, repeat: false, sagaOrder: 1 },
-  upperLeftPatternOne: { state: 4, ticksPerFrame: 12, direction: 0, repeat: false, sagaOrder: 2 },
+  crossLeftPatternOne: { state: 3, ticksPerFrame: 12, direction: 0, repeat: false },
+  upperLeftPatternOne: { state: 4, ticksPerFrame: 12, direction: 0, repeat: false, sagaOrder: -1 },
 };
 
 const npcHealth = (state = initialState.npcHealth, action) => {
