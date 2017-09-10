@@ -1,7 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Sprite from './native/components/sprite';
 import { Text, View } from 'react-native';
+import Sprite from './native/components/sprite';
+import * as types from './Constants';
 
 class PistonHurricane extends React.Component {
   constructor(props, context) {
@@ -89,7 +90,7 @@ class PistonHurricane extends React.Component {
   }
 
   aiSetSagaSequence() {
-    if(this.watcher.hasStopped < 4) {
+    if(this.watcher.hasStopped < types.PATTERN_ONE.length) {
       console.log('has stopped',this.watcher.hasStopped);
       return this.props.onSetPatternOneStateSaga(Object.assign({}, this.props.npcStateSaga, {
         sagaOrder: isNaN(this.watcher.hasStopped)? 0: this.watcher.hasStopped + 1,
