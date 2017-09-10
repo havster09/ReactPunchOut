@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { StyleSheet, Dimensions, Text, View, PanResponder } from 'react-native';
 import { Loop, Stage } from 'react-game-kit/native';
 import PistonHurricane from './PistonHurricane';
+import { PistonHurricaneMoveMap } from './Constants';
 import {
   reduceNpcHealth,
   setNpcState,
@@ -16,11 +17,13 @@ class Main extends React.Component {
     this.dimensions = Dimensions.get('window');
 
     this.handleNpcHit = this.handleNpcHit.bind(this);
-    this.handleNpcStateChange = this.handleNpcStateChange.bind(this);
     this.handleSetNpcStateSaga = this.handleSetNpcStateSaga.bind(this);
     this.handleSetPatternOneStateSaga = this.handleSetPatternOneStateSaga.bind(
       this
     );
+    this.translateState = this.translateState.bind(this);
+    this.getNpcRef = this.getNpcRef.bind(this);
+    this.npcRef = null;
   }
 
   componentWillMount() {
@@ -36,14 +39,9 @@ class Main extends React.Component {
         // what is happening!
 
         // gestureState.d{x,y} will be set to zero now
-        console.log(evt);
-        const testTouchState = {
-          state: [5, 6, 7][Math.floor(Math.random() * 3)],
-          ticksPerFrame: 1,
-          direction: 0,
-          repeat: false
-        };
-        this.handleNpcStateChange(testTouchState);
+        // console.log(evt);
+        this.npcRef.handleNpcIsAttacked(1);
+
       },
       onPanResponderMove: (evt, gestureState) => {
         // The most recent move distance is gestureState.move{X,Y}
@@ -72,10 +70,6 @@ class Main extends React.Component {
     this.props.reduceNpcHealth(damage);
   }
 
-  handleNpcStateChange(state) {
-    this.props.setNpcState(state);
-  }
-
   handleSetNpcStateSaga(state) {
     this.props.setNpcStateSaga(state);
   }
@@ -84,8 +78,23 @@ class Main extends React.Component {
     this.props.setPatternOneStateSaga(state);
   }
 
+  getNpcRef(npcRef) {
+    this.npcRef = npcRef;
+  }
+
+  translateState(state) {
+    const activeMove = PistonHurricaneMoveMap.find(
+      move => move.stateKey === state
+    );
+    return (
+      <Text>
+        State: {activeMove.stateKey} Move: {activeMove.move}
+      </Text>
+    );
+  }
+
   render() {
-    const { npcHealth, npcState, npcStateSaga } = this.props;
+    const { npcHealth, npcStateSaga } = this.props;
     return (
       <View {...this._panResponder.panHandlers}>
         <Loop>
@@ -94,11 +103,11 @@ class Main extends React.Component {
             height={this.dimensions.height}
             style={{ backgroundColor: '#fff' }}
           >
-            <Text style={{ marginTop: 40 }}>
+            <Text style={{ marginTop: 5 }}>
               {npcHealth}
             </Text>
-            <Text style={{ marginTop: 40 }}>
-              {npcStateSaga.state}
+            <Text style={{ marginTop: 5 }}>
+              {this.translateState(npcStateSaga.state)}
             </Text>
             <View
               style={{
@@ -109,10 +118,9 @@ class Main extends React.Component {
               }}
             >
               <PistonHurricane
-                npcState={npcState}
+                ref={this.getNpcRef}
                 npcStateSaga={npcStateSaga}
                 onSetNpcStateSaga={this.handleSetNpcStateSaga}
-                onNpcStateChange={this.handleNpcStateChange}
                 onSetPatternOneStateSaga={this.handleSetPatternOneStateSaga}
                 onNpcHit={this.handleNpcHit}
               />

@@ -17,14 +17,14 @@ function* npcSetSagaState(action) {
 }
 
 function* npcPatternOne(action) {
-  console.log(action);
-  yield put({ type: types.SET_JAB_LEFT_STATE });
+  console.log(action.payload.sagaOrder);
+  yield put({ type: types.SET_JAB_LEFT_STATE_PATTERN_ONE });
   if(!action.payload.spritePlaying) {
-    if(action.payload.hasStopped === 1) {
-      yield put({type: types.SET_CROSS_LEFT_STATE});
-    }
-    if(action.payload.hasStopped === 2) {
-      yield put({type: types.SET_JAB_LEFT_STATE});
+    if(action.payload.sagaOrder === 1) {
+      yield put({type: types.SET_CROSS_LEFT_STATE_PATTERN_ONE});
+  }
+    if(action.payload.sagaOrder === 2) {
+      yield put({type: types.SET_UPPERCUT_LEFT_STATE_PATTERN_ONE});
     }
   }
 

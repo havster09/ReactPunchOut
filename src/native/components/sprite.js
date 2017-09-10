@@ -79,8 +79,10 @@ export default class Sprite extends Component {
   animate(props) {
     const { repeat, ticksPerFrame, state, steps } = props;
 
-    if (this.tickCount === ticksPerFrame && !this.finished) {
-      if (steps[state] !== 0) {
+    if(state !== 0) {
+      if (this.tickCount === ticksPerFrame && !this.finished) {
+        // add condition if state === 0
+        // amend spritesheet
         const { currentStep } = this.state;
         const lastStep = steps[state];
         let nextStep = currentStep === lastStep ? 0 : currentStep + 1;
@@ -99,11 +101,11 @@ export default class Sprite extends Component {
           this.finished = true;
           this.props.onPlayStateChanged(0);
         }
-      }
 
-      this.tickCount = 0;
-    } else {
-      this.tickCount++;
+        this.tickCount = 0;
+      } else {
+        this.tickCount++;
+      }
     }
   }
 
