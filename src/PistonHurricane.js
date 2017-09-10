@@ -38,6 +38,7 @@ class PistonHurricane extends React.Component {
     if (
       nextProps.npcStateSaga === npcStateSaga
     ) {
+      console.log('resend saga');
       return this.props.onSetNpcStateSaga(npcStateSaga);
     }
   }
@@ -84,28 +85,15 @@ class PistonHurricane extends React.Component {
   }
 
   aiLoopAttacked() {
-    if (this.context.loop.loopID) {
-      const idleState = {
-        state: 0,
-        direction: this.toggleDirection(),
-        repeat: false
-      };
-      return this.props.onSetNpcStateSaga(idleState);
-    }
+
   }
 
   aiSetRandom() {
-    const randomState = {
-      state: Math.floor(Math.random() * 5),
-      direction: this.toggleDirection(),
-      ticksPerFrame: Math.floor(Math.random() *10 + 6),
-    };
-    this.props.onSetNpcStateSaga(randomState);
+
   }
 
   aiSetSagaSequence() {
     this.props.onSetPatternOneStateSaga(Object.assign({}, this.props.npcStateSaga, {
-
       sagaOrder: isNaN(this.props.npcStateSaga.sagaOrder)? 0: this.props.npcStateSaga.sagaOrder + 1,
     }));
   }
