@@ -54,7 +54,9 @@ export default class Sprite extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.state !== this.props.state) {
+    if (nextProps.state !== this.props.state
+     || nextProps.direction !== this.props.direction
+     || nextProps.ticksPerFrame !== this.props.ticksPerFrame) {
       this.finished = false;
       this.props.onPlayStateChanged(1);
       this.context.loop.unsubscribe(this.loopID);
@@ -81,8 +83,6 @@ export default class Sprite extends Component {
 
     if(state !== 0) {
       if (this.tickCount === ticksPerFrame && !this.finished) {
-        // add condition if state === 0
-        // amend spritesheet
         const { currentStep } = this.state;
         const lastStep = steps[state];
         let nextStep = currentStep === lastStep ? 0 : currentStep + 1;

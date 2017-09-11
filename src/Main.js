@@ -66,7 +66,7 @@ class Main extends React.Component {
     console.log('init done');
   }
 
-  handleNpcHit(damage) {
+  handleNpcHit(damage = 1) {
     this.props.reduceNpcHealth(damage);
   }
 

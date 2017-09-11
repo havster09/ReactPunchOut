@@ -14,16 +14,18 @@ class PistonHurricane extends React.Component {
 
     this.watcher = {
       spritePlaying: false,
-      dead: false,
+      isDead: false,
+      isHit: false,
       hasStopped: 0,
       attacking: 0,
       hasHit: 0
     };
 
-    this.debug = false;
+    this.debug = true;
 
     this.aiLoop = this.aiLoop.bind(this);
     this.handleNpcIsAttacked = this.handleNpcIsAttacked.bind(this);
+    this.isInHitState = this.isInHitState.bind(this);
   }
 
   componentDidMount() {
@@ -35,8 +37,8 @@ class PistonHurricane extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { npcStateSaga } = this.props;
-
+    const { npcStateSaga } = nextProps;
+    console.log(npcStateSaga);
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -58,8 +60,9 @@ class PistonHurricane extends React.Component {
     const { npcStateSaga } = this.props;
     // punched to idle
     if(!this.watcher.spritePlaying) {
-      if((npcStateSaga.state > 3 && npcStateSaga.state < 8)) {
+      if(this.isInHitState()) {
         if (this.context.loop.loopID) {
+          this.watcher.isHit = false;
           const idleState = {
             state: 0,
             direction: this.toggleDirection(),
@@ -68,17 +71,23 @@ class PistonHurricane extends React.Component {
           return this.props.onSetNpcStateSaga(idleState);
         }
       }
+      else {
+        return this.aiSetSagaSequence();
+      }
     }
-    else if(npcStateSaga.state === 0){
-      const randomState = {
-        state: Math.floor(Math.random() * 10),
-        ticksPerFrame: 20,
-        direction: this.toggleDirection(),
-        repeat: false
-      };
-      return this.props.onSetNpcStateSaga(randomState);
+    else {
+      if(!this.watcher.isHit) {
+        if(npcStateSaga.state === 0){
+          const idleState = {
+            state: 1,
+            ticksPerFrame: 20,
+            direction: this.toggleDirection(),
+            repeat: false
+          };
+          return this.props.onSetNpcStateSaga(idleState);
+        }
+      }
     }
-    return this.aiSetSagaSequence();
   }
 
   aiLoopAttacked() {
@@ -91,7 +100,7 @@ class PistonHurricane extends React.Component {
 
   aiSetSagaSequence() {
     if(this.watcher.hasStopped < types.PATTERN_ONE.length) {
-      console.log('has stopped',this.watcher.hasStopped);
+      // console.log('has stopped',this.watcher.hasStopped);
       return this.props.onSetPatternOneStateSaga(Object.assign({}, this.props.npcStateSaga, {
         sagaOrder: isNaN(this.watcher.hasStopped)? 0: this.watcher.hasStopped + 1,
       }));
@@ -105,7 +114,8 @@ class PistonHurricane extends React.Component {
     const { npcStateSaga } = this.props;
     this.watcher = Object.assign({}, this.watcher, {
       spritePlaying: !!state,
-      hasStopped: state ? this.watcher.hasStopped : this.watcher.hasStopped + 1
+      hasStopped: state ? this.watcher.hasStopped : this.watcher.hasStopped + 1,
+      isHit: this.watcher.isHit ? false : this.watcher.isHit,
     });
   };
 
@@ -114,16 +124,21 @@ class PistonHurricane extends React.Component {
   };
 
   handleNpcIsAttacked(count) {
+    this.watcher.isHit = true;
     const testTouchState = {
-      state: [5, 6, 7][Math.floor(Math.random() * 3)],
+      state: [6,7,8][Math.floor(Math.random() * 3)],
       ticksPerFrame: 12,
       direction: 0,
       repeat: false,
     };
     this.props.onSetNpcStateSaga(testTouchState);
+    return this.props.onNpcHit(count);
   }
 
-
+  isInHitState() {
+    const { npcStateSaga } = this.props;
+    return [6,7,8].indexOf(npcStateSaga.state) > -1;
+  }
 
   render() {
     const { npcStateSaga } = this.props;
@@ -131,7 +146,7 @@ class PistonHurricane extends React.Component {
       <View>
         {this.debug &&
           <Text>
-            {JSON.stringify(this.props, null, 4)}
+            {JSON.stringify(this.watcher, null, 4)}
           </Text>}
         <Sprite
           repeat={npcStateSaga.repeat}
@@ -165,6 +180,7 @@ class PistonHurricane extends React.Component {
           tileHeight={216}
           direction={npcStateSaga.direction}
           ticksPerFrame={npcStateSaga.ticksPerFrame}
+          pattern={npcStateSaga.pattern}
         />
       </View>
     );
