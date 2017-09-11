@@ -27,6 +27,9 @@ class Main extends React.Component {
   }
 
   componentWillMount() {
+    // todo powerpunch by charging before throwing
+    // todo power multiplier by counter punching
+
     this._panResponder = PanResponder.create({
       // Ask to be the responder:
       onStartShouldSetPanResponder: (evt, gestureState) => true,
@@ -40,7 +43,7 @@ class Main extends React.Component {
 
         // gestureState.d{x,y} will be set to zero now
         // console.log(evt);
-        this.npcRef.handleNpcIsAttacked(1);
+        this.npcRef.handleNpcIsAttacked(Math.floor(Math.random() * 30) + 10);
 
       },
       onPanResponderMove: (evt, gestureState) => {

@@ -21,11 +21,12 @@ class PistonHurricane extends React.Component {
       hasHit: 0
     };
 
-    this.debug = true;
+    this.debug = false;
 
     this.aiLoop = this.aiLoop.bind(this);
     this.handleNpcIsAttacked = this.handleNpcIsAttacked.bind(this);
     this.isInHitState = this.isInHitState.bind(this);
+    this.toggleDirection = this.toggleDirection.bind(this);
   }
 
   componentDidMount() {
@@ -47,7 +48,7 @@ class PistonHurricane extends React.Component {
   }
 
   toggleDirection = () => {
-    return this.props.npcStateSaga.direction > 0 ? 0 : 1;
+    return this.props.npcStateSaga.direction? 0 : 1;
   };
 
   toggleRepeat = () => {
@@ -78,13 +79,12 @@ class PistonHurricane extends React.Component {
     else {
       if(!this.watcher.isHit) {
         if(npcStateSaga.state === 0){
-          const idleState = {
+          const idleDanceState = {
             state: 1,
             ticksPerFrame: 20,
-            direction: this.toggleDirection(),
             repeat: false
           };
-          return this.props.onSetNpcStateSaga(idleState);
+          return this.props.onSetNpcStateSaga(idleDanceState);
         }
       }
     }
@@ -127,8 +127,7 @@ class PistonHurricane extends React.Component {
     this.watcher.isHit = true;
     const testTouchState = {
       state: [6,7,8][Math.floor(Math.random() * 3)],
-      ticksPerFrame: 12,
-      direction: 0,
+      ticksPerFrame: count, // harder the hit the more longer the hit frame
       repeat: false,
     };
     this.props.onSetNpcStateSaga(testTouchState);

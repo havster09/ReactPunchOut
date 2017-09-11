@@ -10,8 +10,8 @@ export const npcStates = {
   stillLeft: { state: 0, ticksPerFrame: 6, direction: 0, repeat: false },
   jabLeft: { state: 2, ticksPerFrame: 12, direction: 0, repeat: false },
   jabLeftSecond: { state: 2, ticksPerFrame: 10, direction: 0, repeat: false },
-  crossLeft: { state: 3, ticksPerFrame: 12, direction: 0, repeat: false },
-  upperLeft: { state: 4, ticksPerFrame: 12, direction: 0, repeat: false }
+  crossLeft: { state: 3, ticksPerFrame: 10, direction: 0, repeat: false },
+  upperLeft: { state: 4, ticksPerFrame: 10, direction: 0, repeat: false }
 };
 
 const npcHealth = (state = initialState.npcHealth, action) => {
