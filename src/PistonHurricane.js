@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { Text, View } from 'react-native';
 import Sprite from './native/components/sprite';
 import * as types from './Constants';
+import { screenDimensions } from './Main';
 
 class PistonHurricane extends React.Component {
   constructor(props, context) {
@@ -34,6 +35,7 @@ class PistonHurricane extends React.Component {
 
   componentDidMount() {
     this.loopID = this.context.loop.subscribe(this.aiLoop);
+    console.log(screenDimensions);
   }
 
   componentWillUnmount() {
@@ -42,7 +44,7 @@ class PistonHurricane extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     const { npcStateSaga } = nextProps;
-    console.log(npcStateSaga);
+    // console.log(npcStateSaga);
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -118,7 +120,7 @@ class PistonHurricane extends React.Component {
           ? 0
           : this.watcher.hasStopped + 1
       });
-      console.log(patternType);
+      // console.log(patternType);
       return this.props.onSetPatternStateSaga(patternType, npcState);
     } else {
       this.watcher.hasStopped = 0;
@@ -139,11 +141,14 @@ class PistonHurricane extends React.Component {
     // console.log(currentStep);
   };
 
-  handleNpcIsAttacked(count) {
+  handleNpcIsAttacked(count, gestureState) {
+    console.log(gestureState);
+    const direction = gestureState.x0 < screenDimensions.width/2 ? 1:0;
     this.watcher.isHit = true;
     const testTouchState = {
-      state: [6, 7, 8][Math.floor(Math.random() * 3)],
+      state: 6 /*[6, 7, 8][Math.floor(Math.random() * 3)]*/,
       ticksPerFrame: count, // harder the hit the more longer the hit frame
+      direction,
       repeat: false
     };
     this.props.onSetNpcStateSaga(testTouchState);

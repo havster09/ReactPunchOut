@@ -11,10 +11,12 @@ import {
   setPatternStateSaga,
 } from './Actions';
 
-class Main extends React.Component {
+export let screenDimensions;
+
+export class Main extends React.Component {
   constructor(props, context) {
     super(props, context);
-    this.dimensions = Dimensions.get('window');
+    this.dimensions = screenDimensions = Dimensions.get('window');
 
     this.handleNpcHit = this.handleNpcHit.bind(this);
     this.handleSetNpcStateSaga = this.handleSetNpcStateSaga.bind(this);
@@ -38,9 +40,6 @@ class Main extends React.Component {
         // what is happening!
 
         // gestureState.d{x,y} will be set to zero now
-        // console.log(evt);
-        this.npcRef.handleNpcIsAttacked(Math.floor(Math.random() * 30) + 10);
-
       },
       onPanResponderMove: (evt, gestureState) => {
         // The most recent move distance is gestureState.move{X,Y}
@@ -51,6 +50,10 @@ class Main extends React.Component {
       onPanResponderRelease: (evt, gestureState) => {
         // The user has released all touches while this view is the
         // responder. This typically means a gesture has succeeded
+        // todo handle pass release to toggle direction
+        // (power, touchData)
+        this.npcRef.handleNpcIsAttacked(Math.floor(Math.random() * 30) + 10, gestureState);
+
       },
       onPanResponderTerminate: (evt, gestureState) => {
         // Another component has become the responder, so this gesture
@@ -63,6 +66,10 @@ class Main extends React.Component {
       }
     });
     console.log('init done');
+  }
+
+  static getDimensions() {
+    return this.dimensions;
   }
 
   handleNpcHit(damage = 1) {
