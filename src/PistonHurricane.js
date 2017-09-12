@@ -16,6 +16,7 @@ class PistonHurricane extends React.Component {
       spritePlaying: false,
       isDead: false,
       isHit: false,
+      isPlayingPattern: 0,
       hasStopped: 0,
       attacking: 0,
       hasHit: 0
@@ -27,6 +28,8 @@ class PistonHurricane extends React.Component {
     this.handleNpcIsAttacked = this.handleNpcIsAttacked.bind(this);
     this.isInHitState = this.isInHitState.bind(this);
     this.toggleDirection = this.toggleDirection.bind(this);
+    this.aiHitRecover = this.aiHitRecover.bind(this);
+    this.aiSetPattern = this.aiSetPattern.bind(this);
   }
 
   componentDidMount() {
@@ -48,7 +51,7 @@ class PistonHurricane extends React.Component {
   }
 
   toggleDirection = () => {
-    return this.props.npcStateSaga.direction? 0 : 1;
+    return this.props.npcStateSaga.direction ? 0 : 1;
   };
 
   toggleRepeat = () => {
@@ -57,28 +60,16 @@ class PistonHurricane extends React.Component {
   };
 
   aiLoop() {
-    // add hit/attack etc states to make ai cleaner
     const { npcStateSaga } = this.props;
-    // punched to idle
-    if(!this.watcher.spritePlaying) {
-      if(this.isInHitState()) {
-        if (this.context.loop.loopID) {
-          this.watcher.isHit = false;
-          const idleState = {
-            state: 0,
-            direction: this.toggleDirection(),
-            repeat: false
-          };
-          return this.props.onSetNpcStateSaga(idleState);
-        }
-      }
-      else {
+    if (!this.watcher.spritePlaying) {
+      if (this.isInHitState()) {
+        return this.aiHitRecover();
+      } else {
         return this.aiSetSagaSequence();
       }
-    }
-    else {
-      if(!this.watcher.isHit) {
-        if(npcStateSaga.state === 0){
+    } else {
+      if (!this.watcher.isHit) {
+        if (npcStateSaga.state === 0) {
           const idleDanceState = {
             state: 1,
             ticksPerFrame: 20,
@@ -90,23 +81,48 @@ class PistonHurricane extends React.Component {
     }
   }
 
-  aiLoopAttacked() {
-
+  aiHitRecover() {
+    this.watcher.isHit = false;
+    const idleState = {
+      state: 0,
+      direction: this.toggleDirection(),
+      repeat: false
+    };
+    return this.props.onSetNpcStateSaga(idleState);
   }
 
-  aiSetRandom() {
+  aiLoopAttacked() {}
 
-  }
+  aiSetRandom() {}
 
   aiSetSagaSequence() {
-    if(this.watcher.hasStopped < types.PATTERN_ONE.length) {
-      // console.log('has stopped',this.watcher.hasStopped);
-      return this.props.onSetPatternOneStateSaga(Object.assign({}, this.props.npcStateSaga, {
-        sagaOrder: isNaN(this.watcher.hasStopped)? 0: this.watcher.hasStopped + 1,
-      }));
+    this.aiSetPattern(this.watcher.isPlayingPattern);
+  }
+
+  aiSetPattern(patternType) {
+    let selectedPattern;
+    switch (patternType) {
+      case 0:
+        selectedPattern = types.PATTERN_ONE;
+        break;
+      case 1:
+        selectedPattern = types.PATTERN_TWO;
+        break;
+      default:
+        selectedPattern = types.PATTERN_ONE;
     }
-    else {
+
+    if (this.watcher.hasStopped < selectedPattern.length) {
+      const npcState = Object.assign({}, this.props.npcStateSaga, {
+        sagaOrder: isNaN(this.watcher.hasStopped)
+          ? 0
+          : this.watcher.hasStopped + 1
+      });
+      console.log(patternType);
+      return this.props.onSetPatternStateSaga(patternType, npcState);
+    } else {
       this.watcher.hasStopped = 0;
+      this.watcher.isPlayingPattern = this.watcher.isPlayingPattern < 1 ? 1 : 0;
     }
   }
 
@@ -115,7 +131,7 @@ class PistonHurricane extends React.Component {
     this.watcher = Object.assign({}, this.watcher, {
       spritePlaying: !!state,
       hasStopped: state ? this.watcher.hasStopped : this.watcher.hasStopped + 1,
-      isHit: this.watcher.isHit ? false : this.watcher.isHit,
+      isHit: this.watcher.isHit ? false : this.watcher.isHit
     });
   };
 
@@ -126,9 +142,9 @@ class PistonHurricane extends React.Component {
   handleNpcIsAttacked(count) {
     this.watcher.isHit = true;
     const testTouchState = {
-      state: [6,7,8][Math.floor(Math.random() * 3)],
+      state: [6, 7, 8][Math.floor(Math.random() * 3)],
       ticksPerFrame: count, // harder the hit the more longer the hit frame
-      repeat: false,
+      repeat: false
     };
     this.props.onSetNpcStateSaga(testTouchState);
     return this.props.onNpcHit(count);
@@ -136,7 +152,7 @@ class PistonHurricane extends React.Component {
 
   isInHitState() {
     const { npcStateSaga } = this.props;
-    return [6,7,8].indexOf(npcStateSaga.state) > -1;
+    return [6, 7, 8].indexOf(npcStateSaga.state) > -1;
   }
 
   render() {
@@ -179,7 +195,6 @@ class PistonHurricane extends React.Component {
           tileHeight={216}
           direction={npcStateSaga.direction}
           ticksPerFrame={npcStateSaga.ticksPerFrame}
-          pattern={npcStateSaga.pattern}
         />
       </View>
     );
@@ -189,7 +204,7 @@ class PistonHurricane extends React.Component {
 PistonHurricane.propTypes = {
   onNpcHit: PropTypes.func,
   onSetNpcStateSaga: PropTypes.func,
-  onSetPatternOneStateSaga: PropTypes.func,
+  onSetPatternStateSaga: PropTypes.func,
   npcStateSaga: PropTypes.object
 };
 PistonHurricane.contextTypes = {

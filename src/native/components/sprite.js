@@ -16,7 +16,7 @@ export default class Sprite extends Component {
     style: PropTypes.object,
     ticksPerFrame: PropTypes.number,
     tileHeight: PropTypes.number,
-    tileWidth: PropTypes.number
+    tileWidth: PropTypes.number,
   };
 
   static defaultProps = {

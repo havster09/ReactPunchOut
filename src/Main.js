@@ -8,7 +8,7 @@ import {
   reduceNpcHealth,
   setNpcState,
   setNpcStateSaga,
-  setPatternOneStateSaga
+  setPatternStateSaga,
 } from './Actions';
 
 class Main extends React.Component {
@@ -18,18 +18,14 @@ class Main extends React.Component {
 
     this.handleNpcHit = this.handleNpcHit.bind(this);
     this.handleSetNpcStateSaga = this.handleSetNpcStateSaga.bind(this);
-    this.handleSetPatternOneStateSaga = this.handleSetPatternOneStateSaga.bind(
-      this
-    );
+    this.handleSetPatternStateSaga = this.handleSetPatternStateSaga.bind(this);
+
     this.translateState = this.translateState.bind(this);
     this.getNpcRef = this.getNpcRef.bind(this);
     this.npcRef = null;
   }
 
   componentWillMount() {
-    // todo powerpunch by charging before throwing
-    // todo power multiplier by counter punching
-
     this._panResponder = PanResponder.create({
       // Ask to be the responder:
       onStartShouldSetPanResponder: (evt, gestureState) => true,
@@ -77,8 +73,8 @@ class Main extends React.Component {
     this.props.setNpcStateSaga(state);
   }
 
-  handleSetPatternOneStateSaga(state) {
-    this.props.setPatternOneStateSaga(state);
+  handleSetPatternStateSaga(patternType, state) {
+    this.props.setPatternStateSaga(patternType, state);
   }
 
   getNpcRef(npcRef) {
@@ -124,7 +120,9 @@ class Main extends React.Component {
                 ref={this.getNpcRef}
                 npcStateSaga={npcStateSaga}
                 onSetNpcStateSaga={this.handleSetNpcStateSaga}
+                onSetPatternStateSaga={this.handleSetPatternStateSaga}
                 onSetPatternOneStateSaga={this.handleSetPatternOneStateSaga}
+                onSetPatternTwoStateSaga={this.handleSetPatternTwoStateSaga}
                 onNpcHit={this.handleNpcHit}
               />
             </View>
@@ -160,14 +158,11 @@ const mapActionsToProps = (dispatch, store) => ({
   setNpcStateSaga(state) {
     dispatch(setNpcStateSaga(state));
   },
-  setPatternOneStateSaga(state) {
-    dispatch(setPatternOneStateSaga(state));
-  }
+  setPatternStateSaga(patternType, state) {
+    dispatch(setPatternStateSaga(patternType, state));
+  },
 });
 
 export default (Main = connect(mapStateToProps, mapActionsToProps)(Main));
-
-// todo add sequence pattern for state...so opponents have a set attack style...chained promises? dispatch action
-// todo add idle stance frame
-// todo extend sprite to hold last frame
-// todo add touch events for player attacks
+// todo powerpunch by charging before throwing
+// todo power multiplier by counter punching

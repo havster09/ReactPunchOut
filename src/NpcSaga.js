@@ -17,16 +17,24 @@ function* npcSetSagaState(action) {
 }
 
 function* npcPatternOne(action) {
-  console.log('run saga pattern',action.payload.sagaOrder);
   if (!action.payload.spritePlaying) {
-    if(types.PATTERN_ONE[action.payload.sagaOrder-1]) {
-      yield put({type: types.PATTERN_ONE[action.payload.sagaOrder-1]});
+    if (types.PATTERN_ONE[action.payload.sagaOrder - 1]) {
+      yield put({ type: types.PATTERN_ONE[action.payload.sagaOrder - 1] });
+    }
+  }
+}
+
+function* npcPatternTwo(action) {
+  if (!action.payload.spritePlaying) {
+    if (types.PATTERN_TWO[action.payload.sagaOrder - 1]) {
+      yield put({ type: types.PATTERN_TWO[action.payload.sagaOrder - 1] });
     }
   }
 }
 
 function* watchSetTest() {
   yield takeEvery(types.SET_PATTERN_ONE_SAGA_STATE, npcPatternOne);
+  yield takeEvery(types.SET_PATTERN_TWO_SAGA_STATE, npcPatternTwo);
 }
 
 function* npcSetSagaStateWatcher() {
