@@ -121,8 +121,6 @@ class Main extends React.Component {
                 npcStateSaga={npcStateSaga}
                 onSetNpcStateSaga={this.handleSetNpcStateSaga}
                 onSetPatternStateSaga={this.handleSetPatternStateSaga}
-                onSetPatternOneStateSaga={this.handleSetPatternOneStateSaga}
-                onSetPatternTwoStateSaga={this.handleSetPatternTwoStateSaga}
                 onNpcHit={this.handleNpcHit}
               />
             </View>
