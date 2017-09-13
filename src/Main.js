@@ -3,7 +3,8 @@ import { connect } from 'react-redux';
 import { StyleSheet, Dimensions, Text, View, PanResponder } from 'react-native';
 import { Loop, Stage } from 'react-game-kit/native';
 import PistonHurricane from './PistonHurricane';
-import { PistonHurricaneMoveMap } from './Constants';
+import { translateState } from './helpers';
+
 import {
   reduceNpcHealth,
   setNpcState,
@@ -22,7 +23,6 @@ export class Main extends React.Component {
     this.handleSetNpcStateSaga = this.handleSetNpcStateSaga.bind(this);
     this.handleSetPatternStateSaga = this.handleSetPatternStateSaga.bind(this);
 
-    this.translateState = this.translateState.bind(this);
     this.getNpcRef = this.getNpcRef.bind(this);
     this.npcRef = null;
   }
@@ -88,17 +88,6 @@ export class Main extends React.Component {
     this.npcRef = npcRef;
   }
 
-  translateState(state) {
-    const activeMove = PistonHurricaneMoveMap.find(
-      move => move.stateKey === state
-    );
-    return (
-      <Text>
-        State: {activeMove.stateKey} Move: {activeMove.move}
-      </Text>
-    );
-  }
-
   render() {
     const { npcHealth, npcStateSaga } = this.props;
     return (
@@ -113,7 +102,7 @@ export class Main extends React.Component {
               {npcHealth}
             </Text>
             <Text style={{ marginTop: 5 }}>
-              {this.translateState(npcStateSaga.state)}
+              {translateState(npcStateSaga.state)}
             </Text>
             <View
               style={{

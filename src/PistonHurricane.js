@@ -4,6 +4,7 @@ import { Text, View } from 'react-native';
 import Sprite from './native/components/sprite';
 import * as types from './Constants';
 import { screenDimensions } from './Main';
+import { translateState } from './helpers';
 
 class PistonHurricane extends React.Component {
   constructor(props, context) {
@@ -20,7 +21,8 @@ class PistonHurricane extends React.Component {
       isPlayingPattern: 0,
       hasStopped: 0,
       attacking: 0,
-      hasHit: 0
+      hasHit: 0,
+      lastMoveBeforeHit: null,
     };
 
     this.debug = false;
@@ -142,11 +144,15 @@ class PistonHurricane extends React.Component {
   };
 
   handleNpcIsAttacked(count, gestureState) {
-    console.log(gestureState);
+    // todo introduce hit window. Limit when npc is vulnerable to hits
+    // otherwise npc will block or weave
+    const { npcStateSaga } = this.props;
+    // console.log(gestureState);
+    console.log(translateState(npcStateSaga.state));
     const direction = gestureState.x0 < screenDimensions.width/2 ? 1:0;
     this.watcher.isHit = true;
     const testTouchState = {
-      state: 6 /*[6, 7, 8][Math.floor(Math.random() * 3)]*/,
+      state: 7 /*[6, 7, 8][Math.floor(Math.random() * 3)]*/,
       ticksPerFrame: count, // harder the hit the more longer the hit frame
       direction,
       repeat: false
@@ -157,7 +163,7 @@ class PistonHurricane extends React.Component {
 
   isInHitState() {
     const { npcStateSaga } = this.props;
-    return [6, 7, 8].indexOf(npcStateSaga.state) > -1;
+    return [6, 7, 8, 9, 10, 11, 12, 13, 14].indexOf(npcStateSaga.state) > -1;
   }
 
   render() {
