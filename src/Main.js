@@ -51,6 +51,7 @@ export class Main extends React.Component {
         // The user has released all touches while this view is the
         // responder. This typically means a gesture has succeeded
         // todo handle pass release to toggle direction
+        // todo set player redux state to handle player sprite and whether player can attack
         // (power, touchData)
         this.npcRef.handleNpcIsAttacked(Math.floor(Math.random() * 30) + 10, gestureState);
 

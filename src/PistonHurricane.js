@@ -22,7 +22,7 @@ class PistonHurricane extends React.Component {
       hasStopped: 0,
       attacking: 0,
       hasHit: 0,
-      lastMoveBeforeHit: null,
+      lastMoveBeforeHit: null
     };
 
     this.debug = false;
@@ -132,10 +132,15 @@ class PistonHurricane extends React.Component {
 
   handlePlayStateChanged = state => {
     const { npcStateSaga } = this.props;
+    const { loop: { loopID } } = this.context;
     this.watcher = Object.assign({}, this.watcher, {
       spritePlaying: !!state,
       hasStopped: state ? this.watcher.hasStopped : this.watcher.hasStopped + 1,
-      isHit: this.watcher.isHit ? false : this.watcher.isHit
+      isHit: this.watcher.isHit ? false : this.watcher.isHit,
+      lastMoveBeforeHit: {
+        move: translateState(npcStateSaga.state),
+        timeStamp: loopID
+      }
     });
   };
 
@@ -144,15 +149,31 @@ class PistonHurricane extends React.Component {
   };
 
   handleNpcIsAttacked(count, gestureState) {
-    // todo introduce hit window. Limit when npc is vulnerable to hits
-    // otherwise npc will block or weave
+    // todo
+
+
     const { npcStateSaga } = this.props;
-    // console.log(gestureState);
+    const { loop: { loopID } } = this.context;
     console.log(translateState(npcStateSaga.state));
-    const direction = gestureState.x0 < screenDimensions.width/2 ? 1:0;
+    let hitSuccess = false;
+    if (this.watcher.lastMoveBeforeHit) {
+      const { move, timeStamp } = this.watcher.lastMoveBeforeHit;
+      const hitWindow = loopID - timeStamp;
+      console.log(hitWindow);
+      if(hitWindow < 10) {
+        hitSuccess = true;
+      } else if (hitWindow < 50) {
+        // refactor logic based on move value switch
+
+      } else {
+        // todo too late when attack move ends handle playerHit logic
+        return;
+      }
+    }
+    const direction = gestureState.x0 < screenDimensions.width / 2 ? 1 : 0;
     this.watcher.isHit = true;
     const testTouchState = {
-      state: 7 /*[6, 7, 8][Math.floor(Math.random() * 3)]*/,
+      state: hitSuccess? 7 : 13,
       ticksPerFrame: count, // harder the hit the more longer the hit frame
       direction,
       repeat: false
