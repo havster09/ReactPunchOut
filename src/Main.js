@@ -103,7 +103,7 @@ export class Main extends React.Component {
               {npcHealth}
             </Text>
             <Text style={{ marginTop: 5 }}>
-              {translateState(npcStateSaga.state)}
+              {`Move: ${translateState(npcStateSaga.state)}`}
             </Text>
             <View
               style={{

@@ -46,11 +46,9 @@ class PistonHurricane extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     const { npcStateSaga } = nextProps;
-    // console.log(npcStateSaga);
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    //console.log(nextProps, nextState);
     return true;
   }
 
@@ -149,9 +147,7 @@ class PistonHurricane extends React.Component {
   };
 
   handleNpcIsAttacked(count, gestureState) {
-    // todo
-
-
+    // todo add player attack type jabs can chain | power attacks recover quicker
     const { npcStateSaga } = this.props;
     const { loop: { loopID } } = this.context;
     console.log(translateState(npcStateSaga.state));
@@ -160,20 +156,34 @@ class PistonHurricane extends React.Component {
       const { move, timeStamp } = this.watcher.lastMoveBeforeHit;
       const hitWindow = loopID - timeStamp;
       console.log(hitWindow);
-      if(hitWindow < 10) {
+      if (hitWindow < 10 || this.isInHitState()) {
         hitSuccess = true;
       } else if (hitWindow < 50) {
-        // refactor logic based on move value switch
-
+        switch (move) {
+          case 'cross':
+            if (hitWindow < 30) {
+              hitSuccess = true;
+            }
+            break;
+          case 'uppercut':
+            if (hitWindow < 40) {
+              hitSuccess = true;
+            }
+            break;
+          default:
+            console.log(move);
+        }
       } else {
         // todo too late when attack move ends handle playerHit logic
-        return;
+        if (!this.isInIdleState()) return;
       }
     }
     const direction = gestureState.x0 < screenDimensions.width / 2 ? 1 : 0;
     this.watcher.isHit = true;
     const testTouchState = {
-      state: hitSuccess? 7 : 13,
+      state: hitSuccess
+        ? [6, 7, 8][Math.floor(Math.random() * 3)]
+        : [11, 12, 13, 14][Math.floor(Math.random() * 4)],
       ticksPerFrame: count, // harder the hit the more longer the hit frame
       direction,
       repeat: false
@@ -182,9 +192,14 @@ class PistonHurricane extends React.Component {
     return this.props.onNpcHit(count);
   }
 
+  isInIdleState() {
+    const { npcStateSaga } = this.props;
+    return npcStateSaga.state === 1 && npcStateSaga.state === 0;
+  }
+
   isInHitState() {
     const { npcStateSaga } = this.props;
-    return [6, 7, 8, 9, 10, 11, 12, 13, 14].indexOf(npcStateSaga.state) > -1;
+    return [6, 7, 8, 9].indexOf(npcStateSaga.state) > -1;
   }
 
   render() {
