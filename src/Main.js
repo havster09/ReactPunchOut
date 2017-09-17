@@ -1,6 +1,13 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { StyleSheet, Dimensions, Text, View, PanResponder } from 'react-native';
+import {
+  StyleSheet,
+  Dimensions,
+  Text,
+  View,
+  PanResponder,
+  Image
+} from 'react-native';
 import { Loop, Stage } from 'react-game-kit/native';
 import PistonHurricane from './PistonHurricane';
 import { translateState } from './helpers';
@@ -9,7 +16,7 @@ import {
   reduceNpcHealth,
   setNpcState,
   setNpcStateSaga,
-  setPatternStateSaga,
+  setPatternStateSaga
 } from './Actions';
 
 export let screenDimensions;
@@ -38,7 +45,6 @@ export class Main extends React.Component {
       onPanResponderGrant: (evt, gestureState) => {
         // The gesture has started. Show visual feedback so the user knows
         // what is happening!
-
         // gestureState.d{x,y} will be set to zero now
       },
       onPanResponderMove: (evt, gestureState) => {
@@ -53,8 +59,10 @@ export class Main extends React.Component {
         // todo handle pass release to toggle direction
         // todo set player redux state to handle player sprite and whether player can attack
         // (power, touchData)
-        this.npcRef.handleNpcIsAttacked(Math.floor(Math.random() * 30) + 10, gestureState);
-
+        this.npcRef.handleNpcIsAttacked(
+          Math.floor(Math.random() * 30) + 10,
+          gestureState
+        );
       },
       onPanResponderTerminate: (evt, gestureState) => {
         // Another component has become the responder, so this gesture
@@ -120,6 +128,17 @@ export class Main extends React.Component {
                 onSetPatternStateSaga={this.handleSetPatternStateSaga}
                 onNpcHit={this.handleNpcHit}
               />
+
+              <Image
+                style={{
+                  width: 72,
+                  height: 144,
+                  position: 'absolute',
+                  bottom: 70,
+                  transform: [{ scaleX: 2 }, { scaleY: 2 }]
+                }}
+                source={require('../assets/little_mack_test.png')}
+              />
             </View>
           </Stage>
         </Loop>
@@ -155,7 +174,7 @@ const mapActionsToProps = (dispatch, store) => ({
   },
   setPatternStateSaga(patternType, state) {
     dispatch(setPatternStateSaga(patternType, state));
-  },
+  }
 });
 
 export default (Main = connect(mapStateToProps, mapActionsToProps)(Main));

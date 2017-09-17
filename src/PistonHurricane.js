@@ -26,7 +26,7 @@ class PistonHurricane extends React.Component {
       comboCount: 0
     };
 
-    this.debug = false;
+    this.debug = true;
 
     this.aiLoop = this.aiLoop.bind(this);
     this.handleNpcIsAttacked = this.handleNpcIsAttacked.bind(this);
@@ -87,6 +87,7 @@ class PistonHurricane extends React.Component {
   }
 
   aiHitRecover() {
+    this.watcher.comboCount = 0;
     this.watcher.isHit = false;
     const idleState = {
       state: 0,
@@ -159,7 +160,8 @@ class PistonHurricane extends React.Component {
       const { move, timeStamp } = this.watcher.lastMoveBeforeHit;
       const hitWindow = loopID - timeStamp;
       console.log(hitWindow);
-      if (hitWindow < 10 || this.isInHitState()) {
+      // todo put in variable to make combos based on moves player jabs vs player power punches
+      if (hitWindow < 10 || this.isInHitState() && this.watcher.comboCount < 3) {
         hitSuccess = true;
       } else if (hitWindow < 50) {
         hitSuccess = this.getMoveHitSuccess(move, hitWindow);
@@ -236,7 +238,7 @@ class PistonHurricane extends React.Component {
       <View>
         {this.debug &&
           <Text>
-            {JSON.stringify(this.watcher, null, 4)}
+            {JSON.stringify(this.watcher.comboCount, null, 4)}
           </Text>}
         <Sprite
           repeat={npcStateSaga.repeat}
