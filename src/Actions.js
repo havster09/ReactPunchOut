@@ -1,9 +1,9 @@
 import * as types from './Constants';
 import { store } from '../index';
 
-export const reduceNpcHealth = damage => {
+export const reduceNpcHealth = punchPower => {
   let npcHealth = store.getState().npcHealth;
-  npcHealth = npcHealth - damage;
+  npcHealth = npcHealth - punchPower;
   return dispatch =>
     dispatch({ type: types.REDUCE_NPC_HEALTH, payload: npcHealth });
 };

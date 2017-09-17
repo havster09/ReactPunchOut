@@ -22,7 +22,8 @@ class PistonHurricane extends React.Component {
       hasStopped: 0,
       attacking: 0,
       hasHit: 0,
-      lastMoveBeforeHit: null
+      lastMoveBeforeHit: null,
+      comboCount: 0
     };
 
     this.debug = false;
@@ -33,6 +34,8 @@ class PistonHurricane extends React.Component {
     this.toggleDirection = this.toggleDirection.bind(this);
     this.aiHitRecover = this.aiHitRecover.bind(this);
     this.aiSetPattern = this.aiSetPattern.bind(this);
+    this.handleHitSuccess = this.handleHitSuccess.bind(this);
+    this.handleHitFail = this.handleHitFail.bind(this);
   }
 
   componentDidMount() {
@@ -146,11 +149,11 @@ class PistonHurricane extends React.Component {
     // console.log(currentStep);
   };
 
-  handleNpcIsAttacked(count, gestureState) {
-    // todo add player attack type jabs can chain | power attacks recover quicker
+  handleNpcIsAttacked(punchPower, gestureState) {
     const { npcStateSaga } = this.props;
     const { loop: { loopID } } = this.context;
     console.log(translateState(npcStateSaga.state));
+
     let hitSuccess = false;
     if (this.watcher.lastMoveBeforeHit) {
       const { move, timeStamp } = this.watcher.lastMoveBeforeHit;
@@ -159,37 +162,62 @@ class PistonHurricane extends React.Component {
       if (hitWindow < 10 || this.isInHitState()) {
         hitSuccess = true;
       } else if (hitWindow < 50) {
-        switch (move) {
-          case 'cross':
-            if (hitWindow < 30) {
-              hitSuccess = true;
-            }
-            break;
-          case 'uppercut':
-            if (hitWindow < 40) {
-              hitSuccess = true;
-            }
-            break;
-          default:
-            console.log(move);
-        }
+        hitSuccess = this.getMoveHitSuccess(move, hitWindow);
       } else {
         // todo too late when attack move ends handle playerHit logic
         if (!this.isInIdleState()) return;
       }
     }
+
     const direction = gestureState.x0 < screenDimensions.width / 2 ? 1 : 0;
     this.watcher.isHit = true;
+
+    if (hitSuccess) {
+      return this.handleHitSuccess(punchPower, direction);
+    } else {
+      return this.handleHitFail(punchPower, direction);
+    }
+  }
+
+  handleHitSuccess(punchPower, direction) {
+    this.watcher.comboCount = this.watcher.comboCount + 1;
     const testTouchState = {
-      state: hitSuccess
-        ? [6, 7, 8][Math.floor(Math.random() * 3)]
-        : [11, 12, 13, 14][Math.floor(Math.random() * 4)],
-      ticksPerFrame: count, // harder the hit the more longer the hit frame
+      state: [6, 7, 8][Math.floor(Math.random() * 3)],
+      ticksPerFrame: punchPower,
       direction,
       repeat: false
     };
     this.props.onSetNpcStateSaga(testTouchState);
-    return this.props.onNpcHit(count);
+    return this.props.onNpcHit(punchPower);
+  }
+
+  handleHitFail(punchPower, direction) {
+    this.watcher.comboCount = 0;
+    const testTouchState = {
+      state: [10, 11, 12, 13, 14][Math.floor(Math.random() * 2)],
+      ticksPerFrame: Math.ceil(punchPower / 2),
+      direction,
+      repeat: false
+    };
+    this.props.onSetNpcStateSaga(testTouchState);
+    return this.props.onNpcHit(punchPower);
+  }
+
+  getMoveHitSuccess(move, hitWindow) {
+    switch (move) {
+      case 'cross':
+        if (hitWindow < 30) {
+          return true;
+        }
+        break;
+      case 'uppercut':
+        if (hitWindow < 50) {
+          return true;
+        }
+        break;
+      default:
+        return false;
+    }
   }
 
   isInIdleState() {

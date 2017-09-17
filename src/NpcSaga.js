@@ -32,7 +32,7 @@ function* npcPatternTwo(action) {
   }
 }
 
-function* watchSetTest() {
+function* npcWatchSetSaga() {
   yield takeEvery(types.SET_PATTERN_ONE_SAGA_STATE, npcPatternOne);
   yield takeEvery(types.SET_PATTERN_TWO_SAGA_STATE, npcPatternTwo);
 }
@@ -42,7 +42,7 @@ function* npcSetSagaStateWatcher() {
 }
 
 const rootSaga = function*() {
-  yield all([initSaga(), watchSetTest(), npcSetSagaStateWatcher()]);
+  yield all([initSaga(), npcWatchSetSaga(), npcSetSagaStateWatcher()]);
 };
 
 export default rootSaga;

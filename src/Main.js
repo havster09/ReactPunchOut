@@ -73,8 +73,8 @@ export class Main extends React.Component {
     return this.dimensions;
   }
 
-  handleNpcHit(damage = 1) {
-    this.props.reduceNpcHealth(damage);
+  handleNpcHit(punchPower = 1) {
+    this.props.reduceNpcHealth(punchPower);
   }
 
   handleSetNpcStateSaga(state) {
