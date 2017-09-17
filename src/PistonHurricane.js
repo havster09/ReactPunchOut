@@ -147,6 +147,7 @@ class PistonHurricane extends React.Component {
   };
 
   handleUpdateStepCount = currentStep => {
+    // todo trigger player isHit logic here after 1 frame if player is vulnerable
     // console.log(currentStep);
   };
 
@@ -280,6 +281,7 @@ class PistonHurricane extends React.Component {
 
 PistonHurricane.propTypes = {
   onNpcHit: PropTypes.func,
+  onNpcAttackContact: PropTypes.func, // todo trigger in main via this.handleUpdateStepCount(move)
   onSetNpcStateSaga: PropTypes.func,
   onSetPatternStateSaga: PropTypes.func,
   npcStateSaga: PropTypes.object

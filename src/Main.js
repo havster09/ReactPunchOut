@@ -127,6 +127,12 @@ export class Main extends React.Component {
                 onSetNpcStateSaga={this.handleSetNpcStateSaga}
                 onSetPatternStateSaga={this.handleSetPatternStateSaga}
                 onNpcHit={this.handleNpcHit}
+                style={{
+                  width: 216,
+                  height: 216,
+                  position: 'absolute',
+                  bottom: 70,
+                }}
               />
 
               <Image
