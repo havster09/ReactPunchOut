@@ -26,7 +26,7 @@ class PistonHurricane extends React.Component {
       comboCount: 0
     };
 
-    this.debug = true;
+    this.debug = false;
 
     this.aiLoop = this.aiLoop.bind(this);
     this.handleNpcIsAttacked = this.handleNpcIsAttacked.bind(this);

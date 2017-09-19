@@ -18,6 +18,7 @@ import {
   setNpcStateSaga,
   setPatternStateSaga
 } from './Actions';
+import LittleMack from './LittleMack';
 
 export let screenDimensions;
 
@@ -113,38 +114,27 @@ export class Main extends React.Component {
             <Text style={{ marginTop: 5 }}>
               {`Move: ${translateState(npcStateSaga.state)}`}
             </Text>
-            <View
-              style={{
-                flex: 1,
-                flexDirection: 'column',
-                justifyContent: 'center',
-                alignItems: 'center'
-              }}
-            >
-              <PistonHurricane
-                ref={this.getNpcRef}
-                npcStateSaga={npcStateSaga}
-                onSetNpcStateSaga={this.handleSetNpcStateSaga}
-                onSetPatternStateSaga={this.handleSetPatternStateSaga}
-                onNpcHit={this.handleNpcHit}
-                style={{
-                  width: 216,
-                  height: 216,
-                  position: 'absolute',
-                  bottom: 70,
-                }}
-              />
-
-              <Image
-                style={{
-                  width: 72,
-                  height: 144,
-                  position: 'absolute',
-                  bottom: 70,
-                  transform: [{ scaleX: 2 }, { scaleY: 2 }]
-                }}
-                source={require('../assets/little_mack_test.png')}
-              />
+            <View style={{
+              flex: 1,
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+                <PistonHurricane
+                  ref={this.getNpcRef}
+                  npcStateSaga={npcStateSaga}
+                  onSetNpcStateSaga={this.handleSetNpcStateSaga}
+                  onSetPatternStateSaga={this.handleSetPatternStateSaga}
+                  onNpcHit={this.handleNpcHit}
+                />
+                <LittleMack
+                  playerStateSaga={{
+                    state: 0,
+                    ticksPerFrame: 6,
+                    direction: 0,
+                    repeat: false
+                  }}
+                />
             </View>
           </Stage>
         </Loop>

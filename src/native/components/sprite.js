@@ -118,7 +118,7 @@ export default class Sprite extends Component {
 
     return {
       position: "absolute",
-      transform: [{ translateX: left * -1 }, { translateY: top * -1 }]
+      transform: [{ translateX: left * -1 }, { translateY: top * -1 }],
     };
   }
 
@@ -129,8 +129,10 @@ export default class Sprite extends Component {
       height: this.props.tileHeight,
       width: this.props.tileWidth,
       overflow: "hidden",
-      position: "relative",
-      transform: [{ scaleX }, { scaleY: scale }]
+      position: "absolute",
+      transform: [{ scaleX }, { scaleY: scale }],
+      left: -108,
+      top: -90,
     };
   }
 
