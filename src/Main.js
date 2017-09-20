@@ -16,7 +16,8 @@ import {
   reduceNpcHealth,
   setNpcState,
   setNpcStateSaga,
-  setPatternStateSaga
+  setPatternStateSaga,
+  setPlayerStateSaga
 } from './Actions';
 import LittleMack from './LittleMack';
 
@@ -28,11 +29,20 @@ export class Main extends React.Component {
     this.dimensions = screenDimensions = Dimensions.get('window');
 
     this.handleNpcHit = this.handleNpcHit.bind(this);
+    this.handlePlayerHit = this.handlePlayerHit.bind(this);
     this.handleSetNpcStateSaga = this.handleSetNpcStateSaga.bind(this);
     this.handleSetPatternStateSaga = this.handleSetPatternStateSaga.bind(this);
+    this.handleSetPlayerStateSaga = this.handleSetPlayerStateSaga.bind(this);
 
     this.getNpcRef = this.getNpcRef.bind(this);
     this.npcRef = null;
+
+    this.playerWatcher = {
+      state: 0,
+      ticksPerFrame: 20,
+      direction: 0,
+      repeat: false
+    };
   }
 
   componentWillMount() {
@@ -90,8 +100,38 @@ export class Main extends React.Component {
     this.props.setNpcStateSaga(state);
   }
 
+  handleSetPlayerStateSaga(state) {
+    this.props.setPlayerStateSaga(state);
+  }
+
   handleSetPatternStateSaga(patternType, state) {
     this.props.setPatternStateSaga(patternType, state);
+  }
+
+  handlePlayerHit(currentStep, npcState) {
+    // todo check whether player is in a defensive state otherwise hit success
+    const npcAttackType = translateState(npcState.state);
+    switch (npcAttackType) {
+      case 'jab':
+      case 'cross':
+        if (currentStep === 1) {
+          this.playerWatcher = { ...this.playerWatcher, ...{ state: 2 } };
+        }
+        return this.props.setPlayerStateSaga(this.playerWatcher);
+        break;
+      case 'uppercut':
+        if (currentStep === 1) {
+          this.playerWatcher = { ...this.playerWatcher, ...{ state: 3 } };
+        }
+        return this.props.setPlayerStateSaga(this.playerWatcher);
+        break;
+      case 'body_jab':
+        if (currentStep === 1) {
+          this.playerWatcher = { ...this.playerWatcher, ...{ state: 1 } };
+        }
+        return this.props.setPlayerStateSaga(this.playerWatcher);
+        break;
+    }
   }
 
   getNpcRef(npcRef) {
@@ -99,7 +139,7 @@ export class Main extends React.Component {
   }
 
   render() {
-    const { npcHealth, npcStateSaga } = this.props;
+    const { npcHealth, npcStateSaga, playerStateSaga } = this.props;
     return (
       <View {...this._panResponder.panHandlers}>
         <Loop>
@@ -114,27 +154,26 @@ export class Main extends React.Component {
             <Text style={{ marginTop: 5 }}>
               {`Move: ${translateState(npcStateSaga.state)}`}
             </Text>
-            <View style={{
-              flex: 1,
-              flexDirection: 'column',
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}>
-                <PistonHurricane
-                  ref={this.getNpcRef}
-                  npcStateSaga={npcStateSaga}
-                  onSetNpcStateSaga={this.handleSetNpcStateSaga}
-                  onSetPatternStateSaga={this.handleSetPatternStateSaga}
-                  onNpcHit={this.handleNpcHit}
-                />
-                <LittleMack
-                  playerStateSaga={{
-                    state: 0,
-                    ticksPerFrame: 6,
-                    direction: 0,
-                    repeat: false
-                  }}
-                />
+            <View
+              style={{
+                flex: 1,
+                flexDirection: 'column',
+                justifyContent: 'center',
+                alignItems: 'center'
+              }}
+            >
+              <PistonHurricane
+                ref={this.getNpcRef}
+                npcStateSaga={npcStateSaga}
+                onSetNpcStateSaga={this.handleSetNpcStateSaga}
+                onSetPatternStateSaga={this.handleSetPatternStateSaga}
+                onNpcHit={this.handleNpcHit}
+                onPlayerHit={this.handlePlayerHit}
+              />
+              <LittleMack
+               onSetPlayerStateSaga={this.handleSetPlayerStateSaga}
+               playerStateSaga={playerStateSaga}
+              />
             </View>
           </Stage>
         </Loop>
@@ -155,7 +194,8 @@ const styles = StyleSheet.create({
 const mapStateToProps = state => ({
   npcHealth: state.npcHealth,
   npcState: state.npcState,
-  npcStateSaga: state.npcStateSaga
+  npcStateSaga: state.npcStateSaga,
+  playerStateSaga: state.playerStateSaga
 });
 
 const mapActionsToProps = (dispatch, store) => ({
@@ -167,6 +207,9 @@ const mapActionsToProps = (dispatch, store) => ({
   },
   setNpcStateSaga(state) {
     dispatch(setNpcStateSaga(state));
+  },
+  setPlayerStateSaga(state) {
+    dispatch(setPlayerStateSaga(state));
   },
   setPatternStateSaga(patternType, state) {
     dispatch(setPatternStateSaga(patternType, state));

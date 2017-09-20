@@ -46,8 +46,7 @@ class LittleMack extends React.Component {
     this.context.loop.unsubscribe(this.loopID);
   }
 
-  componentWillReceiveProps(nextProps) {
-  }
+  componentWillReceiveProps(nextProps) {}
 
   shouldComponentUpdate(nextProps, nextState) {
     return true;
@@ -58,7 +57,10 @@ class LittleMack extends React.Component {
   toggleRepeat = () => {};
 
   aiLoop() {
-    
+    const { playerStateSaga, onSetPlayerStateSaga } = this.props;
+    if (this.isInHitState() && !this.watcher.spritePlaying) {
+      onSetPlayerStateSaga({ ...playerStateSaga, ...{ state: 0 } });
+    }
   }
 
   aiHitRecover() {}
@@ -87,7 +89,10 @@ class LittleMack extends React.Component {
 
   handleHitFail(punchPower, direction) {}
 
-  isInHitState() {}
+  isInHitState() {
+    const { playerStateSaga } = this.props;
+    return [1, 2, 3].indexOf(playerStateSaga.state) > -1;
+  }
 
   render() {
     const { playerStateSaga } = this.props;
@@ -108,7 +113,7 @@ class LittleMack extends React.Component {
             0, //0 still
             0, //1 hit_body
             0, //2 hit_hook
-            0, //3 hit_jab
+            0 //3 hit_jab
           ]}
           offset={[0, 0]}
           tileWidth={216}
@@ -122,10 +127,7 @@ class LittleMack extends React.Component {
 }
 
 LittleMack.propTypes = {
-  onNpcHit: PropTypes.func,
-  onNpcAttackContact: PropTypes.func, // todo trigger in main via this.handleUpdateStepCount(move)
-  onSetNpcStateSaga: PropTypes.func,
-  onSetPatternStateSaga: PropTypes.func,
+  onSetPlayerStateSaga: PropTypes.func,
   playerStateSaga: PropTypes.object
 };
 LittleMack.contextTypes = {

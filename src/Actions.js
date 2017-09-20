@@ -16,6 +16,10 @@ export const setNpcStateSaga = npcState => {
   return dispatch => dispatch({ type: types.SET_SAGA, payload: npcState });
 };
 
+export const setPlayerStateSaga = playerState => {
+  return dispatch => dispatch({ type: types.SET_PLAYER_SAGA_STATE, payload: playerState });
+};
+
 export const setPatternStateSaga  = (patternType, npcState) => {
   let selectedPattern;
   switch (patternType) {

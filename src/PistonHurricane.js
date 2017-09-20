@@ -23,7 +23,7 @@ class PistonHurricane extends React.Component {
       attacking: 0,
       hasHit: 0,
       lastMoveBeforeHit: null,
-      comboCount: 0
+      comboCount: 0,
     };
 
     this.debug = false;
@@ -146,9 +146,12 @@ class PistonHurricane extends React.Component {
     });
   };
 
-  handleUpdateStepCount = currentStep => {
-    // todo trigger player isHit logic here after 1 frame if player is vulnerable
-    // console.log(currentStep);
+  handleUpdateStepCount = (currentStep) => {
+    // todo add ticksPerFrame to sync with player hit ticksPerFrame
+    const { npcStateSaga } = this.props;
+    if([2,3,4,5,6,6,7,8].indexOf(npcStateSaga.state) > -1 && this.watcher.spritePlaying) {
+      this.props.onPlayerHit(currentStep, this.props.npcStateSaga);
+    }
   };
 
   handleNpcIsAttacked(punchPower, gestureState) {
@@ -281,9 +284,9 @@ class PistonHurricane extends React.Component {
 
 PistonHurricane.propTypes = {
   onNpcHit: PropTypes.func,
-  onNpcAttackContact: PropTypes.func, // todo trigger in main via this.handleUpdateStepCount(move)
   onSetNpcStateSaga: PropTypes.func,
   onSetPatternStateSaga: PropTypes.func,
+  onPlayerHit: PropTypes.func,
   npcStateSaga: PropTypes.object
 };
 PistonHurricane.contextTypes = {

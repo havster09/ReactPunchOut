@@ -32,6 +32,16 @@ function* npcPatternTwo(action) {
   }
 }
 
+function* playerSetSagaState(action) {
+  if (action) {
+    const payload = action.payload;
+    yield put({ type: types.SET_PLAYER_SAGA_STATE, payload });
+  } else {
+    console.log('no action');
+    yield;
+  }
+}
+
 function* npcWatchSetSaga() {
   yield takeEvery(types.SET_PATTERN_ONE_SAGA_STATE, npcPatternOne);
   yield takeEvery(types.SET_PATTERN_TWO_SAGA_STATE, npcPatternTwo);
@@ -41,8 +51,12 @@ function* npcSetSagaStateWatcher() {
   yield takeEvery(types.SET_SAGA, npcSetSagaState);
 }
 
+function* playerSetSagaStateWatcher() {
+  yield takeEvery(types.SET_PLAYER_SAGA, playerSetSagaState);
+}
+
 const rootSaga = function*() {
-  yield all([initSaga(), npcWatchSetSaga(), npcSetSagaStateWatcher()]);
+  yield all([initSaga(), npcWatchSetSaga(), npcSetSagaStateWatcher(), playerSetSagaStateWatcher()]);
 };
 
 export default rootSaga;
