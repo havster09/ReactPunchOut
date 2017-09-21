@@ -76,6 +76,11 @@ export class Main extends React.Component {
           Math.floor(Math.random() * 30) + 10,
           gestureState
         );
+
+        this.playerRef.handlePlayerIsAttacking(
+          Math.floor(Math.random() * 30) + 10,
+          gestureState
+        );
       },
       onPanResponderTerminate: (evt, gestureState) => {
         // Another component has become the responder, so this gesture

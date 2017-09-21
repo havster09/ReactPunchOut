@@ -29,8 +29,9 @@ class LittleMack extends React.Component {
     this.debug = false;
 
     this.aiLoop = this.aiLoop.bind(this);
-    this.handleNpcIsAttacked = this.handleNpcIsAttacked.bind(this);
+    this.handlePlayerIsAttacking = this.handlePlayerIsAttacking.bind(this);
     this.isInHitState = this.isInHitState.bind(this);
+    this.isInAttackState = this.isInAttackState.bind(this);
     this.toggleDirection = this.toggleDirection.bind(this);
     this.aiHitRecover = this.aiHitRecover.bind(this);
     this.handleHitSuccess = this.handleHitSuccess.bind(this);
@@ -58,7 +59,7 @@ class LittleMack extends React.Component {
 
   aiLoop() {
     const { playerStateSaga, onSetPlayerStateSaga } = this.props;
-    if (this.isInHitState() && !this.watcher.spritePlaying) {
+    if ((this.isInHitState() || this.isInAttackState) && !this.watcher.spritePlaying) {
       onSetPlayerStateSaga({ ...playerStateSaga, ...{ state: 0, direction: 1 } });
     }
   }
@@ -83,7 +84,12 @@ class LittleMack extends React.Component {
 
   handleUpdateStepCount = currentStep => {};
 
-  handleNpcIsAttacked(punchPower, gestureState) {}
+  handlePlayerIsAttacking(punchPower, gestureState) {
+    console.log(punchPower, gestureState);
+    const { playerStateSaga, onSetPlayerStateSaga } = this.props;
+    const direction = gestureState.x0 < screenDimensions.width / 2 ? 1 : 0;
+    onSetPlayerStateSaga({ ...playerStateSaga, ...{ state: 4, direction } });
+  }
 
   handleHitSuccess(punchPower, direction) {}
 
@@ -92,6 +98,11 @@ class LittleMack extends React.Component {
   isInHitState() {
     const { playerStateSaga } = this.props;
     return [1, 2, 3].indexOf(playerStateSaga.state) > -1;
+  }
+
+  isInAttackState() {
+    const { playerStateSaga } = this.props;
+    return [4].indexOf(playerStateSaga.state) > -1;
   }
 
   render() {
@@ -113,7 +124,8 @@ class LittleMack extends React.Component {
             0, //0 still
             0, //1 hit_body
             0, //2 hit_hook
-            0  //3 hit_jab
+            0, //3 hit_jab
+            0, //4 attack_jab
           ]}
           offset={[0, 0]}
           tileWidth={216}
