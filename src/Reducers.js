@@ -13,13 +13,13 @@ export const npcStates = {
   jabLeftSecond: { state: 2, ticksPerFrame: 100, direction: 0, repeat: false },
   crossLeft: { state: 3, ticksPerFrame: 10, direction: 0, repeat: false },
   upperLeft: { state: 4, ticksPerFrame: 10, direction: 0, repeat: false },
-  bodyJabLeft: { state: 5, ticksPerFrame: 10, direction: 0, repeat: false },
+  bodyJabLeft: { state: 5, ticksPerFrame: 6, direction: 0, repeat: false },
   stillRight: { state: 0, ticksPerFrame: 200, direction: 1, repeat: false },
   jabRight: { state: 2, ticksPerFrame: 12, direction: 1, repeat: false },
   jabRightSecond: { state: 2, ticksPerFrame: 100, direction: 1, repeat: false },
   crossRight: { state: 3, ticksPerFrame: 10, direction: 1, repeat: false },
   upperRight: { state: 4, ticksPerFrame: 10, direction: 1, repeat: false },
-  bodyJabRight: { state: 5, ticksPerFrame: 10, direction: 1, repeat: false }
+  bodyJabRight: { state: 5, ticksPerFrame: 6, direction: 1, repeat: false }
 };
 
 const npcHealth = (state = initialState.npcHealth, action) => {
