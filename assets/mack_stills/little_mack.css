@@ -1,0 +1,18 @@
+/* ----------------------------------------------------
+   created with http://www.codeandweb.com/texturepacker 
+   ----------------------------------------------------
+   $TexturePacker:SmartUpdate:e545c84375ed376631dddccbbb995b93:11afeb9934737aa826a84be458ae033a:5d7dbf3d09663d11e3155f955abe2c0c$
+   ----------------------------------------------------
+
+   usage: <span class="{-spritename-} sprite"></span>
+
+   replace {-spritename-} with the sprite you like to use
+
+*/
+
+.sprite {display:inline-block; overflow:hidden; background-repeat: no-repeat;background-image:url(little_mack.png);}
+
+.01 {width:216px; height:216px; background-position: -0px -0px}
+.hit_body {width:216px; height:216px; background-position: -0px -216px}
+.hit_hook {width:216px; height:216px; background-position: -0px -432px}
+.hit_jab {width:216px; height:216px; background-position: -0px -648px}
