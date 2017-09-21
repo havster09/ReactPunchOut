@@ -17,6 +17,8 @@ export default class Sprite extends Component {
     ticksPerFrame: PropTypes.number,
     tileHeight: PropTypes.number,
     tileWidth: PropTypes.number,
+    left: PropTypes.number,
+    top: PropTypes.number,
   };
 
   static defaultProps = {
@@ -123,6 +125,7 @@ export default class Sprite extends Component {
   }
 
   getWrapperStyles() {
+    const { left, top} = this.props;
     const scale = this.props.scale || this.context.scale;
     const scaleX = this.props.direction > 0 ? scale : -Math.abs(scale);
     return {
@@ -131,8 +134,8 @@ export default class Sprite extends Component {
       overflow: "hidden",
       position: "absolute",
       transform: [{ scaleX }, { scaleY: scale }],
-      left: -108,
-      top: -90,
+      left,
+      top,
     };
   }
 

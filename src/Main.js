@@ -35,7 +35,9 @@ export class Main extends React.Component {
     this.handleSetPlayerStateSaga = this.handleSetPlayerStateSaga.bind(this);
 
     this.getNpcRef = this.getNpcRef.bind(this);
+    this.getPlayerRef = this.getPlayerRef.bind(this);
     this.npcRef = null;
+    this.playerRef = null;
 
     this.playerWatcher = {
       state: 0,
@@ -110,32 +112,39 @@ export class Main extends React.Component {
 
   handlePlayerHit(currentStep, npcState) {
     // todo check whether player is in a defensive state otherwise hit success
-    const npcAttackType = translateState(npcState.state);
-    switch (npcAttackType) {
-      case 'jab':
-      case 'cross':
-        if (currentStep === 1) {
-          this.playerWatcher = { ...this.playerWatcher, ...{ state: 2 } };
-        }
-        return this.props.setPlayerStateSaga(this.playerWatcher);
-        break;
-      case 'uppercut':
-        if (currentStep === 1) {
-          this.playerWatcher = { ...this.playerWatcher, ...{ state: 3 } };
-        }
-        return this.props.setPlayerStateSaga(this.playerWatcher);
-        break;
-      case 'body_jab':
-        if (currentStep === 1) {
-          this.playerWatcher = { ...this.playerWatcher, ...{ state: 1 } };
-        }
-        return this.props.setPlayerStateSaga(this.playerWatcher);
-        break;
+    if(!this.playerRef) {
+      return
+    }
+
+    if(!this.playerRef.spritePlaying) {
+      const { ticksPerFrame, direction } = npcState;
+      const power = 1.5;
+      const hitMultiplier = ticksPerFrame * power;
+      const npcAttackType = translateState(npcState.state);
+      switch (npcAttackType) {
+        case 'jab':
+        case 'cross':
+          this.playerWatcher = { ...this.playerWatcher, ...{ state: direction?3:2, ticksPerFrame: hitMultiplier, direction } };
+          return this.props.setPlayerStateSaga(this.playerWatcher);
+          break;
+        case 'uppercut':
+          this.playerWatcher = { ...this.playerWatcher, ...{ state: 2, ticksPerFrame: hitMultiplier, direction } };
+          return this.props.setPlayerStateSaga(this.playerWatcher);
+          break;
+        case 'body_jab':
+          this.playerWatcher = { ...this.playerWatcher, ...{ state: 1, ticksPerFrame: hitMultiplier, direction } };
+          return this.props.setPlayerStateSaga(this.playerWatcher);
+          break;
+      }
     }
   }
 
   getNpcRef(npcRef) {
     this.npcRef = npcRef;
+  }
+
+  getPlayerRef(npcRef) {
+    this.playerRef = npcRef;
   }
 
   render() {
@@ -171,6 +180,7 @@ export class Main extends React.Component {
                 onPlayerHit={this.handlePlayerHit}
               />
               <LittleMack
+               ref={this.getPlayerRef}
                onSetPlayerStateSaga={this.handleSetPlayerStateSaga}
                playerStateSaga={playerStateSaga}
               />

@@ -150,7 +150,9 @@ class PistonHurricane extends React.Component {
     // todo add ticksPerFrame to sync with player hit ticksPerFrame
     const { npcStateSaga } = this.props;
     if([2,3,4,5,6,6,7,8].indexOf(npcStateSaga.state) > -1 && this.watcher.spritePlaying) {
-      this.props.onPlayerHit(currentStep, this.props.npcStateSaga);
+      if(currentStep === 1) {
+        this.props.onPlayerHit(currentStep, npcStateSaga);
+      }
     }
   };
 
@@ -276,6 +278,8 @@ class PistonHurricane extends React.Component {
           tileHeight={216}
           direction={npcStateSaga.direction}
           ticksPerFrame={npcStateSaga.ticksPerFrame}
+          left={-108}
+          top={-90}
         />
       </View>
     );

@@ -4,16 +4,22 @@ import * as types from './Constants';
 const initialState = {
   npcHealth: 100,
   npcStateSaga: { state: 0, ticksPerFrame: 20, direction: 0, repeat: false },
-  playerStateSaga: { state: 0, ticksPerFrame: 20, direction: 0, repeat: false },
+  playerStateSaga: { state: 0, ticksPerFrame: 60, direction: 0, repeat: false }
 };
 
 export const npcStates = {
   stillLeft: { state: 0, ticksPerFrame: 200, direction: 0, repeat: false },
   jabLeft: { state: 2, ticksPerFrame: 12, direction: 0, repeat: false },
-  jabLeftSecond: { state: 2, ticksPerFrame: 10, direction: 0, repeat: false },
+  jabLeftSecond: { state: 2, ticksPerFrame: 100, direction: 0, repeat: false },
   crossLeft: { state: 3, ticksPerFrame: 10, direction: 0, repeat: false },
   upperLeft: { state: 4, ticksPerFrame: 10, direction: 0, repeat: false },
   bodyJabLeft: { state: 5, ticksPerFrame: 10, direction: 0, repeat: false },
+  stillRight: { state: 0, ticksPerFrame: 200, direction: 1, repeat: false },
+  jabRight: { state: 2, ticksPerFrame: 12, direction: 1, repeat: false },
+  jabRightSecond: { state: 2, ticksPerFrame: 100, direction: 1, repeat: false },
+  crossRight: { state: 3, ticksPerFrame: 10, direction: 1, repeat: false },
+  upperRight: { state: 4, ticksPerFrame: 10, direction: 1, repeat: false },
+  bodyJabRight: { state: 5, ticksPerFrame: 10, direction: 1, repeat: false }
 };
 
 const npcHealth = (state = initialState.npcHealth, action) => {
@@ -39,6 +45,18 @@ const npcStateSaga = (state = initialState.npcStateSaga, action) => {
       return npcStates.upperLeft;
     case types.SET_BODY_JAB_LEFT_STATE:
       return npcStates.bodyJabLeft;
+    case types.SET_STILL_RIGHT_STATE:
+      return npcStates.stillRight;
+    case types.SET_JAB_RIGHT_STATE:
+      return npcStates.jabRight;
+    case types.SET_JAB_RIGHT_SECOND_STATE:
+      return npcStates.jabRightSecond;
+    case types.SET_CROSS_RIGHT_STATE:
+      return npcStates.crossRight;
+    case types.SET_UPPERCUT_RIGHT_STATE:
+      return npcStates.upperRight;
+    case types.SET_BODY_JAB_RIGHT_STATE:
+      return npcStates.bodyJabRight;
     case types.SET_SAGA_STATE:
       return action.payload;
     default:
@@ -58,5 +76,5 @@ const playerStateSaga = (state = initialState.playerStateSaga, action) => {
 export default combineReducers({
   npcHealth,
   npcStateSaga,
-  playerStateSaga,
+  playerStateSaga
 });

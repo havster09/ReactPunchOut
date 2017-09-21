@@ -59,7 +59,7 @@ class LittleMack extends React.Component {
   aiLoop() {
     const { playerStateSaga, onSetPlayerStateSaga } = this.props;
     if (this.isInHitState() && !this.watcher.spritePlaying) {
-      onSetPlayerStateSaga({ ...playerStateSaga, ...{ state: 0 } });
+      onSetPlayerStateSaga({ ...playerStateSaga, ...{ state: 0, direction: 1 } });
     }
   }
 
@@ -120,6 +120,8 @@ class LittleMack extends React.Component {
           tileHeight={216}
           direction={playerStateSaga.direction}
           ticksPerFrame={playerStateSaga.ticksPerFrame}
+          left={-108}
+          top={-90}
         />
       </View>
     );
