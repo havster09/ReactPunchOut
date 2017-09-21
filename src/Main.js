@@ -11,6 +11,7 @@ import {
 import { Loop, Stage } from 'react-game-kit/native';
 import PistonHurricane from './PistonHurricane';
 import { translateState } from './helpers';
+import { playerStates } from './Reducers';
 
 import {
   reduceNpcHealth,
@@ -69,18 +70,21 @@ export class Main extends React.Component {
       onPanResponderRelease: (evt, gestureState) => {
         // The user has released all touches while this view is the
         // responder. This typically means a gesture has succeeded
-        // todo handle pass release to toggle direction
         // todo set player redux state to handle player sprite and whether player can attack
+        // todo count how many touches (if > 1) is blocking (if > 1 && x0 > some value) is weavings
         // (power, touchData)
-        this.npcRef.handleNpcIsAttacked(
-          Math.floor(Math.random() * 30) + 10,
-          gestureState
-        );
 
-        this.playerRef.handlePlayerIsAttacking(
-          Math.floor(Math.random() * 30) + 10,
-          gestureState
-        );
+        if (this.playerRef.isInIdleState()) {
+          this.npcRef.handleNpcIsAttacked(
+            Math.floor(Math.random() * 30) + 10,
+            gestureState
+          );
+
+          this.playerRef.handlePlayerIsAttacking(
+            Math.floor(Math.random() * 30) + 10,
+            gestureState
+          );
+        }
       },
       onPanResponderTerminate: (evt, gestureState) => {
         // Another component has become the responder, so this gesture
@@ -117,11 +121,11 @@ export class Main extends React.Component {
 
   handlePlayerHit(currentStep, npcState) {
     // todo check whether player is in a defensive state otherwise hit success
-    if(!this.playerRef) {
-      return
+    if (!this.playerRef) {
+      return;
     }
 
-    if(!this.playerRef.spritePlaying) {
+    if (!this.playerRef.spritePlaying) {
       const { ticksPerFrame, direction } = npcState;
       const power = 1.5;
       const hitMultiplier = ticksPerFrame * power;
@@ -129,15 +133,30 @@ export class Main extends React.Component {
       switch (npcAttackType) {
         case 'jab':
         case 'cross':
-          this.playerWatcher = { ...this.playerWatcher, ...{ state: direction?3:2, ticksPerFrame: hitMultiplier, direction } };
+          this.playerWatcher = {
+            ...this.playerWatcher,
+            ...{
+              state: direction ? 3 : 2,
+              ticksPerFrame: hitMultiplier,
+              direction
+            }
+          };
           return this.props.setPlayerStateSaga(this.playerWatcher);
           break;
         case 'uppercut':
-          this.playerWatcher = { ...this.playerWatcher, ...{ state: 2, ticksPerFrame: hitMultiplier, direction } };
+          this.playerWatcher = {
+            ...this.playerWatcher,
+            ...{ ticksPerFrame: hitMultiplier, direction },
+           ...playerStates.hitUppercut,
+          };
           return this.props.setPlayerStateSaga(this.playerWatcher);
           break;
         case 'body_jab':
-          this.playerWatcher = { ...this.playerWatcher, ...{ state: 1, ticksPerFrame: hitMultiplier, direction } };
+          this.playerWatcher = {
+            ...this.playerWatcher,
+            ...{ state: 1, ticksPerFrame: hitMultiplier, direction },
+            ...playerStates.hitBody,
+          };
           return this.props.setPlayerStateSaga(this.playerWatcher);
           break;
       }
@@ -185,9 +204,9 @@ export class Main extends React.Component {
                 onPlayerHit={this.handlePlayerHit}
               />
               <LittleMack
-               ref={this.getPlayerRef}
-               onSetPlayerStateSaga={this.handleSetPlayerStateSaga}
-               playerStateSaga={playerStateSaga}
+                ref={this.getPlayerRef}
+                onSetPlayerStateSaga={this.handleSetPlayerStateSaga}
+                playerStateSaga={playerStateSaga}
               />
             </View>
           </Stage>

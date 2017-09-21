@@ -4,7 +4,7 @@ import * as types from './Constants';
 const initialState = {
   npcHealth: 100,
   npcStateSaga: { state: 0, ticksPerFrame: 20, direction: 0, repeat: false },
-  playerStateSaga: { state: 0, ticksPerFrame: 60, direction: 0, repeat: false }
+  playerStateSaga: { state: 0, ticksPerFrame: 10, direction: 0, repeat: false }
 };
 
 export const npcStates = {
@@ -62,6 +62,14 @@ const npcStateSaga = (state = initialState.npcStateSaga, action) => {
     default:
       return state;
   }
+};
+
+export const playerStates = {
+  idle: { state: 0, ticksPerFrame: 100, direction: 1 },
+  hitBody: { state: 1 },
+  hitUppercut: { state: 2 },
+  hitHead: { state: 3 },
+  jab: { state: 4, ticksPerFrame: 10 },
 };
 
 const playerStateSaga = (state = initialState.playerStateSaga, action) => {

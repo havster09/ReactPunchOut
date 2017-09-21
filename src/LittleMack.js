@@ -5,6 +5,7 @@ import Sprite from './native/components/sprite';
 import * as types from './Constants';
 import { screenDimensions } from './Main';
 import { translateState } from './helpers';
+import { playerStates } from './Reducers';
 
 class LittleMack extends React.Component {
   constructor(props, context) {
@@ -30,6 +31,7 @@ class LittleMack extends React.Component {
 
     this.aiLoop = this.aiLoop.bind(this);
     this.handlePlayerIsAttacking = this.handlePlayerIsAttacking.bind(this);
+    this.isInIdleState = this.isInIdleState.bind(this);
     this.isInHitState = this.isInHitState.bind(this);
     this.isInAttackState = this.isInAttackState.bind(this);
     this.toggleDirection = this.toggleDirection.bind(this);
@@ -60,7 +62,7 @@ class LittleMack extends React.Component {
   aiLoop() {
     const { playerStateSaga, onSetPlayerStateSaga } = this.props;
     if ((this.isInHitState() || this.isInAttackState) && !this.watcher.spritePlaying) {
-      onSetPlayerStateSaga({ ...playerStateSaga, ...{ state: 0, direction: 1 } });
+      onSetPlayerStateSaga({ ...playerStateSaga, ...playerStates.idle });
     }
   }
 
@@ -85,15 +87,28 @@ class LittleMack extends React.Component {
   handleUpdateStepCount = currentStep => {};
 
   handlePlayerIsAttacking(punchPower, gestureState) {
-    console.log(punchPower, gestureState);
+    console.log(gestureState);
     const { playerStateSaga, onSetPlayerStateSaga } = this.props;
     const direction = gestureState.x0 < screenDimensions.width / 2 ? 1 : 0;
-    onSetPlayerStateSaga({ ...playerStateSaga, ...{ state: 4, direction } });
+    const attackHead = gestureState.y0 > screenDimensions.height / 2;
+
+    // todo handle other attacks add fork for body and head punches
+
+    if(gestureState.moveX === 0 && gestureState.moveY === 0) {
+      // todo add missing jab frame
+      return onSetPlayerStateSaga({ ...playerStateSaga, ...{ direction}, ...playerStates.jab });
+    }
+
   }
 
   handleHitSuccess(punchPower, direction) {}
 
   handleHitFail(punchPower, direction) {}
+
+  isInIdleState() {
+    const { playerStateSaga } = this.props;
+    return [0].indexOf(playerStateSaga.state) > -1;
+  }
 
   isInHitState() {
     const { playerStateSaga } = this.props;
