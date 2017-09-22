@@ -34,6 +34,7 @@ export class Main extends React.Component {
     this.handleSetNpcStateSaga = this.handleSetNpcStateSaga.bind(this);
     this.handleSetPatternStateSaga = this.handleSetPatternStateSaga.bind(this);
     this.handleSetPlayerStateSaga = this.handleSetPlayerStateSaga.bind(this);
+    this.handleNpcAttacked = this.handleNpcAttacked.bind(this);
 
     this.getNpcRef = this.getNpcRef.bind(this);
     this.getPlayerRef = this.getPlayerRef.bind(this);
@@ -75,11 +76,6 @@ export class Main extends React.Component {
         // (power, touchData)
 
         if (this.playerRef.isInIdleState()) {
-          this.npcRef.handleNpcIsAttacked(
-            Math.floor(Math.random() * 30) + 10,
-            gestureState
-          );
-
           this.playerRef.handlePlayerIsAttacking(
             Math.floor(Math.random() * 30) + 10,
             gestureState
@@ -163,6 +159,13 @@ export class Main extends React.Component {
     }
   }
 
+  handleNpcAttacked(gestureState) {
+    this.npcRef.handleNpcIsAttacked(
+     Math.floor(Math.random() * 30) + 10,
+     gestureState
+    );
+  }
+
   getNpcRef(npcRef) {
     this.npcRef = npcRef;
   }
@@ -207,6 +210,7 @@ export class Main extends React.Component {
                 ref={this.getPlayerRef}
                 onSetPlayerStateSaga={this.handleSetPlayerStateSaga}
                 playerStateSaga={playerStateSaga}
+                onNpcAttacked={this.handleNpcAttacked}
               />
             </View>
           </Stage>

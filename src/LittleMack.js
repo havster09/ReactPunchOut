@@ -24,7 +24,8 @@ class LittleMack extends React.Component {
       attacking: 0,
       hasHit: 0,
       lastMoveBeforeHit: null,
-      comboCount: 0
+      comboCount: 0,
+      gestureState: null
     };
 
     this.debug = false;
@@ -61,7 +62,10 @@ class LittleMack extends React.Component {
 
   aiLoop() {
     const { playerStateSaga, onSetPlayerStateSaga } = this.props;
-    if ((this.isInHitState() || this.isInAttackState) && !this.watcher.spritePlaying) {
+    if (
+      (this.isInHitState() || this.isInAttackState) &&
+      !this.watcher.spritePlaying
+    ) {
       onSetPlayerStateSaga({ ...playerStateSaga, ...playerStates.idle });
     }
   }
@@ -84,22 +88,33 @@ class LittleMack extends React.Component {
     });
   };
 
-  handleUpdateStepCount = currentStep => {};
-
   handlePlayerIsAttacking(punchPower, gestureState) {
     console.log(gestureState);
+    this.watcher.gestureState = gestureState;
     const { playerStateSaga, onSetPlayerStateSaga } = this.props;
     const direction = gestureState.x0 < screenDimensions.width / 2 ? 1 : 0;
     const attackHead = gestureState.y0 > screenDimensions.height / 2;
 
     // todo handle other attacks add fork for body and head punches
 
-    if(gestureState.moveX === 0 && gestureState.moveY === 0) {
-      // todo add missing jab frame
-      return onSetPlayerStateSaga({ ...playerStateSaga, ...{ direction}, ...playerStates.jab });
+    if (gestureState.moveX === 0 && gestureState.moveY === 0) {
+      return onSetPlayerStateSaga({
+        ...playerStateSaga,
+        ...{ direction },
+        ...playerStates.jab
+      });
     }
-
   }
+
+  handleUpdateStepCount = currentStep => {
+    const { playerStateSaga, onNpcAttacked } = this.props;
+    if (this.isInAttackState()) {
+      // todo switch for attack type
+      if (currentStep === 1) {
+        onNpcAttacked(this.watcher.gestureState);
+      }
+    }
+  };
 
   handleHitSuccess(punchPower, direction) {}
 
@@ -140,7 +155,7 @@ class LittleMack extends React.Component {
             0, //1 hit_body
             0, //2 hit_hook
             0, //3 hit_jab
-            0, //4 attack_jab
+            1 //4 attack_jab
           ]}
           offset={[0, 0]}
           tileWidth={216}
@@ -157,6 +172,7 @@ class LittleMack extends React.Component {
 
 LittleMack.propTypes = {
   onSetPlayerStateSaga: PropTypes.func,
+  onNpcAttacked: PropTypes.func,
   playerStateSaga: PropTypes.object
 };
 LittleMack.contextTypes = {
