@@ -140,7 +140,7 @@ class LittleMack extends React.Component {
             0, //1 hit_body
             0, //2 hit_hook
             0, //3 hit_jab
-            0, //4 attack_jab
+            1, //4 attack_jab
           ]}
           offset={[0, 0]}
           tileWidth={216}

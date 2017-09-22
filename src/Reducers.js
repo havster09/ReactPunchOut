@@ -69,7 +69,7 @@ export const playerStates = {
   hitBody: { state: 1 },
   hitUppercut: { state: 2 },
   hitHead: { state: 3 },
-  jab: { state: 4, ticksPerFrame: 10 },
+  jab: { state: 4, ticksPerFrame: [5,10] },
 };
 
 const playerStateSaga = (state = initialState.playerStateSaga, action) => {
