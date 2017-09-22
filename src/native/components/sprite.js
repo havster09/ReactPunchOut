@@ -14,7 +14,7 @@ export default class Sprite extends Component {
     state: PropTypes.number,
     steps: PropTypes.array,
     style: PropTypes.object,
-    ticksPerFrame: PropTypes.number,
+    ticksPerFrame: PropTypes.oneOfType([PropTypes.number, PropTypes.array]),
     tileHeight: PropTypes.number,
     tileWidth: PropTypes.number,
     left: PropTypes.number,
@@ -81,11 +81,15 @@ export default class Sprite extends Component {
   }
 
   animate(props) {
-    const { repeat, ticksPerFrame, state, steps } = props;
+    const { repeat, state, steps } = props;
+    let ticksPerFrame = props.ticksPerFrame;
 
     if(state !== 0) {
+      const { currentStep } = this.state;
+      if(typeof ticksPerFrame === 'object') {
+        ticksPerFrame = ticksPerFrame[currentStep]
+      }
       if (this.tickCount === ticksPerFrame && !this.finished) {
-        const { currentStep } = this.state;
         const lastStep = steps[state];
         let nextStep = currentStep === lastStep ? 0 : currentStep + 1;
 

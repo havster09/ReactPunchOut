@@ -128,7 +128,7 @@ export class Main extends React.Component {
     if (!this.playerRef.spritePlaying) {
       const { ticksPerFrame, direction } = npcState;
       const power = 1.5;
-      const hitMultiplier = ticksPerFrame * power;
+      const hitMultiplier = typeof ticksPerFrame === 'object'? Math.max(...ticksPerFrame) * power : ticksPerFrame * power;
       const npcAttackType = translateState(npcState.state);
       switch (npcAttackType) {
         case 'jab':

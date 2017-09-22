@@ -12,13 +12,13 @@ export const npcStates = {
   jabLeft: { state: 2, ticksPerFrame: 12, direction: 0, repeat: false },
   jabLeftSecond: { state: 2, ticksPerFrame: 100, direction: 0, repeat: false },
   crossLeft: { state: 3, ticksPerFrame: 10, direction: 0, repeat: false },
-  upperLeft: { state: 4, ticksPerFrame: 10, direction: 0, repeat: false },
+  uppercutLeft: { state: 4, ticksPerFrame: [20,10,30], direction: 0, repeat: false },
   bodyJabLeft: { state: 5, ticksPerFrame: 6, direction: 0, repeat: false },
   stillRight: { state: 0, ticksPerFrame: 200, direction: 1, repeat: false },
   jabRight: { state: 2, ticksPerFrame: 12, direction: 1, repeat: false },
   jabRightSecond: { state: 2, ticksPerFrame: 100, direction: 1, repeat: false },
   crossRight: { state: 3, ticksPerFrame: 10, direction: 1, repeat: false },
-  upperRight: { state: 4, ticksPerFrame: 10, direction: 1, repeat: false },
+  uppercutRight: { state: 4, ticksPerFrame: [20,10,30], direction: 1, repeat: false },
   bodyJabRight: { state: 5, ticksPerFrame: 6, direction: 1, repeat: false }
 };
 
@@ -42,7 +42,7 @@ const npcStateSaga = (state = initialState.npcStateSaga, action) => {
     case types.SET_CROSS_LEFT_STATE:
       return npcStates.crossLeft;
     case types.SET_UPPERCUT_LEFT_STATE:
-      return npcStates.upperLeft;
+      return npcStates.uppercutLeft;
     case types.SET_BODY_JAB_LEFT_STATE:
       return npcStates.bodyJabLeft;
     case types.SET_STILL_RIGHT_STATE:
@@ -54,7 +54,7 @@ const npcStateSaga = (state = initialState.npcStateSaga, action) => {
     case types.SET_CROSS_RIGHT_STATE:
       return npcStates.crossRight;
     case types.SET_UPPERCUT_RIGHT_STATE:
-      return npcStates.upperRight;
+      return npcStates.uppercutRight;
     case types.SET_BODY_JAB_RIGHT_STATE:
       return npcStates.bodyJabRight;
     case types.SET_SAGA_STATE:
