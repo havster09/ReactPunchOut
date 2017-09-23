@@ -40,7 +40,6 @@ class PistonHurricane extends React.Component {
 
   componentDidMount() {
     this.loopID = this.context.loop.subscribe(this.aiLoop);
-    console.log(screenDimensions);
   }
 
   componentWillUnmount() {

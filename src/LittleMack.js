@@ -43,7 +43,6 @@ class LittleMack extends React.Component {
 
   componentDidMount() {
     this.loopID = this.context.loop.subscribe(this.aiLoop);
-    console.log(screenDimensions);
   }
 
   componentWillUnmount() {
@@ -89,19 +88,36 @@ class LittleMack extends React.Component {
   };
 
   handlePlayerIsAttacking(punchPower, gestureState) {
-    console.log(gestureState);
     this.watcher.gestureState = gestureState;
+    let playerAttack;
     const { playerStateSaga, onSetPlayerStateSaga } = this.props;
     const direction = gestureState.x0 < screenDimensions.width / 2 ? 1 : 0;
-    const attackHead = gestureState.y0 > screenDimensions.height / 2;
-
-    // todo handle other attacks add fork for body and head punches
+    const attackHead = gestureState.y0 < screenDimensions.height / 2;
 
     if (gestureState.moveX === 0 && gestureState.moveY === 0) {
+      if(attackHead) {
+        playerAttack = playerStates.jab;
+      }
+      else {
+        playerAttack = playerStates.bodyJab;
+      }
       return onSetPlayerStateSaga({
         ...playerStateSaga,
         ...{ direction },
-        ...playerStates.jab
+        ...playerAttack
+      });
+    }
+    else {
+      if(attackHead) {
+        playerAttack = playerStates.powerCross;
+      }
+      else {
+        playerAttack = playerStates.powerCross;
+      }
+      return onSetPlayerStateSaga({
+        ...playerStateSaga,
+        ...{ direction },
+        ...playerAttack
       });
     }
   }
@@ -132,7 +148,7 @@ class LittleMack extends React.Component {
 
   isInAttackState() {
     const { playerStateSaga } = this.props;
-    return [4].indexOf(playerStateSaga.state) > -1;
+    return [4,5,6,7].indexOf(playerStateSaga.state) > -1;
   }
 
   render() {
@@ -155,8 +171,12 @@ class LittleMack extends React.Component {
             0, //1 hit_body
             0, //2 hit_hook
             0, //3 hit_jab
-            1 //4 attack_jab
+            1, //4 attack_jab
+            1, //5 attack_body_jab
+            2, //6 attack_power_cross
+            2, //7 attack_power_body_cross
           ]}
+          // remember to add attacks to isInAttackState
           offset={[0, 0]}
           tileWidth={216}
           tileHeight={216}

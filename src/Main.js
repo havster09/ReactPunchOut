@@ -132,10 +132,10 @@ export class Main extends React.Component {
           this.playerWatcher = {
             ...this.playerWatcher,
             ...{
-              state: direction ? 3 : 2,
               ticksPerFrame: hitMultiplier,
               direction
-            }
+            },
+            ...playerStates.hitHead,
           };
           return this.props.setPlayerStateSaga(this.playerWatcher);
           break;
@@ -150,7 +150,7 @@ export class Main extends React.Component {
         case 'body_jab':
           this.playerWatcher = {
             ...this.playerWatcher,
-            ...{ state: 1, ticksPerFrame: hitMultiplier, direction },
+            ...{ ticksPerFrame: hitMultiplier, direction },
             ...playerStates.hitBody,
           };
           return this.props.setPlayerStateSaga(this.playerWatcher);
