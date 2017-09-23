@@ -91,7 +91,7 @@ class LittleMack extends React.Component {
     this.watcher.gestureState = gestureState;
     let playerAttack;
     const { playerStateSaga, onSetPlayerStateSaga } = this.props;
-    const direction = gestureState.x0 < screenDimensions.width / 2 ? 1 : 0;
+    let direction = gestureState.x0 < screenDimensions.width / 2 ? 1 : 0;
     const attackHead = gestureState.y0 < screenDimensions.height / 2;
 
     if (gestureState.moveX === 0 && gestureState.moveY === 0) {
@@ -112,7 +112,7 @@ class LittleMack extends React.Component {
         playerAttack = playerStates.powerCross;
       }
       else {
-        playerAttack = playerStates.powerCross;
+        playerAttack = playerStates.powerBodyCross;
       }
       return onSetPlayerStateSaga({
         ...playerStateSaga,
