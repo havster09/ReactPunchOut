@@ -124,7 +124,10 @@ export class Main extends React.Component {
     if (!this.playerRef.spritePlaying) {
       const { ticksPerFrame, direction } = npcState;
       const power = 1.5;
-      const hitMultiplier = typeof ticksPerFrame === 'object'? Math.max(...ticksPerFrame) * power : ticksPerFrame * power;
+      const hitMultiplier =
+        typeof ticksPerFrame === 'object'
+          ? Math.max(...ticksPerFrame) * power
+          : ticksPerFrame * power;
       const npcAttackType = translateState(npcState.state);
       switch (npcAttackType) {
         case 'jab':
@@ -132,10 +135,10 @@ export class Main extends React.Component {
           this.playerWatcher = {
             ...this.playerWatcher,
             ...{
-              state: direction ? 3 : 2,
               ticksPerFrame: hitMultiplier,
               direction
-            }
+            },
+            ...playerStates.hitHead
           };
           return this.props.setPlayerStateSaga(this.playerWatcher);
           break;
@@ -143,15 +146,15 @@ export class Main extends React.Component {
           this.playerWatcher = {
             ...this.playerWatcher,
             ...{ ticksPerFrame: hitMultiplier, direction },
-           ...playerStates.hitUppercut,
+            ...playerStates.hitUppercut
           };
           return this.props.setPlayerStateSaga(this.playerWatcher);
           break;
         case 'body_jab':
           this.playerWatcher = {
             ...this.playerWatcher,
-            ...{ state: 1, ticksPerFrame: hitMultiplier, direction },
-            ...playerStates.hitBody,
+            ...{ ticksPerFrame: hitMultiplier, direction },
+            ...playerStates.hitBody
           };
           return this.props.setPlayerStateSaga(this.playerWatcher);
           break;
@@ -159,10 +162,11 @@ export class Main extends React.Component {
     }
   }
 
-  handleNpcAttacked(power, gestureState) {
+  handleNpcAttacked(gestureState, playerStateSaga) {
     this.npcRef.handleNpcIsAttacked(
-     power,
-     gestureState
+      playerStateSaga.ticksPerFrame,
+      gestureState,
+      playerStateSaga
     );
   }
 

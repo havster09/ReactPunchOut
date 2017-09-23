@@ -65,11 +65,14 @@ const npcStateSaga = (state = initialState.npcStateSaga, action) => {
 };
 
 export const playerStates = {
-  idle: { state: 0, ticksPerFrame: 100 },
+  idle: { state: 0, ticksPerFrame: 100, direction: 1 },
   hitBody: { state: 1 },
   hitUppercut: { state: 2 },
   hitHead: { state: 3 },
-  jab: { state: 4, ticksPerFrame: [4,5] },
+  jab: { state: 4, ticksPerFrame: [5,10] },
+  bodyJab: { state: 5, ticksPerFrame: [5,10] },
+  powerCross: { state: 6, ticksPerFrame: [10,10,30] },
+  powerBodyCross: { state: 7, ticksPerFrame: [10,10,30] },
 };
 
 const playerStateSaga = (state = initialState.playerStateSaga, action) => {

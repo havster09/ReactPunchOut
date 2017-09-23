@@ -36,11 +36,11 @@ class PistonHurricane extends React.Component {
     this.aiSetPattern = this.aiSetPattern.bind(this);
     this.handleHitSuccess = this.handleHitSuccess.bind(this);
     this.handleHitFail = this.handleHitFail.bind(this);
+    this.isHitBody = this.isHitBody.bind(this);
   }
 
   componentDidMount() {
     this.loopID = this.context.loop.subscribe(this.aiLoop);
-    console.log(screenDimensions);
   }
 
   componentWillUnmount() {
@@ -156,16 +156,17 @@ class PistonHurricane extends React.Component {
     }
   };
 
-  handleNpcIsAttacked(punchPower, gestureState) {
-    const { npcStateSaga } = this.props;
+  handleNpcIsAttacked(punchPower, gestureState, playerStateSaga) {
     const { loop: { loopID } } = this.context;
-    console.log(translateState(npcStateSaga.state));
+    if(typeof punchPower === 'object') {
+      punchPower = Math.max(...punchPower);
+    }
 
     let hitSuccess = false;
     if (this.watcher.lastMoveBeforeHit) {
       const { move, timeStamp } = this.watcher.lastMoveBeforeHit;
       const hitWindow = loopID - timeStamp;
-      console.log(hitWindow);
+      // console.log(hitWindow);
       // todo put in variable to make combos based on moves player jabs vs player power punches
       if (hitWindow < 10 || this.isInHitState() && this.watcher.comboCount < 3) {
         hitSuccess = true;
@@ -177,20 +178,31 @@ class PistonHurricane extends React.Component {
       }
     }
 
+    // todo override testing
+    // hitSuccess = true;
+
     const direction = gestureState.x0 < screenDimensions.width / 2 ? 1 : 0;
     this.watcher.isHit = true;
 
     if (hitSuccess) {
-      return this.handleHitSuccess(punchPower, direction);
+      return this.handleHitSuccess(punchPower, direction, playerStateSaga);
     } else {
-      return this.handleHitFail(punchPower, direction);
+      return this.handleHitFail(punchPower, direction, playerStateSaga);
     }
   }
 
-  handleHitSuccess(punchPower, direction) {
+  handleHitSuccess(punchPower, direction, playerStateSaga) {
+    const { state } = playerStateSaga;
     this.watcher.comboCount = this.watcher.comboCount + 1;
+    let npcHitState;
+    if(this.isHitBody(state)) {
+      npcHitState = 8;
+    }
+    else {
+      npcHitState = [6, 7][Math.floor(Math.random() * 2)]
+    }
     const testTouchState = {
-      state: [6, 7, 8][Math.floor(Math.random() * 3)],
+      state: npcHitState,
       ticksPerFrame: punchPower,
       direction,
       repeat: false
@@ -199,10 +211,19 @@ class PistonHurricane extends React.Component {
     return this.props.onNpcHit(punchPower);
   }
 
-  handleHitFail(punchPower, direction) {
+  handleHitFail(punchPower, direction, playerStateSaga) {
+    // todo if hit fail and power punching hold frame 1
+    const { state } = playerStateSaga;
     this.watcher.comboCount = 0;
+    let npcDefensiveState;
+    if(this.isHitBody(state)) {
+      npcDefensiveState = 11;
+    }
+    else {
+      npcDefensiveState = [10, 12, 13, 14][Math.floor(Math.random() * 3)];
+    }
     const testTouchState = {
-      state: [10, 11, 12, 13, 14][Math.floor(Math.random() * 2)],
+      state: npcDefensiveState,
       ticksPerFrame: Math.ceil(punchPower),
       direction,
       repeat: false
@@ -236,6 +257,10 @@ class PistonHurricane extends React.Component {
   isInHitState() {
     const { npcStateSaga } = this.props;
     return [6, 7, 8, 9].indexOf(npcStateSaga.state) > -1;
+  }
+
+  isHitBody(state) {
+    return [5,7].indexOf(state) > -1;
   }
 
   render() {
