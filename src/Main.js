@@ -159,9 +159,9 @@ export class Main extends React.Component {
     }
   }
 
-  handleNpcAttacked(gestureState) {
+  handleNpcAttacked(power, gestureState) {
     this.npcRef.handleNpcIsAttacked(
-     Math.floor(Math.random() * 30) + 10,
+     power,
      gestureState
     );
   }

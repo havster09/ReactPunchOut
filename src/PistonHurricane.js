@@ -203,7 +203,7 @@ class PistonHurricane extends React.Component {
     this.watcher.comboCount = 0;
     const testTouchState = {
       state: [10, 11, 12, 13, 14][Math.floor(Math.random() * 2)],
-      ticksPerFrame: Math.ceil(punchPower / 2),
+      ticksPerFrame: Math.ceil(punchPower),
       direction,
       repeat: false
     };

@@ -96,6 +96,7 @@ class LittleMack extends React.Component {
     const attackHead = gestureState.y0 > screenDimensions.height / 2;
 
     // todo handle other attacks add fork for body and head punches
+    // todo refactor jab sprite to reduce flip movement
 
     if (gestureState.moveX === 0 && gestureState.moveY === 0) {
       return onSetPlayerStateSaga({
@@ -110,8 +111,13 @@ class LittleMack extends React.Component {
     const { playerStateSaga, onNpcAttacked } = this.props;
     if (this.isInAttackState()) {
       // todo switch for attack type
+
+      const punchPower = typeof playerStateSaga.ticksPerFrame === 'object'
+       ? Math.max(...playerStateSaga.ticksPerFrame) * 2
+       : playerStateSaga.ticksPerFrame * 2;
+
       if (currentStep === 1) {
-        onNpcAttacked(this.watcher.gestureState);
+        onNpcAttacked(punchPower, this.watcher.gestureState);
       }
     }
   };
