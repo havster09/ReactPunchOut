@@ -126,8 +126,15 @@ class LittleMack extends React.Component {
     const { playerStateSaga, onNpcAttacked } = this.props;
     if (this.isInAttackState()) {
       // todo switch for attack type
-      if (currentStep === 1) {
-        onNpcAttacked(this.watcher.gestureState, playerStateSaga);
+      if (playerStateSaga.state === 4 || playerStateSaga.state === 5) {
+        if (currentStep === 0) {
+          return onNpcAttacked(this.watcher.gestureState, playerStateSaga);
+        }
+      }
+      else {
+        if (currentStep === 1) {
+          return onNpcAttacked(this.watcher.gestureState, playerStateSaga);
+        }
       }
     }
   };

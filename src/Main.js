@@ -209,12 +209,14 @@ export class Main extends React.Component {
                 onSetPatternStateSaga={this.handleSetPatternStateSaga}
                 onNpcHit={this.handleNpcHit}
                 onPlayerHit={this.handlePlayerHit}
+                playerReference={this.playerRef}
               />
               <LittleMack
                 ref={this.getPlayerRef}
                 onSetPlayerStateSaga={this.handleSetPlayerStateSaga}
                 playerStateSaga={playerStateSaga}
                 onNpcAttacked={this.handleNpcAttacked}
+                npcReference={this.npcRef}
               />
             </View>
           </Stage>

@@ -65,11 +65,15 @@ class PistonHurricane extends React.Component {
   };
 
   aiLoop() {
-    const { npcStateSaga } = this.props;
+    const { npcStateSaga, playerReference } = this.props;
+    if(!playerReference) {
+      return
+    }
+
     if (!this.watcher.spritePlaying) {
       if (this.isInHitState()) {
         return this.aiHitRecover();
-      } else {
+      } else if(!playerReference.isInAttackState()) {
         return this.aiSetSagaSequence();
       }
     } else {
@@ -224,7 +228,7 @@ class PistonHurricane extends React.Component {
     }
     const testTouchState = {
       state: npcDefensiveState,
-      ticksPerFrame: Math.ceil(punchPower),
+      ticksPerFrame: Math.ceil(punchPower) * 2,
       direction,
       repeat: false
     };
@@ -235,7 +239,7 @@ class PistonHurricane extends React.Component {
   getMoveHitSuccess(move, hitWindow) {
     switch (move) {
       case 'cross':
-        if (hitWindow < 30) {
+        if (hitWindow < 50) {
           return true;
         }
         break;
@@ -269,7 +273,7 @@ class PistonHurricane extends React.Component {
       <View>
         {this.debug &&
           <Text>
-            {JSON.stringify(this.watcher.comboCount, null, 4)}
+            {JSON.stringify(this.watcher, null, 4)}
           </Text>}
         <Sprite
           repeat={npcStateSaga.repeat}
