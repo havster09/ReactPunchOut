@@ -124,7 +124,10 @@ export class Main extends React.Component {
     if (!this.playerRef.spritePlaying) {
       const { ticksPerFrame, direction } = npcState;
       const power = 1.5;
-      const hitMultiplier = typeof ticksPerFrame === 'object'? Math.max(...ticksPerFrame) * power : ticksPerFrame * power;
+      const hitMultiplier =
+        typeof ticksPerFrame === 'object'
+          ? Math.max(...ticksPerFrame) * power
+          : ticksPerFrame * power;
       const npcAttackType = translateState(npcState.state);
       switch (npcAttackType) {
         case 'jab':
@@ -135,7 +138,7 @@ export class Main extends React.Component {
               ticksPerFrame: hitMultiplier,
               direction
             },
-            ...playerStates.hitHead,
+            ...playerStates.hitHead
           };
           return this.props.setPlayerStateSaga(this.playerWatcher);
           break;
@@ -143,7 +146,7 @@ export class Main extends React.Component {
           this.playerWatcher = {
             ...this.playerWatcher,
             ...{ ticksPerFrame: hitMultiplier, direction },
-           ...playerStates.hitUppercut,
+            ...playerStates.hitUppercut
           };
           return this.props.setPlayerStateSaga(this.playerWatcher);
           break;
@@ -151,7 +154,7 @@ export class Main extends React.Component {
           this.playerWatcher = {
             ...this.playerWatcher,
             ...{ ticksPerFrame: hitMultiplier, direction },
-            ...playerStates.hitBody,
+            ...playerStates.hitBody
           };
           return this.props.setPlayerStateSaga(this.playerWatcher);
           break;
@@ -159,10 +162,11 @@ export class Main extends React.Component {
     }
   }
 
-  handleNpcAttacked(gestureState) {
+  handleNpcAttacked(gestureState, playerStateSaga) {
     this.npcRef.handleNpcIsAttacked(
-     Math.floor(Math.random() * 30) + 10,
-     gestureState
+      playerStateSaga.ticksPerFrame,
+      gestureState,
+      playerStateSaga
     );
   }
 
