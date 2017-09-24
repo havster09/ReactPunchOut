@@ -36,6 +36,7 @@ export class Main extends React.Component {
     this.handleSetPlayerStateSaga = this.handleSetPlayerStateSaga.bind(this);
     this.handleNpcAttacked = this.handleNpcAttacked.bind(this);
     this.handleBlockedPowerPunch = this.handleBlockedPowerPunch.bind(this);
+    this.setBlockedPowerPunch = this.setBlockedPowerPunch.bind(this);
 
     this.getNpcRef = this.getNpcRef.bind(this);
     this.getPlayerRef = this.getPlayerRef.bind(this);
@@ -50,6 +51,13 @@ export class Main extends React.Component {
       holdCurrentFrame: false,
       cancelNextFrame: false,
     };
+
+    this.state = {
+      blockedPowerPunch: {
+        status: false,
+        timeStamp: null,
+      }
+    }
   }
 
   componentWillMount() {
@@ -173,8 +181,19 @@ export class Main extends React.Component {
     );
   }
 
-  handleBlockedPowerPunch(playerStateSaga) {
-    this.playerWatcher.cancelNextFrame = true;
+  handleBlockedPowerPunch() {
+    this.setState({
+      blockedPowerPunch: {
+        status: true,
+        timeStamp: this.playerRef.context.loop.loopID + 60,
+      }
+    });
+  }
+
+  setBlockedPowerPunch(config) {
+    if (config) {
+      this.setState({blockedPowerPunch: config});
+    }
   }
 
   getNpcRef(npcRef) {
@@ -225,7 +244,8 @@ export class Main extends React.Component {
                 onSetPlayerStateSaga={this.handleSetPlayerStateSaga}
                 playerStateSaga={playerStateSaga}
                 onNpcAttacked={this.handleNpcAttacked}
-                cancelNextFrame={this.playerWatcher.cancelNextFrame}
+                blockedPowerPunch={this.state.blockedPowerPunch}
+                setBlockedPowerPunch={this.setBlockedPowerPunch}
                 npcReference={this.npcRef}
               />
             </View>

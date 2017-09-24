@@ -66,6 +66,9 @@ class PistonHurricane extends React.Component {
   };
 
   aiLoop() {
+
+    // todo check if in blocked power punch state
+
     const { npcStateSaga, playerStateSaga } = this.props;
 
     if (!this.watcher.spritePlaying) {

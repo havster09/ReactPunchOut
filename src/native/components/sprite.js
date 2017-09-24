@@ -8,7 +8,6 @@ export default class Sprite extends Component {
     onPlayStateChanged: PropTypes.func,
     onUpdateStepCount: PropTypes.func,
     repeat: PropTypes.bool,
-    cancelNextFrame: PropTypes.bool,
     scale: PropTypes.number,
     direction: PropTypes.number,
     src: PropTypes.number,
@@ -33,7 +32,11 @@ export default class Sprite extends Component {
     direction: 1,
     ticksPerFrame: 4,
     tileHeight: 64,
-    tileWidth: 64
+    tileWidth: 64,
+    blockedPowerPunch: {
+      status: false,
+      timeStamp: null,
+    }
   };
 
   static contextTypes = {
@@ -77,12 +80,19 @@ export default class Sprite extends Component {
     }
   }
 
+  shouldComponentUpdate(nextProps) {
+    if(nextProps.blockedPowerPunch.status) {
+      return false;
+    }
+    return true;
+  }
+
   componentWillUnmount() {
     this.context.loop.unsubscribe(this.loopID);
   }
 
   animate(props) {
-    const { repeat, state, steps, cancelNextFrame } = props;
+    const { repeat, state, steps } = props;
 
     let ticksPerFrame = props.ticksPerFrame;
 
@@ -99,10 +109,6 @@ export default class Sprite extends Component {
           nextStep = currentStep;
         }
 
-        if(cancelNextFrame) {
-          console.log('....',cancelNextFrame);
-        }
-
         this.props.onUpdateStepCount(currentStep);
 
         this.setState({
@@ -110,7 +116,6 @@ export default class Sprite extends Component {
         });
 
         if (currentStep === lastStep && repeat === false) {
-          // todo figure out how to finish without last step
           this.finished = true;
           this.props.onPlayStateChanged(0);
         }

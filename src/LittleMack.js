@@ -26,7 +26,6 @@ class LittleMack extends React.Component {
       lastMoveBeforeHit: null,
       comboCount: 0,
       gestureState: null,
-      cancelNextFrame: false,
     };
 
     this.debug = false;
@@ -61,13 +60,23 @@ class LittleMack extends React.Component {
   toggleRepeat = () => {};
 
   aiLoop() {
-    const { playerStateSaga, onSetPlayerStateSaga } = this.props;
+    const { playerStateSaga, onSetPlayerStateSaga, blockedPowerPunch, setBlockedPowerPunch } = this.props;
     if (
       (this.isInHitState() || this.isInAttackState) &&
       !this.watcher.spritePlaying
     ) {
       onSetPlayerStateSaga({ ...playerStateSaga, ...playerStates.idle });
     }
+
+    if (blockedPowerPunch.status) {
+      if(blockedPowerPunch.timeStamp < this.context.loop.loopID) {
+        setBlockedPowerPunch({
+          status: false,
+          timeStamp: null
+        });
+      }
+    }
+
   }
 
   aiHitRecover() {}
@@ -160,12 +169,12 @@ class LittleMack extends React.Component {
   }
 
   render() {
-    const { playerStateSaga, cancelNextFrame } = this.props;
+    const { playerStateSaga, blockedPowerPunch } = this.props;
     return (
       <View>
         {this.debug &&
           <Text>
-            {JSON.stringify(this.watcher.comboCount, null, 4)}
+            {JSON.stringify(this.playerStateSaga, null, 4)}
           </Text>}
         <Sprite
           repeat={playerStateSaga.repeat}
@@ -190,7 +199,7 @@ class LittleMack extends React.Component {
           tileHeight={216}
           direction={playerStateSaga.direction}
           ticksPerFrame={playerStateSaga.ticksPerFrame}
-          cancelNextFrame={cancelNextFrame}
+          blockedPowerPunch={blockedPowerPunch}
           left={-108}
           top={-90}
         />
@@ -202,8 +211,12 @@ class LittleMack extends React.Component {
 LittleMack.propTypes = {
   onSetPlayerStateSaga: PropTypes.func,
   onNpcAttacked: PropTypes.func,
-  cancelNextFrame: PropTypes.bool,
-  playerStateSaga: PropTypes.object
+  setBlockedPowerPunch: PropTypes.func,
+  playerStateSaga: PropTypes.object,
+  blockedPowerPunch: PropTypes.shape({
+    status: PropTypes.bool,
+    timeStamp: PropTypes.number,
+  })
 };
 LittleMack.contextTypes = {
   loop: PropTypes.object,
