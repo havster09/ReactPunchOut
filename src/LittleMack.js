@@ -97,14 +97,17 @@ class LittleMack extends React.Component {
     });
   };
 
-  handlePlayerIsAttacking(punchPower, gestureState) {
+  handlePlayerIsAttacking(gestureState) {
     this.watcher.gestureState = gestureState;
     let playerAttack;
     const { playerStateSaga, onSetPlayerStateSaga } = this.props;
     let direction = gestureState.x0 < screenDimensions.width / 2 ? 1 : 0;
-    const attackHead = gestureState.y0 < screenDimensions.height / 2;
+    const attackHead = screenDimensions.height - gestureState.y0 > screenDimensions.height / 2
+    || gestureState.dy < -60;
 
-    if (gestureState.moveX === 0 && gestureState.moveY === 0) {
+    console.log(gestureState.dy, screenDimensions.height);
+
+    if (Math.abs(gestureState.dx) <  10 && Math.abs(gestureState.dy) < 10) {
       if(attackHead) {
         playerAttack = playerStates.jab;
       }

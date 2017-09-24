@@ -9,17 +9,17 @@ const initialState = {
 
 export const npcStates = {
   stillLeft: { state: 0, ticksPerFrame: 200, direction: 0, repeat: false },
-  danceLeft: { state: 1, ticksPerFrame: 10, direction: 0, repeat: false },
-  jabLeft: { state: 2, ticksPerFrame: 12, direction: 0, repeat: false },
-  jabLeftSecond: { state: 2, ticksPerFrame: 100, direction: 0, repeat: false },
-  crossLeft: { state: 3, ticksPerFrame: 10, direction: 0, repeat: false },
-  uppercutLeft: { state: 4, ticksPerFrame: [20,10,30], direction: 0, repeat: false },
+  danceLeft: { state: 1, ticksPerFrame: 6, direction: 0, repeat: false },
+  jabLeft: { state: 2, ticksPerFrame: 6, direction: 0, repeat: false },
+  jabLeftSecond: { state: 2, ticksPerFrame: 6, direction: 0, repeat: false },
+  crossLeft: { state: 3, ticksPerFrame: 6, direction: 0, repeat: false },
+  uppercutLeft: { state: 4, ticksPerFrame: [10,6,30], direction: 0, repeat: false },
   bodyJabLeft: { state: 5, ticksPerFrame: 6, direction: 0, repeat: false },
   stillRight: { state: 0, ticksPerFrame: 200, direction: 1, repeat: false },
-  jabRight: { state: 2, ticksPerFrame: 12, direction: 1, repeat: false },
+  jabRight: { state: 2, ticksPerFrame: 6, direction: 1, repeat: false },
   jabRightSecond: { state: 2, ticksPerFrame: 100, direction: 1, repeat: false },
-  crossRight: { state: 3, ticksPerFrame: 10, direction: 1, repeat: false },
-  uppercutRight: { state: 4, ticksPerFrame: [20,10,30], direction: 1, repeat: false },
+  crossRight: { state: 3, ticksPerFrame: 6, direction: 1, repeat: false },
+  uppercutRight: { state: 4, ticksPerFrame: [10,6,30], direction: 1, repeat: false },
   bodyJabRight: { state: 5, ticksPerFrame: 6, direction: 1, repeat: false }
 };
 
@@ -70,10 +70,10 @@ export const playerStates = {
   hitBody: { state: 1 },
   hitUppercut: { state: 2 },
   hitHead: { state: 3 },
-  jab: { state: 4, ticksPerFrame: [5,10] },
-  bodyJab: { state: 5, ticksPerFrame: [5,10] },
-  powerCross: { state: 6, ticksPerFrame: [12,10,30] },
-  powerBodyCross: { state: 7, ticksPerFrame: [12,10,30] },
+  jab: { state: 4, ticksPerFrame: [2,4] },
+  bodyJab: { state: 5, ticksPerFrame: [2,4] },
+  powerCross: { state: 6, ticksPerFrame: [12,5,6] },
+  powerBodyCross: { state: 7, ticksPerFrame: [12,5,6] },
 };
 
 const playerStateSaga = (state = initialState.playerStateSaga, action) => {

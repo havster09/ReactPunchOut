@@ -10,4 +10,6 @@ export const translateState = state => {
 export const playerIsInAttackState = playerStateSaga =>
   [4, 5, 6, 7].indexOf(playerStateSaga.state) > -1;
 
+export const playerIsInIdleState = playerStateSaga => playerStateSaga.state === 0;
+
 export const isPlayerPowerPunch = state => [6, 7].indexOf(state) > -1;

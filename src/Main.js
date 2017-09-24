@@ -87,10 +87,7 @@ export class Main extends React.Component {
         // (power, touchData)
 
         if (this.playerRef.isInIdleState()) {
-          this.playerRef.handlePlayerIsAttacking(
-            Math.floor(Math.random() * 30) + 10,
-            gestureState
-          );
+          this.playerRef.handlePlayerIsAttacking(gestureState);
         }
       },
       onPanResponderTerminate: (evt, gestureState) => {
