@@ -18,7 +18,8 @@ import {
   setNpcState,
   setNpcStateSaga,
   setPatternStateSaga,
-  setPlayerStateSaga
+  setPlayerStateSaga,
+  setPunchStatus,
 } from './Actions';
 import LittleMack from './LittleMack';
 
@@ -77,7 +78,7 @@ export class Main extends React.Component {
         // The most recent move distance is gestureState.move{X,Y}
         // The accumulated gesture distance since becoming responder is
         // gestureState.d{x,y}
-        console.log(gestureState.numberActiveTouches); // detect === 2
+       //  console.log(gestureState.numberActiveTouches); // detect === 2
       },
       onPanResponderTerminationRequest: (evt, gestureState) => true,
       onPanResponderRelease: (evt, gestureState) => {
@@ -180,6 +181,11 @@ export class Main extends React.Component {
   }
 
   handleBlockedPowerPunch() {
+    this.props.setPunchStatus({
+      status: true,
+      timeStamp: this.playerRef.context.loop.loopID + 60,
+    });
+
     this.setState({
       blockedPowerPunch: {
         status: true,
@@ -195,15 +201,16 @@ export class Main extends React.Component {
   }
 
   getNpcRef(npcRef) {
-    this.npcRef = npcRef;
+    this.npcRef = npcRef.getWrappedInstance();
   }
 
-  getPlayerRef(npcRef) {
-    this.playerRef = npcRef;
+  getPlayerRef(playerRef) {
+    console.log('...',playerRef.getWrappedInstance());
+    this.playerRef = playerRef.getWrappedInstance();
   }
 
   render() {
-    const { npcHealth, npcStateSaga, playerStateSaga } = this.props;
+    const { npcHealth, npcStateSaga, playerStateSaga, punchStatus } = this.props;
     return (
       <View {...this._panResponder.panHandlers}>
         <Loop>
@@ -228,8 +235,6 @@ export class Main extends React.Component {
             >
               <PistonHurricane
                 ref={this.getNpcRef}
-                npcStateSaga={npcStateSaga}
-                playerStateSaga={playerStateSaga}
                 onSetNpcStateSaga={this.handleSetNpcStateSaga}
                 onSetPatternStateSaga={this.handleSetPatternStateSaga}
                 onNpcHit={this.handleNpcHit}
@@ -268,7 +273,8 @@ const mapStateToProps = state => ({
   npcHealth: state.npcHealth,
   npcState: state.npcState,
   npcStateSaga: state.npcStateSaga,
-  playerStateSaga: state.playerStateSaga
+  playerStateSaga: state.playerStateSaga,
+  punchStatus: state.punchStatus
 });
 
 const mapActionsToProps = (dispatch, store) => ({
@@ -284,11 +290,12 @@ const mapActionsToProps = (dispatch, store) => ({
   setPlayerStateSaga(state) {
     dispatch(setPlayerStateSaga(state));
   },
+  setPunchStatus(state) {
+    dispatch(setPunchStatus(state));
+  },
   setPatternStateSaga(patternType, state) {
     dispatch(setPatternStateSaga(patternType, state));
   }
 });
 
 export default (Main = connect(mapStateToProps, mapActionsToProps)(Main));
-// todo powerpunch by charging before throwing
-// todo power multiplier by counter punching

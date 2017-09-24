@@ -4,7 +4,8 @@ import * as types from './Constants';
 const initialState = {
   npcHealth: 100,
   npcStateSaga: { state: 0, ticksPerFrame: 20, direction: 0, repeat: false },
-  playerStateSaga: { state: 0, ticksPerFrame: 10, direction: 0, repeat: false }
+  playerStateSaga: { state: 0, ticksPerFrame: 10, direction: 0, repeat: false },
+  punchStatus: { status: false, timeStamp: null },
 };
 
 export const npcStates = {
@@ -26,6 +27,16 @@ export const npcStates = {
 const npcHealth = (state = initialState.npcHealth, action) => {
   switch (action.type) {
     case types.REDUCE_NPC_HEALTH:
+      return action.payload;
+    default:
+      return state;
+  }
+};
+
+const punchStatus = (state = initialState.punchStatus, action) => {
+  switch (action.type) {
+    case types.SET_PUNCH_STATUS:
+      console.log(action);
       return action.payload;
     default:
       return state;
@@ -88,5 +99,6 @@ const playerStateSaga = (state = initialState.playerStateSaga, action) => {
 export default combineReducers({
   npcHealth,
   npcStateSaga,
-  playerStateSaga
+  playerStateSaga,
+  punchStatus,
 });

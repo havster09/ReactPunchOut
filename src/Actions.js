@@ -20,6 +20,10 @@ export const setPlayerStateSaga = playerState => {
   return dispatch => dispatch({ type: types.SET_PLAYER_SAGA_STATE, payload: playerState });
 };
 
+export const setPunchStatus = punchStatus => {
+  return dispatch => dispatch({ type: types.SET_PUNCH_STATUS, payload: punchStatus });
+};
+
 export const setPatternStateSaga  = (patternType, npcState) => {
   let selectedPattern;
   switch (patternType) {

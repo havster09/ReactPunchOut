@@ -38,6 +38,8 @@ export const SET_SAGA_STATE = 'SET_SAGA_STATE';
 export const SET_PLAYER_SAGA = 'SET_PLAYER_SAGA';
 export const SET_PLAYER_SAGA_STATE = 'SET_PLAYER_SAGA_STATE';
 
+export const SET_PUNCH_STATUS = 'SET_PUNCH_STATUS';
+
 export const PistonHurricaneMoveMap = [
   { stateKey: 0, move: 'still' },
   { stateKey: 1, move: 'idle' },

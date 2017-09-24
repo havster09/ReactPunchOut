@@ -6,6 +6,11 @@ import * as types from './Constants';
 import { screenDimensions } from './Main';
 import { translateState } from './helpers';
 import { playerStates } from './Reducers';
+import connect from 'react-redux/es/connect/connect';
+import {
+  reduceNpcHealth, setNpcState, setNpcStateSaga, setPatternStateSaga, setPlayerStateSaga,
+  setPunchStatus
+} from './Actions';
 
 class LittleMack extends React.Component {
   constructor(props, context) {
@@ -231,4 +236,34 @@ LittleMack.contextTypes = {
   scale: PropTypes.number
 };
 
-export default LittleMack;
+// todo limit exposure to state to limit rerenders
+const mapStateToProps = state => ({
+  npcHealth: state.npcHealth,
+  npcState: state.npcState,
+  npcStateSaga: state.npcStateSaga,
+  playerStateSaga: state.playerStateSaga,
+  punchStatus: state.punchStatus
+});
+
+const mapActionsToProps = (dispatch, store) => ({
+  reduceNpcHealth(damage) {
+    dispatch(reduceNpcHealth(damage));
+  },
+  setNpcState(state) {
+    dispatch(setNpcState(state));
+  },
+  setNpcStateSaga(state) {
+    dispatch(setNpcStateSaga(state));
+  },
+  setPlayerStateSaga(state) {
+    dispatch(setPlayerStateSaga(state));
+  },
+  setPunchStatus(state) {
+    dispatch(setPunchStatus(state));
+  },
+  setPatternStateSaga(patternType, state) {
+    dispatch(setPatternStateSaga(patternType, state));
+  }
+});
+
+export default (LittleMack = connect(mapStateToProps, mapActionsToProps, null, { withRef: true })(LittleMack));
