@@ -246,7 +246,6 @@ export class Main extends React.Component {
               <LittleMack
                 ref={this.getPlayerRef}
                 onSetPlayerStateSaga={this.handleSetPlayerStateSaga}
-                playerStateSaga={playerStateSaga}
                 onNpcAttacked={this.handleNpcAttacked}
                 blockedPowerPunch={this.state.blockedPowerPunch}
                 setBlockedPowerPunch={this.setBlockedPowerPunch}
