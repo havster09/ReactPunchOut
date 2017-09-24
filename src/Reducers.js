@@ -9,6 +9,7 @@ const initialState = {
 
 export const npcStates = {
   stillLeft: { state: 0, ticksPerFrame: 200, direction: 0, repeat: false },
+  danceLeft: { state: 1, ticksPerFrame: 10, direction: 0, repeat: false },
   jabLeft: { state: 2, ticksPerFrame: 12, direction: 0, repeat: false },
   jabLeftSecond: { state: 2, ticksPerFrame: 100, direction: 0, repeat: false },
   crossLeft: { state: 3, ticksPerFrame: 10, direction: 0, repeat: false },

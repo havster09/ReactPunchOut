@@ -4,7 +4,8 @@ import { Text, View } from 'react-native';
 import Sprite from './native/components/sprite';
 import * as types from './Constants';
 import { screenDimensions } from './Main';
-import {playerIsInAttackState, translateState} from './helpers';
+import {isPlayerPowerPunch, playerIsInAttackState, translateState} from './helpers';
+import {npcStates} from "./Reducers";
 
 class PistonHurricane extends React.Component {
   constructor(props, context) {
@@ -37,7 +38,7 @@ class PistonHurricane extends React.Component {
     this.handleHitSuccess = this.handleHitSuccess.bind(this);
     this.handleHitFail = this.handleHitFail.bind(this);
     this.isHitBody = this.isHitBody.bind(this);
-    this.isPowerPunch = this.isPowerPunch.bind(this);
+    this.npcCounterPunch = this.npcCounterPunch.bind(this);
   }
 
   componentDidMount() {
@@ -66,10 +67,7 @@ class PistonHurricane extends React.Component {
   };
 
   aiLoop() {
-
-    // todo check if in blocked power punch state
-
-    const { npcStateSaga, playerStateSaga } = this.props;
+    const { npcStateSaga, playerStateSaga, blockedPowerPunch } = this.props;
 
     if (!this.watcher.spritePlaying) {
       if (this.isInHitState()) {
@@ -77,18 +75,23 @@ class PistonHurricane extends React.Component {
       } else if(playerIsInAttackState(playerStateSaga)) {
         return this.aiSetSagaSequence();
       }
+      else {
+        return this.props.onSetNpcStateSaga(npcStates.stillLeft);
+      }
     } else {
       if (!this.watcher.isHit) {
         if (npcStateSaga.state === 0) {
-          const idleDanceState = {
-            state: 1,
-            ticksPerFrame: 20,
-            repeat: false
-          };
-          return this.props.onSetNpcStateSaga(idleDanceState);
+          return this.props.onSetNpcStateSaga(npcStates.danceLeft);
+        }
+        else if (blockedPowerPunch.status && blockedPowerPunch.timeStamp < this.context.loop.loopID + 20) {
+          this.npcCounterPunch();
         }
       }
     }
+  }
+
+  npcCounterPunch() {
+    this.props.onSetNpcStateSaga(npcStates.crossRight);
   }
 
   aiHitRecover() {
@@ -213,13 +216,10 @@ class PistonHurricane extends React.Component {
   }
 
   handleHitFail(punchPower, direction, playerStateSaga) {
-    // todo if hit fail and power punching hold frame 1
+    const { blockedPowerPunch } = this.props;
     const { state } = playerStateSaga;
     this.watcher.comboCount = 0;
     let npcDefensiveState;
-    if(this.isPowerPunch(state)) {
-      this.props.onBlockedPowerPunch(playerStateSaga);
-    }
 
     if(this.isHitBody(state)) {
       npcDefensiveState = 11;
@@ -227,9 +227,18 @@ class PistonHurricane extends React.Component {
     else {
       npcDefensiveState = [10, 12, 13, 14][Math.floor(Math.random() * 3)];
     }
+
+    if(isPlayerPowerPunch(state) && npcDefensiveState !== 10) { // not weave
+      this.props.onBlockedPowerPunch(playerStateSaga);
+    }
+
+    const ticksPerFrame = blockedPowerPunch.status
+      ? punchPower
+      : Math.ceil(punchPower) * 2;
+
     const testTouchState = {
       state: npcDefensiveState,
-      ticksPerFrame: Math.ceil(punchPower) * 2,
+      ticksPerFrame,
       direction,
       repeat: false
     };
@@ -268,9 +277,7 @@ class PistonHurricane extends React.Component {
     return [5,7].indexOf(state) > -1;
   }
 
-  isPowerPunch(state) {
-    return [6,7].indexOf(state) > -1;
-  }
+
 
   render() {
     const { npcStateSaga } = this.props;
@@ -326,7 +333,11 @@ PistonHurricane.propTypes = {
   onSetPatternStateSaga: PropTypes.func,
   onPlayerHit: PropTypes.func,
   onBlockedPowerPunch: PropTypes.func,
-  npcStateSaga: PropTypes.object
+  npcStateSaga: PropTypes.object,
+  blockedPowerPunch: PropTypes.shape({
+    status: PropTypes.bool,
+    timeStamp: PropTypes.number,
+  })
 };
 PistonHurricane.contextTypes = {
   loop: PropTypes.object,

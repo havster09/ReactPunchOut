@@ -236,6 +236,7 @@ export class Main extends React.Component {
                 onSetPatternStateSaga={this.handleSetPatternStateSaga}
                 onNpcHit={this.handleNpcHit}
                 onPlayerHit={this.handlePlayerHit}
+                blockedPowerPunch={this.state.blockedPowerPunch}
                 onBlockedPowerPunch={this.handleBlockedPowerPunch}
                 playerReference={this.playerRef}
               />
