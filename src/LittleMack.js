@@ -160,7 +160,7 @@ class LittleMack extends React.Component {
   }
 
   render() {
-    const { playerStateSaga } = this.props;
+    const { playerStateSaga, cancelNextFrame } = this.props;
     return (
       <View>
         {this.debug &&
@@ -190,7 +190,7 @@ class LittleMack extends React.Component {
           tileHeight={216}
           direction={playerStateSaga.direction}
           ticksPerFrame={playerStateSaga.ticksPerFrame}
-          cancelNextFrame={this.watcher.cancelNextFrame}
+          cancelNextFrame={cancelNextFrame}
           left={-108}
           top={-90}
         />
@@ -202,7 +202,7 @@ class LittleMack extends React.Component {
 LittleMack.propTypes = {
   onSetPlayerStateSaga: PropTypes.func,
   onNpcAttacked: PropTypes.func,
-  holdCurrentFrame: PropTypes.bool,
+  cancelNextFrame: PropTypes.bool,
   playerStateSaga: PropTypes.object
 };
 LittleMack.contextTypes = {

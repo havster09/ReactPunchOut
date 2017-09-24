@@ -4,7 +4,7 @@ import { Text, View } from 'react-native';
 import Sprite from './native/components/sprite';
 import * as types from './Constants';
 import { screenDimensions } from './Main';
-import { translateState } from './helpers';
+import {playerIsInAttackState, translateState} from './helpers';
 
 class PistonHurricane extends React.Component {
   constructor(props, context) {
@@ -66,15 +66,12 @@ class PistonHurricane extends React.Component {
   };
 
   aiLoop() {
-    const { npcStateSaga, playerReference } = this.props;
-    if(!playerReference) {
-      return
-    }
+    const { npcStateSaga, playerStateSaga } = this.props;
 
     if (!this.watcher.spritePlaying) {
       if (this.isInHitState()) {
         return this.aiHitRecover();
-      } else if(!playerReference.isInAttackState()) {
+      } else if(playerIsInAttackState(playerStateSaga)) {
         return this.aiSetSagaSequence();
       }
     } else {

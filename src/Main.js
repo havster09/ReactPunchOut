@@ -48,6 +48,7 @@ export class Main extends React.Component {
       direction: 0,
       repeat: false,
       holdCurrentFrame: false,
+      cancelNextFrame: false,
     };
   }
 
@@ -173,7 +174,7 @@ export class Main extends React.Component {
   }
 
   handleBlockedPowerPunch(playerStateSaga) {
-    this.playerRef.watcher.cancelNextFrame = true;
+    this.playerWatcher.cancelNextFrame = true;
   }
 
   getNpcRef(npcRef) {
@@ -211,6 +212,7 @@ export class Main extends React.Component {
               <PistonHurricane
                 ref={this.getNpcRef}
                 npcStateSaga={npcStateSaga}
+                playerStateSaga={playerStateSaga}
                 onSetNpcStateSaga={this.handleSetNpcStateSaga}
                 onSetPatternStateSaga={this.handleSetPatternStateSaga}
                 onNpcHit={this.handleNpcHit}
@@ -223,6 +225,7 @@ export class Main extends React.Component {
                 onSetPlayerStateSaga={this.handleSetPlayerStateSaga}
                 playerStateSaga={playerStateSaga}
                 onNpcAttacked={this.handleNpcAttacked}
+                cancelNextFrame={this.playerWatcher.cancelNextFrame}
                 npcReference={this.npcRef}
               />
             </View>

@@ -83,6 +83,7 @@ export default class Sprite extends Component {
 
   animate(props) {
     const { repeat, state, steps, cancelNextFrame } = props;
+
     let ticksPerFrame = props.ticksPerFrame;
 
     if(state !== 0) {
@@ -98,13 +99,17 @@ export default class Sprite extends Component {
           nextStep = currentStep;
         }
 
+        if(cancelNextFrame) {
+          console.log('....',cancelNextFrame);
+        }
+
         this.props.onUpdateStepCount(currentStep);
 
         this.setState({
           currentStep: nextStep
         });
 
-        if (currentStep === lastStep && repeat === false || cancelNextFrame) {
+        if (currentStep === lastStep && repeat === false) {
           // todo figure out how to finish without last step
           this.finished = true;
           this.props.onPlayStateChanged(0);

@@ -7,3 +7,5 @@ export const translateState = (state) => {
   return activeMove.move;
 };
 
+export const playerIsInAttackState = (playerStateSaga) => [4,5,6,7].indexOf(playerStateSaga.state) > -1;
+
