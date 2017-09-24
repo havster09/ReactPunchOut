@@ -169,6 +169,11 @@ class PistonHurricane extends React.Component {
       punchPower = Math.max(...punchPower);
     }
 
+    const direction = gestureState.x0 < screenDimensions.width / 2 ? 1 : 0;
+
+    // temp test
+    // return this.handleHitSuccess(punchPower, direction, playerStateSaga);
+
     let hitSuccess = false;
     if (this.watcher.lastMoveBeforeHit) {
       const { move, timeStamp } = this.watcher.lastMoveBeforeHit;
@@ -185,7 +190,7 @@ class PistonHurricane extends React.Component {
       }
     }
 
-    const direction = gestureState.x0 < screenDimensions.width / 2 ? 1 : 0;
+
     this.watcher.isHit = true;
 
     if (hitSuccess) {
@@ -233,8 +238,8 @@ class PistonHurricane extends React.Component {
     }
 
     const ticksPerFrame = blockedPowerPunch.status
-      ? punchPower
-      : Math.ceil(punchPower) * 2;
+      ? punchPower/2
+      : punchPower;
 
     const testTouchState = {
       state: npcDefensiveState,
