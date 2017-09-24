@@ -37,6 +37,7 @@ class PistonHurricane extends React.Component {
     this.handleHitSuccess = this.handleHitSuccess.bind(this);
     this.handleHitFail = this.handleHitFail.bind(this);
     this.isHitBody = this.isHitBody.bind(this);
+    this.isPowerPunch = this.isPowerPunch.bind(this);
   }
 
   componentDidMount() {
@@ -92,7 +93,6 @@ class PistonHurricane extends React.Component {
 
   aiHitRecover() {
     this.watcher.comboCount = 0;
-    this.watcher.isHit = false;
     const idleState = {
       state: 0,
       direction: this.toggleDirection(),
@@ -170,20 +170,17 @@ class PistonHurricane extends React.Component {
     if (this.watcher.lastMoveBeforeHit) {
       const { move, timeStamp } = this.watcher.lastMoveBeforeHit;
       const hitWindow = loopID - timeStamp;
-      // console.log(hitWindow);
       // todo put in variable to make combos based on moves player jabs vs player power punches
       if (hitWindow < 10 || this.isInHitState() && this.watcher.comboCount < 3) {
         hitSuccess = true;
       } else if (hitWindow < 50) {
         hitSuccess = this.getMoveHitSuccess(move, hitWindow);
       } else {
-        // todo too late when attack move ends handle playerHit logic
-        if (!this.isInIdleState()) return;
+        if (this.isInIdleState()) {
+          hitSuccess = true;
+        }
       }
     }
-
-    // todo override testing
-    // hitSuccess = true;
 
     const direction = gestureState.x0 < screenDimensions.width / 2 ? 1 : 0;
     this.watcher.isHit = true;
@@ -220,6 +217,10 @@ class PistonHurricane extends React.Component {
     const { state } = playerStateSaga;
     this.watcher.comboCount = 0;
     let npcDefensiveState;
+    if(this.isPowerPunch(state)) {
+      this.props.onBlockedPowerPunch(playerStateSaga);
+    }
+
     if(this.isHitBody(state)) {
       npcDefensiveState = 11;
     }
@@ -265,6 +266,10 @@ class PistonHurricane extends React.Component {
 
   isHitBody(state) {
     return [5,7].indexOf(state) > -1;
+  }
+
+  isPowerPunch(state) {
+    return [6,7].indexOf(state) > -1;
   }
 
   render() {
@@ -320,6 +325,7 @@ PistonHurricane.propTypes = {
   onSetNpcStateSaga: PropTypes.func,
   onSetPatternStateSaga: PropTypes.func,
   onPlayerHit: PropTypes.func,
+  onBlockedPowerPunch: PropTypes.func,
   npcStateSaga: PropTypes.object
 };
 PistonHurricane.contextTypes = {

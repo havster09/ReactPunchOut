@@ -25,7 +25,8 @@ class LittleMack extends React.Component {
       hasHit: 0,
       lastMoveBeforeHit: null,
       comboCount: 0,
-      gestureState: null
+      gestureState: null,
+      cancelNextFrame: false,
     };
 
     this.debug = false;
@@ -83,7 +84,7 @@ class LittleMack extends React.Component {
       lastMoveBeforeHit: {
         move: translateState(playerStateSaga.state),
         timeStamp: loopID
-      }
+      },
     });
   };
 
@@ -131,7 +132,7 @@ class LittleMack extends React.Component {
           return onNpcAttacked(this.watcher.gestureState, playerStateSaga);
         }
       }
-      else {
+      else if (playerStateSaga.state === 6 || playerStateSaga.state === 7) {
         if (currentStep === 1) {
           return onNpcAttacked(this.watcher.gestureState, playerStateSaga);
         }
@@ -189,6 +190,7 @@ class LittleMack extends React.Component {
           tileHeight={216}
           direction={playerStateSaga.direction}
           ticksPerFrame={playerStateSaga.ticksPerFrame}
+          cancelNextFrame={this.watcher.cancelNextFrame}
           left={-108}
           top={-90}
         />
@@ -200,6 +202,7 @@ class LittleMack extends React.Component {
 LittleMack.propTypes = {
   onSetPlayerStateSaga: PropTypes.func,
   onNpcAttacked: PropTypes.func,
+  holdCurrentFrame: PropTypes.bool,
   playerStateSaga: PropTypes.object
 };
 LittleMack.contextTypes = {

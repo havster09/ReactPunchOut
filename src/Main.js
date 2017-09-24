@@ -35,6 +35,7 @@ export class Main extends React.Component {
     this.handleSetPatternStateSaga = this.handleSetPatternStateSaga.bind(this);
     this.handleSetPlayerStateSaga = this.handleSetPlayerStateSaga.bind(this);
     this.handleNpcAttacked = this.handleNpcAttacked.bind(this);
+    this.handleBlockedPowerPunch = this.handleBlockedPowerPunch.bind(this);
 
     this.getNpcRef = this.getNpcRef.bind(this);
     this.getPlayerRef = this.getPlayerRef.bind(this);
@@ -45,7 +46,8 @@ export class Main extends React.Component {
       state: 0,
       ticksPerFrame: 20,
       direction: 0,
-      repeat: false
+      repeat: false,
+      holdCurrentFrame: false,
     };
   }
 
@@ -170,6 +172,10 @@ export class Main extends React.Component {
     );
   }
 
+  handleBlockedPowerPunch(playerStateSaga) {
+    this.playerRef.watcher.cancelNextFrame = true;
+  }
+
   getNpcRef(npcRef) {
     this.npcRef = npcRef;
   }
@@ -209,6 +215,7 @@ export class Main extends React.Component {
                 onSetPatternStateSaga={this.handleSetPatternStateSaga}
                 onNpcHit={this.handleNpcHit}
                 onPlayerHit={this.handlePlayerHit}
+                onBlockedPowerPunch={this.handleBlockedPowerPunch}
                 playerReference={this.playerRef}
               />
               <LittleMack
