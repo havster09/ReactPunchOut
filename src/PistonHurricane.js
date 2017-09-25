@@ -246,9 +246,6 @@ class PistonHurricane extends React.Component {
 
     const direction = gestureState.x0 < screenDimensions.width / 2 ? 1 : 0;
 
-    // temp test
-    // return this.handleHitSuccess(punchPower, direction, playerStateSaga);
-
     let hitSuccess = false;
     if (this.watcher.lastMoveBeforeHit) {
       const { move, timeStamp } = this.watcher.lastMoveBeforeHit;

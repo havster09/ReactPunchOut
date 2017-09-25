@@ -145,17 +145,17 @@ class LittleMack extends React.Component {
   }
 
   handleUpdateStepCount = currentStep => {
-    const { playerStateSaga, onNpcAttacked } = this.props;
+    const { playerStateSaga, npcReference } = this.props;
     if (this.isInAttackState()) {
       // todo switch for attack type
       if (playerStateSaga.state === 4 || playerStateSaga.state === 5) {
         if (currentStep === 0) {
-          return onNpcAttacked(this.watcher.gestureState, playerStateSaga);
+          return npcReference.handleNpcIsAttacked(playerStateSaga.ticksPerFrame, this.watcher.gestureState, playerStateSaga);
         }
       }
       else if (playerStateSaga.state === 6 || playerStateSaga.state === 7) {
         if (currentStep === 1) {
-          return onNpcAttacked(this.watcher.gestureState, playerStateSaga);
+          return npcReference.handleNpcIsAttacked(playerStateSaga.ticksPerFrame, this.watcher.gestureState, playerStateSaga);
         }
       }
     }
@@ -220,9 +220,9 @@ class LittleMack extends React.Component {
   }
 }
 
+// todo add ref PropType
 LittleMack.propTypes = {
   setPlayerStateSaga: PropTypes.func,
-  onNpcAttacked: PropTypes.func,
   playerStateSaga: PropTypes.object,
 };
 LittleMack.contextTypes = {

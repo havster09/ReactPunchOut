@@ -30,7 +30,6 @@ export class Main extends React.Component {
     this.dimensions = screenDimensions = Dimensions.get('window');
 
     this.handleSetPatternStateSaga = this.handleSetPatternStateSaga.bind(this);
-    this.handleNpcAttacked = this.handleNpcAttacked.bind(this);
 
     this.getNpcRef = this.getNpcRef.bind(this);
     this.getPlayerRef = this.getPlayerRef.bind(this);
@@ -90,15 +89,6 @@ export class Main extends React.Component {
     this.props.setPatternStateSaga(patternType, state);
   }
 
-  handleNpcAttacked(gestureState, playerStateSaga) {
-    // todo move to LittleMack Component
-    this.npcRef.handleNpcIsAttacked(
-      playerStateSaga.ticksPerFrame,
-      gestureState,
-      playerStateSaga
-    );
-  }
-
   getNpcRef(npcRef) {
     this.npcRef = npcRef.getWrappedInstance();
   }
@@ -138,7 +128,6 @@ export class Main extends React.Component {
               <LittleMack
                 ref={this.getPlayerRef}
                 npcReference={this.npcRef}
-                onNpcAttacked={this.handleNpcAttacked}
               />
             </View>
           </Stage>
