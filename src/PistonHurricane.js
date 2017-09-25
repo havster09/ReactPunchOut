@@ -81,12 +81,12 @@ class PistonHurricane extends React.Component {
         return this.aiSetSagaSequence();
       }
       else {
-        return this.props.onSetNpcStateSaga(npcStates.stillLeft);
+        return this.props.setNpcStateSaga(npcStates.stillLeft);
       }
     } else {
       if (!this.watcher.isHit) {
         if (npcStateSaga.state === 0) {
-          return this.props.onSetNpcStateSaga(npcStates.danceLeft);
+          return this.props.setNpcStateSaga(npcStates.danceLeft);
         }
         else if (blockedPowerPunch.status && blockedPowerPunch.timeStamp < this.context.loop.loopID + 20) {
           this.npcCounterPunch();
@@ -96,7 +96,7 @@ class PistonHurricane extends React.Component {
   }
 
   npcCounterPunch() {
-    this.props.onSetNpcStateSaga(npcStates.crossRight);
+    this.props.setNpcStateSaga(npcStates.crossRight);
   }
 
   aiHitRecover() {
@@ -106,7 +106,7 @@ class PistonHurricane extends React.Component {
       direction: this.toggleDirection(),
       repeat: false
     };
-    return this.props.onSetNpcStateSaga(idleState);
+    return this.props.setNpcStateSaga(idleState);
   }
 
   aiLoopAttacked() {}
@@ -137,7 +137,7 @@ class PistonHurricane extends React.Component {
           : this.watcher.hasStopped + 1
       });
       // console.log(patternType);
-      return this.props.onSetPatternStateSaga(patternType, npcState);
+      return this.props.setPatternStateSaga(patternType, npcState);
     } else {
       this.watcher.hasStopped = 0;
       this.watcher.isPlayingPattern = this.watcher.isPlayingPattern < 1 ? 1 : 0;
@@ -221,8 +221,8 @@ class PistonHurricane extends React.Component {
       direction,
       repeat: false
     };
-    this.props.onSetNpcStateSaga(testTouchState);
-    return this.props.onNpcHit(punchPower);
+    this.props.setNpcStateSaga(testTouchState);
+    return this.props.reduceNpcHealth(punchPower);
   }
 
   handleHitFail(punchPower, direction, playerStateSaga) {
@@ -252,8 +252,8 @@ class PistonHurricane extends React.Component {
       direction,
       repeat: false
     };
-    this.props.onSetNpcStateSaga(testTouchState);
-    return this.props.onNpcHit(punchPower);
+    this.props.setNpcStateSaga(testTouchState);
+    return this.props.reduceNpcHealth(punchPower);
   }
 
   getMoveHitSuccess(move, hitWindow) {
@@ -338,9 +338,6 @@ class PistonHurricane extends React.Component {
 }
 
 PistonHurricane.propTypes = {
-  onNpcHit: PropTypes.func,
-  onSetNpcStateSaga: PropTypes.func,
-  onSetPatternStateSaga: PropTypes.func,
   onPlayerHit: PropTypes.func,
   onBlockedPowerPunch: PropTypes.func,
   npcStateSaga: PropTypes.object,

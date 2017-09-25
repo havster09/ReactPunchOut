@@ -30,11 +30,8 @@ export class Main extends React.Component {
     super(props, context);
     this.dimensions = screenDimensions = Dimensions.get('window');
 
-    this.handleNpcHit = this.handleNpcHit.bind(this);
     this.handlePlayerHit = this.handlePlayerHit.bind(this);
-    this.handleSetNpcStateSaga = this.handleSetNpcStateSaga.bind(this);
     this.handleSetPatternStateSaga = this.handleSetPatternStateSaga.bind(this);
-    this.handleSetPlayerStateSaga = this.handleSetPlayerStateSaga.bind(this);
     this.handleNpcAttacked = this.handleNpcAttacked.bind(this);
     this.handleBlockedPowerPunch = this.handleBlockedPowerPunch.bind(this);
     this.setBlockedPowerPunch = this.setBlockedPowerPunch.bind(this);
@@ -107,18 +104,6 @@ export class Main extends React.Component {
 
   static getDimensions() {
     return this.dimensions;
-  }
-
-  handleNpcHit(punchPower = 1) {
-    this.props.reduceNpcHealth(punchPower);
-  }
-
-  handleSetNpcStateSaga(state) {
-    this.props.setNpcStateSaga(state);
-  }
-
-  handleSetPlayerStateSaga(state) {
-    this.props.setPlayerStateSaga(state);
   }
 
   handleSetPatternStateSaga(patternType, state) {
@@ -235,9 +220,6 @@ export class Main extends React.Component {
             >
               <PistonHurricane
                 ref={this.getNpcRef}
-                onSetNpcStateSaga={this.handleSetNpcStateSaga}
-                onSetPatternStateSaga={this.handleSetPatternStateSaga}
-                onNpcHit={this.handleNpcHit}
                 onPlayerHit={this.handlePlayerHit}
                 blockedPowerPunch={this.state.blockedPowerPunch}
                 onBlockedPowerPunch={this.handleBlockedPowerPunch}
@@ -245,11 +227,10 @@ export class Main extends React.Component {
               />
               <LittleMack
                 ref={this.getPlayerRef}
-                onSetPlayerStateSaga={this.handleSetPlayerStateSaga}
+                npcReference={this.npcRef}
                 onNpcAttacked={this.handleNpcAttacked}
                 blockedPowerPunch={this.state.blockedPowerPunch}
                 setBlockedPowerPunch={this.setBlockedPowerPunch}
-                npcReference={this.npcRef}
               />
             </View>
           </Stage>

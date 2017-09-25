@@ -65,12 +65,12 @@ class LittleMack extends React.Component {
   toggleRepeat = () => {};
 
   aiLoop() {
-    const { playerStateSaga, onSetPlayerStateSaga, blockedPowerPunch, setBlockedPowerPunch } = this.props;
+    const { playerStateSaga, setPlayerStateSaga, blockedPowerPunch, setBlockedPowerPunch } = this.props;
     if (
       (this.isInHitState() || this.isInAttackState) &&
       !this.watcher.spritePlaying
     ) {
-      onSetPlayerStateSaga({ ...playerStateSaga, ...playerStates.idle });
+      setPlayerStateSaga({ ...playerStateSaga, ...playerStates.idle });
     }
 
     if (blockedPowerPunch.status) {
@@ -109,7 +109,7 @@ class LittleMack extends React.Component {
 
     this.watcher.gestureState = gestureState;
     let playerAttack;
-    const { playerStateSaga, onSetPlayerStateSaga } = this.props;
+    const { playerStateSaga, setPlayerStateSaga } = this.props;
     let direction = gestureState.x0 < screenDimensions.width / 2 ? 1 : 0;
     const attackHead = screenDimensions.height - gestureState.y0 > screenDimensions.height / 2
     || gestureState.dy < -50;
@@ -123,7 +123,7 @@ class LittleMack extends React.Component {
       else {
         playerAttack = playerStates.bodyJab;
       }
-      return onSetPlayerStateSaga({
+      return setPlayerStateSaga({
         ...playerStateSaga,
         ...{ direction },
         ...playerAttack
@@ -136,7 +136,7 @@ class LittleMack extends React.Component {
       else {
         playerAttack = playerStates.powerBodyCross;
       }
-      return onSetPlayerStateSaga({
+      return setPlayerStateSaga({
         ...playerStateSaga,
         ...{ direction },
         ...playerAttack
@@ -221,7 +221,7 @@ class LittleMack extends React.Component {
 }
 
 LittleMack.propTypes = {
-  onSetPlayerStateSaga: PropTypes.func,
+  setPlayerStateSaga: PropTypes.func,
   onNpcAttacked: PropTypes.func,
   setBlockedPowerPunch: PropTypes.func,
   playerStateSaga: PropTypes.object,
