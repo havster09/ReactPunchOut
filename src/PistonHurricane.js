@@ -1,16 +1,26 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Text, View } from 'react-native';
+import connect from 'react-redux/es/connect/connect';
 import Sprite from './native/components/sprite';
 import * as types from './Constants';
 import { screenDimensions } from './Main';
-import {isPlayerPowerPunch, playerIsInAttackState, playerIsInIdleState, translateState} from './helpers';
-import {npcStates} from "./Reducers";
 import {
-  reduceNpcHealth, setNpcState, setNpcStateSaga, setPatternStateSaga, setPlayerStateSaga,
+  isPlayerPowerPunch,
+  playerIsInAttackState,
+  playerIsInIdleState,
+  translateState
+} from './helpers';
+import { npcStates } from './Reducers';
+import {
+  reduceNpcHealth,
+  setNpcState,
+  setNpcStateSaga,
+  setPatternStateSaga,
+  setPlayerStateSaga,
   setPunchStatus
 } from './Actions';
-import connect from 'react-redux/es/connect/connect';
+import { playerStates } from './Reducers';
 
 class PistonHurricane extends React.Component {
   constructor(props, context) {
@@ -29,7 +39,7 @@ class PistonHurricane extends React.Component {
       attacking: 0,
       hasHit: 0,
       lastMoveBeforeHit: null,
-      comboCount: 0,
+      comboCount: 0
     };
 
     this.debug = false;
@@ -44,6 +54,7 @@ class PistonHurricane extends React.Component {
     this.handleHitFail = this.handleHitFail.bind(this);
     this.isHitBody = this.isHitBody.bind(this);
     this.npcCounterPunch = this.npcCounterPunch.bind(this);
+    this.handlePlayerHit = this.handlePlayerHit.bind(this);
   }
 
   componentDidMount() {
@@ -72,23 +83,27 @@ class PistonHurricane extends React.Component {
   };
 
   aiLoop() {
-    const { npcStateSaga, playerStateSaga, blockedPowerPunch } = this.props;
+    const { npcStateSaga, playerStateSaga, punchStatus } = this.props;
 
-    if (!this.watcher.spritePlaying && !blockedPowerPunch.status) {
+    if (!this.watcher.spritePlaying && !punchStatus.status) {
       if (this.isInHitState()) {
         return this.aiHitRecover();
-      } else if(playerIsInAttackState(playerStateSaga) || playerIsInIdleState(playerStateSaga)) {
+      } else if (
+        playerIsInAttackState(playerStateSaga) ||
+        playerIsInIdleState(playerStateSaga)
+      ) {
         return this.aiSetSagaSequence();
-      }
-      else {
+      } else {
         return this.props.setNpcStateSaga(npcStates.stillLeft);
       }
     } else {
       if (!this.watcher.isHit) {
         if (npcStateSaga.state === 0) {
           return this.props.setNpcStateSaga(npcStates.danceLeft);
-        }
-        else if (blockedPowerPunch.status && blockedPowerPunch.timeStamp < this.context.loop.loopID + 20) {
+        } else if (
+          punchStatus.status &&
+          punchStatus.timeStamp < this.context.loop.loopID + 20
+        ) {
           this.npcCounterPunch();
         }
       }
@@ -158,19 +173,74 @@ class PistonHurricane extends React.Component {
     });
   };
 
-  handleUpdateStepCount = (currentStep) => {
+  handleUpdateStepCount = currentStep => {
     // todo add ticksPerFrame to sync with player hit ticksPerFrame
     const { npcStateSaga } = this.props;
-    if([2,3,4,5,6,6,7,8].indexOf(npcStateSaga.state) > -1 && this.watcher.spritePlaying) {
-      if(currentStep === 1) {
-        this.props.onPlayerHit(currentStep, npcStateSaga);
+    if (
+      [2, 3, 4, 5, 6, 6, 7, 8].indexOf(npcStateSaga.state) > -1 &&
+      this.watcher.spritePlaying
+    ) {
+      if (currentStep === 1) {
+        this.handlePlayerHit(currentStep, npcStateSaga);
       }
     }
   };
 
+  handlePlayerHit(currentStep, npcState) {
+    // todo check whether player is in a defensive state otherwise hit success
+
+    const { playerReference } = this.props;
+
+    if (!playerReference.spritePlaying) {
+      const { ticksPerFrame, direction } = npcState;
+      const power = 1.5;
+      const hitMultiplier =
+        typeof ticksPerFrame === 'object'
+          ? Math.max(...ticksPerFrame) * power
+          : ticksPerFrame * power;
+      const npcAttackType = translateState(npcState.state);
+      const playerHitBase = {
+        state: 0,
+        ticksPerFrame: 20,
+        direction: 0,
+        repeat: false
+      };
+
+      let playerWatcher;
+
+      switch (npcAttackType) {
+        case 'jab':
+        case 'cross':
+          playerWatcher = {
+            ...playerHitBase,
+            ...{ ticksPerFrame: hitMultiplier, direction },
+            ...playerStates.hitHead
+          };
+          return this.props.setPlayerStateSaga(playerWatcher);
+          break;
+        case 'uppercut':
+          playerWatcher = {
+            ...playerHitBase,
+            ...{ ticksPerFrame: hitMultiplier, direction },
+            ...playerStates.hitUppercut
+          };
+          return this.props.setPlayerStateSaga(playerWatcher);
+          break;
+        case 'body_jab':
+          playerWatcher = {
+            ...playerHitBase,
+            ...{ ticksPerFrame: hitMultiplier, direction },
+            ...playerStates.hitBody
+          };
+          return this.props.setPlayerStateSaga(playerWatcher);
+          break;
+      }
+    }
+  }
+
   handleNpcIsAttacked(punchPower, gestureState, playerStateSaga) {
     const { loop: { loopID } } = this.context;
-    if(typeof punchPower === 'object') {
+    if (typeof punchPower === 'object') {
       punchPower = Math.max(...punchPower);
     }
 
@@ -184,7 +254,10 @@ class PistonHurricane extends React.Component {
       const { move, timeStamp } = this.watcher.lastMoveBeforeHit;
       const hitWindow = loopID - timeStamp;
       // todo put in variable to make combos based on moves player jabs vs player power punches
-      if (hitWindow < 10 || this.isInHitState() && this.watcher.comboCount < 3) {
+      if (
+        hitWindow < 10 ||
+        (this.isInHitState() && this.watcher.comboCount < 3)
+      ) {
         hitSuccess = true;
       } else if (hitWindow < 50) {
         hitSuccess = this.getMoveHitSuccess(move, hitWindow);
@@ -194,7 +267,6 @@ class PistonHurricane extends React.Component {
         }
       }
     }
-
 
     this.watcher.isHit = true;
 
@@ -209,11 +281,10 @@ class PistonHurricane extends React.Component {
     const { state } = playerStateSaga;
     this.watcher.comboCount = this.watcher.comboCount + 1;
     let npcHitState;
-    if(this.isHitBody(state)) {
+    if (this.isHitBody(state)) {
       npcHitState = 8;
-    }
-    else {
-      npcHitState = [6, 7][Math.floor(Math.random() * 2)]
+    } else {
+      npcHitState = [6, 7][Math.floor(Math.random() * 2)];
     }
     const testTouchState = {
       state: npcHitState,
@@ -226,25 +297,26 @@ class PistonHurricane extends React.Component {
   }
 
   handleHitFail(punchPower, direction, playerStateSaga) {
-    const { blockedPowerPunch } = this.props;
+    const { punchStatus, playerReference } = this.props;
     const { state } = playerStateSaga;
     this.watcher.comboCount = 0;
     let npcDefensiveState;
 
-    if(this.isHitBody(state)) {
+    if (this.isHitBody(state)) {
       npcDefensiveState = 11;
-    }
-    else {
+    } else {
       npcDefensiveState = [10, 12, 13, 14][Math.floor(Math.random() * 3)];
     }
 
-    if(isPlayerPowerPunch(state) && npcDefensiveState !== 10) { // not weave
-      this.props.onBlockedPowerPunch(playerStateSaga);
+    if (isPlayerPowerPunch(state) && npcDefensiveState !== 10) {
+      // not weave
+      this.props.setPunchStatus({
+        status: true,
+        timeStamp: playerReference.context.loop.loopID + 60
+      });
     }
 
-    const ticksPerFrame = blockedPowerPunch.status
-      ? punchPower/2
-      : punchPower;
+    const ticksPerFrame = punchStatus.status ? punchPower / 2 : punchPower;
 
     const testTouchState = {
       state: npcDefensiveState,
@@ -284,10 +356,8 @@ class PistonHurricane extends React.Component {
   }
 
   isHitBody(state) {
-    return [5,7].indexOf(state) > -1;
+    return [5, 7].indexOf(state) > -1;
   }
-
-
 
   render() {
     const { npcStateSaga } = this.props;
@@ -338,13 +408,8 @@ class PistonHurricane extends React.Component {
 }
 
 PistonHurricane.propTypes = {
-  onPlayerHit: PropTypes.func,
   onBlockedPowerPunch: PropTypes.func,
-  npcStateSaga: PropTypes.object,
-  blockedPowerPunch: PropTypes.shape({
-    status: PropTypes.bool,
-    timeStamp: PropTypes.number,
-  })
+  npcStateSaga: PropTypes.object
 };
 PistonHurricane.contextTypes = {
   loop: PropTypes.object,
@@ -381,4 +446,9 @@ const mapActionsToProps = (dispatch, store) => ({
   }
 });
 
-export default (PistonHurricane = connect(mapStateToProps, mapActionsToProps, null, { withRef: true })(PistonHurricane));
+export default (PistonHurricane = connect(
+  mapStateToProps,
+  mapActionsToProps,
+  null,
+  { withRef: true }
+)(PistonHurricane));

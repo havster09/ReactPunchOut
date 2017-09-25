@@ -1,12 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Text, View } from 'react-native';
+import connect from 'react-redux/es/connect/connect';
 import Sprite from './native/components/sprite';
 import * as types from './Constants';
 import { screenDimensions } from './Main';
 import { translateState } from './helpers';
 import { playerStates } from './Reducers';
-import connect from 'react-redux/es/connect/connect';
 import {
   reduceNpcHealth, setNpcState, setNpcStateSaga, setPatternStateSaga, setPlayerStateSaga,
   setPunchStatus
@@ -65,7 +65,7 @@ class LittleMack extends React.Component {
   toggleRepeat = () => {};
 
   aiLoop() {
-    const { playerStateSaga, setPlayerStateSaga, blockedPowerPunch, setBlockedPowerPunch } = this.props;
+    const { playerStateSaga, setPlayerStateSaga, punchStatus, setPunchStatus } = this.props;
     if (
       (this.isInHitState() || this.isInAttackState) &&
       !this.watcher.spritePlaying
@@ -73,9 +73,9 @@ class LittleMack extends React.Component {
       setPlayerStateSaga({ ...playerStateSaga, ...playerStates.idle });
     }
 
-    if (blockedPowerPunch.status) {
-      if(blockedPowerPunch.timeStamp < this.context.loop.loopID) {
-        setBlockedPowerPunch({
+    if (punchStatus.status) {
+      if(punchStatus.timeStamp < this.context.loop.loopID) {
+        setPunchStatus({
           status: false,
           timeStamp: null
         });
@@ -103,7 +103,7 @@ class LittleMack extends React.Component {
   };
 
   handlePlayerIsAttacking(gestureState) {
-    if (this.props.blockedPowerPunch.status) {
+    if (this.props.punchStatus.status) {
       return;
     }
 
@@ -181,7 +181,7 @@ class LittleMack extends React.Component {
   }
 
   render() {
-    const { playerStateSaga, blockedPowerPunch } = this.props;
+    const { playerStateSaga, punchStatus } = this.props;
     return (
       <View>
         {this.debug &&
@@ -211,7 +211,7 @@ class LittleMack extends React.Component {
           tileHeight={216}
           direction={playerStateSaga.direction}
           ticksPerFrame={playerStateSaga.ticksPerFrame}
-          blockedPowerPunch={blockedPowerPunch}
+          blockedPowerPunch={punchStatus}
           left={-108}
           top={-90}
         />
@@ -223,12 +223,7 @@ class LittleMack extends React.Component {
 LittleMack.propTypes = {
   setPlayerStateSaga: PropTypes.func,
   onNpcAttacked: PropTypes.func,
-  setBlockedPowerPunch: PropTypes.func,
   playerStateSaga: PropTypes.object,
-  blockedPowerPunch: PropTypes.shape({
-    status: PropTypes.bool,
-    timeStamp: PropTypes.number,
-  })
 };
 LittleMack.contextTypes = {
   loop: PropTypes.object,

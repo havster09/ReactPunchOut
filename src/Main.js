@@ -11,7 +11,6 @@ import {
 import { Loop, Stage } from 'react-game-kit/native';
 import PistonHurricane from './PistonHurricane';
 import { translateState } from './helpers';
-import { playerStates } from './Reducers';
 
 import {
   reduceNpcHealth,
@@ -30,32 +29,13 @@ export class Main extends React.Component {
     super(props, context);
     this.dimensions = screenDimensions = Dimensions.get('window');
 
-    this.handlePlayerHit = this.handlePlayerHit.bind(this);
     this.handleSetPatternStateSaga = this.handleSetPatternStateSaga.bind(this);
     this.handleNpcAttacked = this.handleNpcAttacked.bind(this);
-    this.handleBlockedPowerPunch = this.handleBlockedPowerPunch.bind(this);
-    this.setBlockedPowerPunch = this.setBlockedPowerPunch.bind(this);
 
     this.getNpcRef = this.getNpcRef.bind(this);
     this.getPlayerRef = this.getPlayerRef.bind(this);
     this.npcRef = null;
     this.playerRef = null;
-
-    this.playerWatcher = {
-      state: 0,
-      ticksPerFrame: 20,
-      direction: 0,
-      repeat: false,
-      holdCurrentFrame: false,
-      cancelNextFrame: false,
-    };
-
-    this.state = {
-      blockedPowerPunch: {
-        status: false,
-        timeStamp: null,
-      }
-    }
   }
 
   componentWillMount() {
@@ -110,54 +90,8 @@ export class Main extends React.Component {
     this.props.setPatternStateSaga(patternType, state);
   }
 
-  handlePlayerHit(currentStep, npcState) {
-    // todo check whether player is in a defensive state otherwise hit success
-    if (!this.playerRef) {
-      return;
-    }
-
-    if (!this.playerRef.spritePlaying) {
-      const { ticksPerFrame, direction } = npcState;
-      const power = 1.5;
-      const hitMultiplier =
-        typeof ticksPerFrame === 'object'
-          ? Math.max(...ticksPerFrame) * power
-          : ticksPerFrame * power;
-      const npcAttackType = translateState(npcState.state);
-      switch (npcAttackType) {
-        case 'jab':
-        case 'cross':
-          this.playerWatcher = {
-            ...this.playerWatcher,
-            ...{
-              ticksPerFrame: hitMultiplier,
-              direction
-            },
-            ...playerStates.hitHead
-          };
-          return this.props.setPlayerStateSaga(this.playerWatcher);
-          break;
-        case 'uppercut':
-          this.playerWatcher = {
-            ...this.playerWatcher,
-            ...{ ticksPerFrame: hitMultiplier, direction },
-            ...playerStates.hitUppercut
-          };
-          return this.props.setPlayerStateSaga(this.playerWatcher);
-          break;
-        case 'body_jab':
-          this.playerWatcher = {
-            ...this.playerWatcher,
-            ...{ ticksPerFrame: hitMultiplier, direction },
-            ...playerStates.hitBody
-          };
-          return this.props.setPlayerStateSaga(this.playerWatcher);
-          break;
-      }
-    }
-  }
-
   handleNpcAttacked(gestureState, playerStateSaga) {
+    // todo move to LittleMack Component
     this.npcRef.handleNpcIsAttacked(
       playerStateSaga.ticksPerFrame,
       gestureState,
@@ -165,37 +99,16 @@ export class Main extends React.Component {
     );
   }
 
-  handleBlockedPowerPunch() {
-    this.props.setPunchStatus({
-      status: true,
-      timeStamp: this.playerRef.context.loop.loopID + 60,
-    });
-
-    this.setState({
-      blockedPowerPunch: {
-        status: true,
-        timeStamp: this.playerRef.context.loop.loopID + 60,
-      }
-    });
-  }
-
-  setBlockedPowerPunch(config) {
-    if (config) {
-      this.setState({blockedPowerPunch: config});
-    }
-  }
-
   getNpcRef(npcRef) {
     this.npcRef = npcRef.getWrappedInstance();
   }
 
   getPlayerRef(playerRef) {
-    console.log('...',playerRef.getWrappedInstance());
     this.playerRef = playerRef.getWrappedInstance();
   }
 
   render() {
-    const { npcHealth, npcStateSaga, playerStateSaga, punchStatus } = this.props;
+    const { npcHealth, npcStateSaga } = this.props;
     return (
       <View {...this._panResponder.panHandlers}>
         <Loop>
@@ -220,17 +133,12 @@ export class Main extends React.Component {
             >
               <PistonHurricane
                 ref={this.getNpcRef}
-                onPlayerHit={this.handlePlayerHit}
-                blockedPowerPunch={this.state.blockedPowerPunch}
-                onBlockedPowerPunch={this.handleBlockedPowerPunch}
                 playerReference={this.playerRef}
               />
               <LittleMack
                 ref={this.getPlayerRef}
                 npcReference={this.npcRef}
                 onNpcAttacked={this.handleNpcAttacked}
-                blockedPowerPunch={this.state.blockedPowerPunch}
-                setBlockedPowerPunch={this.setBlockedPowerPunch}
               />
             </View>
           </Stage>
