@@ -29,8 +29,6 @@ export class Main extends React.Component {
     super(props, context);
     this.dimensions = screenDimensions = Dimensions.get('window');
 
-    this.handleSetPatternStateSaga = this.handleSetPatternStateSaga.bind(this);
-
     this.getNpcRef = this.getNpcRef.bind(this);
     this.getPlayerRef = this.getPlayerRef.bind(this);
     this.npcRef = null;
@@ -83,10 +81,6 @@ export class Main extends React.Component {
 
   static getDimensions() {
     return this.dimensions;
-  }
-
-  handleSetPatternStateSaga(patternType, state) {
-    this.props.setPatternStateSaga(patternType, state);
   }
 
   getNpcRef(npcRef) {
@@ -148,10 +142,7 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => ({
   npcHealth: state.npcHealth,
-  npcState: state.npcState,
   npcStateSaga: state.npcStateSaga,
-  playerStateSaga: state.playerStateSaga,
-  punchStatus: state.punchStatus
 });
 
 const mapActionsToProps = (dispatch, store) => ({

@@ -99,7 +99,11 @@ export default class Sprite extends Component {
     if(state !== 0) {
       const { currentStep } = this.state;
       if(typeof ticksPerFrame === 'object') {
-        ticksPerFrame = ticksPerFrame[currentStep]
+        ticksPerFrame = ticksPerFrame[currentStep];
+        //todo bandaid refactor
+        if(!ticksPerFrame) {
+          // ticksPerFrame = props.ticksPerFrame[props.ticksPerFrame.length - 1];
+        }
       }
       if (this.tickCount === ticksPerFrame && !this.finished) {
         const lastStep = steps[state];

@@ -13,13 +13,13 @@ export const npcStates = {
   danceLeft: { state: 1, ticksPerFrame: 6, direction: 0, repeat: false },
   jabLeft: { state: 2, ticksPerFrame: 2, direction: 0, repeat: false },
   jabLeftSecond: { state: 2, ticksPerFrame: 4, direction: 0, repeat: false },
-  crossLeft: { state: 3, ticksPerFrame: [4,8], direction: 0, repeat: false },
+  crossLeft: { state: 3, ticksPerFrame: [4,8,12], direction: 0, repeat: false },
   uppercutLeft: { state: 4, ticksPerFrame: [10,6,30], direction: 0, repeat: false },
   bodyJabLeft: { state: 5, ticksPerFrame: 2, direction: 0, repeat: false },
   stillRight: { state: 0, ticksPerFrame: 200, direction: 1, repeat: false },
   jabRight: { state: 2, ticksPerFrame: 2, direction: 1, repeat: false },
   jabRightSecond: { state: 2, ticksPerFrame: 4, direction: 1, repeat: false },
-  crossRight: { state: 3, ticksPerFrame: [4,8], direction: 1, repeat: false },
+  crossRight: { state: 3, ticksPerFrame: [4,8,12], direction: 1, repeat: false },
   uppercutRight: { state: 4, ticksPerFrame: [10,6,30], direction: 1, repeat: false },
   bodyJabRight: { state: 5, ticksPerFrame: 2, direction: 1, repeat: false }
 };

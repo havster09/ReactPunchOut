@@ -150,12 +150,12 @@ class LittleMack extends React.Component {
       // todo switch for attack type
       if (playerStateSaga.state === 4 || playerStateSaga.state === 5) {
         if (currentStep === 0) {
-          return npcReference.handleNpcIsAttacked(playerStateSaga.ticksPerFrame, this.watcher.gestureState, playerStateSaga);
+          return npcReference.handleNpcIsAttacked(this.watcher.gestureState, playerStateSaga);
         }
       }
       else if (playerStateSaga.state === 6 || playerStateSaga.state === 7) {
         if (currentStep === 1) {
-          return npcReference.handleNpcIsAttacked(playerStateSaga.ticksPerFrame, this.watcher.gestureState, playerStateSaga);
+          return npcReference.handleNpcIsAttacked(this.watcher.gestureState, playerStateSaga);
         }
       }
     }
@@ -234,7 +234,6 @@ LittleMack.contextTypes = {
 // todo limit exposure to state to limit rerenders
 const mapStateToProps = state => ({
   npcHealth: state.npcHealth,
-  npcState: state.npcState,
   npcStateSaga: state.npcStateSaga,
   playerStateSaga: state.playerStateSaga,
   punchStatus: state.punchStatus

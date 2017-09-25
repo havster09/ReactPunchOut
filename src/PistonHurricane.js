@@ -124,10 +124,6 @@ class PistonHurricane extends React.Component {
     return this.props.setNpcStateSaga(idleState);
   }
 
-  aiLoopAttacked() {}
-
-  aiSetRandom() {}
-
   aiSetSagaSequence() {
     this.aiSetPattern(this.watcher.isPlayingPattern);
   }
@@ -238,10 +234,11 @@ class PistonHurricane extends React.Component {
     }
   }
 
-  handleNpcIsAttacked(punchPower, gestureState, playerStateSaga) {
+  handleNpcIsAttacked(gestureState, playerStateSaga) {
     const { loop: { loopID } } = this.context;
-    if (typeof punchPower === 'object') {
-      punchPower = Math.max(...punchPower);
+    let punchPower = playerStateSaga.ticksPerFrame;
+    if (typeof playerStateSaga.ticksPerFrame === 'object') {
+      punchPower = Math.max(...playerStateSaga.ticksPerFrame);
     }
 
     const direction = gestureState.x0 < screenDimensions.width / 2 ? 1 : 0;
@@ -416,7 +413,7 @@ PistonHurricane.contextTypes = {
 
 // todo limit exposure to state to limit rerenders
 const mapStateToProps = state => ({
-  npcState: state.npcState,
+  npcHealth: state.npcHealth,
   npcStateSaga: state.npcStateSaga,
   playerStateSaga: state.playerStateSaga,
   punchStatus: state.punchStatus
