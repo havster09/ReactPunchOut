@@ -5,7 +5,7 @@ const initialState = {
   npcHealth: 100,
   npcStateSaga: { state: 0, ticksPerFrame: 20, direction: 0, repeat: false },
   playerStateSaga: { state: 0, ticksPerFrame: 10, direction: 0, repeat: false },
-  punchStatus: { status: false, timeStamp: null },
+  punchStatus: { status: false, timeStamp: null }
 };
 
 export const npcStates = {
@@ -13,14 +13,34 @@ export const npcStates = {
   danceLeft: { state: 1, ticksPerFrame: 6, direction: 0, repeat: false },
   jabLeft: { state: 2, ticksPerFrame: 2, direction: 0, repeat: false },
   jabLeftSecond: { state: 2, ticksPerFrame: 4, direction: 0, repeat: false },
-  crossLeft: { state: 3, ticksPerFrame: [4,8,12], direction: 0, repeat: false },
-  uppercutLeft: { state: 4, ticksPerFrame: [10,6,30], direction: 0, repeat: false },
+  crossLeft: {
+    state: 3,
+    ticksPerFrame: [4, 8, 12],
+    direction: 0,
+    repeat: false
+  },
+  uppercutLeft: {
+    state: 4,
+    ticksPerFrame: [10, 6, 30],
+    direction: 0,
+    repeat: false
+  },
   bodyJabLeft: { state: 5, ticksPerFrame: 2, direction: 0, repeat: false },
   stillRight: { state: 0, ticksPerFrame: 200, direction: 1, repeat: false },
   jabRight: { state: 2, ticksPerFrame: 2, direction: 1, repeat: false },
   jabRightSecond: { state: 2, ticksPerFrame: 4, direction: 1, repeat: false },
-  crossRight: { state: 3, ticksPerFrame: [4,8,12], direction: 1, repeat: false },
-  uppercutRight: { state: 4, ticksPerFrame: [10,6,30], direction: 1, repeat: false },
+  crossRight: {
+    state: 3,
+    ticksPerFrame: [4, 8, 12],
+    direction: 1,
+    repeat: false
+  },
+  uppercutRight: {
+    state: 4,
+    ticksPerFrame: [10, 6, 30],
+    direction: 1,
+    repeat: false
+  },
   bodyJabRight: { state: 5, ticksPerFrame: 2, direction: 1, repeat: false }
 };
 
@@ -36,7 +56,6 @@ const npcHealth = (state = initialState.npcHealth, action) => {
 const punchStatus = (state = initialState.punchStatus, action) => {
   switch (action.type) {
     case types.SET_PUNCH_STATUS:
-      console.log(action);
       return action.payload;
     default:
       return state;
@@ -77,14 +96,14 @@ const npcStateSaga = (state = initialState.npcStateSaga, action) => {
 };
 
 export const playerStates = {
-  idle: { state: 0, ticksPerFrame: 100, direction: 1 },
+  idle: { state: 0, ticksPerFrame: 100, direction: 1, position: { left: [0], top: [0] } },
   hitBody: { state: 1 },
-  hitUppercut: { state: 2 },
+  hitUppercut: { state: 2, position: { left: [50], top: [0] } },
   hitHead: { state: 3 },
-  jab: { state: 4, ticksPerFrame: [1,2] },
-  bodyJab: { state: 5, ticksPerFrame: [1,2] },
-  powerCross: { state: 6, ticksPerFrame: [4,2,4] },
-  powerBodyCross: { state: 7, ticksPerFrame: [4,2,4] },
+  jab: { state: 4, ticksPerFrame: [1, 2] },
+  bodyJab: { state: 5, ticksPerFrame: [1, 2] },
+  powerCross: { state: 6, ticksPerFrame: [4, 2, 4] },
+  powerBodyCross: { state: 7, ticksPerFrame: [4, 2, 4] }
 };
 
 const playerStateSaga = (state = initialState.playerStateSaga, action) => {
@@ -100,5 +119,5 @@ export default combineReducers({
   npcHealth,
   npcStateSaga,
   playerStateSaga,
-  punchStatus,
+  punchStatus
 });

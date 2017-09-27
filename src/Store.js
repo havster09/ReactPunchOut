@@ -2,12 +2,10 @@ import { createStore, applyMiddleware, compose } from 'redux';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import reduxImmutableStateInvariant from 'redux-immutable-state-invariant';
 import thunk from 'redux-thunk';
-
 import createSagaMiddleware from 'redux-saga';
-import rootSaga from './NpcSaga';
+import rootSaga from './RootSaga';
+
 const sagaMiddleware = createSagaMiddleware();
-
-
 
 import rootReducer from './Reducers';
 

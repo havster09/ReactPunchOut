@@ -4,6 +4,7 @@ import { Text, View } from 'react-native';
 import connect from 'react-redux/es/connect/connect';
 import Sprite from './native/components/sprite';
 import * as types from './Constants';
+import { spriteDefaultPos } from './Constants';
 import { screenDimensions } from './Main';
 import { translateState } from './helpers';
 import { playerStates } from './Reducers';
@@ -31,6 +32,7 @@ class LittleMack extends React.Component {
       lastMoveBeforeHit: null,
       comboCount: 0,
       gestureState: null,
+      currentStep: 0,
     };
 
     this.debug = false;
@@ -146,6 +148,7 @@ class LittleMack extends React.Component {
 
   handleUpdateStepCount = currentStep => {
     const { playerStateSaga, npcReference } = this.props;
+    this.watcher.currentStep = currentStep;
     if (this.isInAttackState()) {
       // todo switch for attack type
       if (playerStateSaga.state === 4 || playerStateSaga.state === 5) {
@@ -181,7 +184,23 @@ class LittleMack extends React.Component {
   }
 
   render() {
-    const { playerStateSaga, punchStatus } = this.props;
+    const {playerStateSaga, punchStatus} = this.props;
+
+    const getLeftPositionByDirection = () => {
+      if (playerStateSaga.position.left[this.watcher.currentStep]) {
+        if (playerStateSaga.direction) {
+          return playerStateSaga.position.left[this.watcher.currentStep];
+        } else {
+          return 1 - playerStateSaga.position.left[this.watcher.currentStep];
+        }
+      }
+      return 0;
+    };
+
+    const leftPosition = playerStateSaga.position
+     ? getLeftPositionByDirection() + spriteDefaultPos.left
+     : spriteDefaultPos.left;
+
     return (
       <View>
         {this.debug &&
@@ -195,16 +214,7 @@ class LittleMack extends React.Component {
           src={this.littleMackImage}
           scale={2}
           state={playerStateSaga.state}
-          steps={[
-            0, //0 still
-            0, //1 hit_body
-            0, //2 hit_hook
-            0, //3 hit_jab
-            1, //4 attack_jab
-            1, //5 attack_body_jab
-            2, //6 attack_power_cross
-            2, //7 attack_power_body_cross
-          ]}
+          steps={playerSteps}
           // remember to add attacks to isInAttackState
           offset={[0, 0]}
           tileWidth={216}
@@ -212,13 +222,26 @@ class LittleMack extends React.Component {
           direction={playerStateSaga.direction}
           ticksPerFrame={playerStateSaga.ticksPerFrame}
           blockedPowerPunch={punchStatus}
-          left={-108}
-          top={-90}
+          left={leftPosition}
+          top={spriteDefaultPos.top}
         />
       </View>
     );
   }
 }
+
+const playerSteps = [
+  0, //0 still
+  0, //1 hit_body
+  0, //2 hit_hook
+  0, //3 hit_jab
+  1, //4 attack_jab
+  1, //5 attack_body_jab
+  2, //6 attack_power_cross
+  2, //7 attack_power_body_cross
+  0, //8 block_head
+  0, //9 block_body
+];
 
 // todo add ref PropType
 LittleMack.propTypes = {

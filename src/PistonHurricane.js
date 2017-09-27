@@ -4,6 +4,7 @@ import { Text, View } from 'react-native';
 import connect from 'react-redux/es/connect/connect';
 import Sprite from './native/components/sprite';
 import * as types from './Constants';
+import { spriteDefaultPos } from './Constants';
 import { screenDimensions } from './Main';
 import {
   isPlayerPowerPunch,
@@ -393,8 +394,8 @@ class PistonHurricane extends React.Component {
           tileHeight={216}
           direction={npcStateSaga.direction}
           ticksPerFrame={npcStateSaga.ticksPerFrame}
-          left={-108}
-          top={-90}
+          left={spriteDefaultPos.left}
+          top={spriteDefaultPos.top}
         />
       </View>
     );

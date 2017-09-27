@@ -33,6 +33,9 @@ export class Main extends React.Component {
     this.getPlayerRef = this.getPlayerRef.bind(this);
     this.npcRef = null;
     this.playerRef = null;
+    this.gestureStateWatcher = {
+      numberActiveTouches:null,
+    }
   }
 
   componentWillMount() {
@@ -52,7 +55,8 @@ export class Main extends React.Component {
         // The most recent move distance is gestureState.move{X,Y}
         // The accumulated gesture distance since becoming responder is
         // gestureState.d{x,y}
-       //  console.log(gestureState.numberActiveTouches); // detect === 2
+       this.gestureStateWatcher.numberActiveTouches = gestureState.numberActiveTouches; // detect === 2
+       // console.log(gestureState.numberActiveTouches);
       },
       onPanResponderTerminationRequest: (evt, gestureState) => true,
       onPanResponderRelease: (evt, gestureState) => {
@@ -65,6 +69,7 @@ export class Main extends React.Component {
         if (this.playerRef.isInIdleState()) {
           this.playerRef.handlePlayerIsAttacking(gestureState);
         }
+        this.gestureStateWatcher.numberActiveTouches = null;
       },
       onPanResponderTerminate: (evt, gestureState) => {
         // Another component has become the responder, so this gesture
@@ -106,6 +111,9 @@ export class Main extends React.Component {
             </Text>
             <Text style={{ marginTop: 5 }}>
               {`Move: ${translateState(npcStateSaga.state)}`}
+            </Text>
+            <Text style={{ marginTop: 5 }}>
+              {`Gesture Touches: ${this.gestureStateWatcher.numberActiveTouches}`}
             </Text>
             <View
               style={{

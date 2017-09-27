@@ -60,3 +60,8 @@ export const PistonHurricaneMoveMap = [
   { stateKey: 16, move: 'getup' },
   { stateKey: 17, move: 'pose' }
 ];
+
+export const spriteDefaultPos = {
+  left: -108,
+  top: -90,
+};
