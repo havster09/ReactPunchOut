@@ -7,6 +7,7 @@ import * as types from './Constants';
 import { spriteDefaultPos } from './Constants';
 import { screenDimensions } from './Main';
 import {
+  getLeftPosition, getTopPosition,
   isPlayerPowerPunch,
   playerIsInAttackState,
   playerIsInIdleState,
@@ -40,7 +41,8 @@ class PistonHurricane extends React.Component {
       attacking: 0,
       hasHit: 0,
       lastMoveBeforeHit: null,
-      comboCount: 0
+      comboCount: 0,
+      currentStep: 0,
     };
 
     this.debug = false;
@@ -77,11 +79,6 @@ class PistonHurricane extends React.Component {
 
   toggleDirection = () => {
     return this.props.npcStateSaga.direction ? 0 : 1;
-  };
-
-  toggleRepeat = () => {
-    // console.log(this.props.npcState.repeat);
-    return !this.props.npcStateSaga.repeat;
   };
 
   aiLoop() {
@@ -170,6 +167,7 @@ class PistonHurricane extends React.Component {
 
   handleUpdateStepCount = currentStep => {
     // todo add ticksPerFrame to sync with player hit ticksPerFrame
+    this.watcher.currentStep = currentStep;
     const { npcStateSaga } = this.props;
     if (
       [2, 3, 4, 5, 6, 6, 7, 8].indexOf(npcStateSaga.state) > -1 &&
@@ -271,6 +269,7 @@ class PistonHurricane extends React.Component {
   }
 
   handleHitSuccess(punchPower, direction, playerStateSaga) {
+    // todo move to Reducers to add position attr
     const { state } = playerStateSaga;
     this.watcher.comboCount = this.watcher.comboCount + 1;
     let npcHitState;
@@ -354,6 +353,7 @@ class PistonHurricane extends React.Component {
 
   render() {
     const { npcStateSaga } = this.props;
+
     return (
       <View>
         {this.debug &&
@@ -367,38 +367,40 @@ class PistonHurricane extends React.Component {
           src={this.pistonHurricaneImage}
           scale={2}
           state={npcStateSaga.state}
-          steps={[
-            0, //0 still
-            3, //1 idle
-            1, //2 jab
-            2, //3 cross
-            2, //4 uppercut
-            1, //5 body_jab
-            0, //6 hit_jab
-            0, //7 hit_cross
-            0, //8 hit_body
-            1, //9 dazed
-            0, //10 weave
-            0, //11 block_body
-            0, //12 block_jab
-            0, //13 block_uppercut
-            0, //14 block_cross
-            2, //15 knockdown
-            1, //16 get up
-            1 //17 pose
-          ]}
+          steps={npcSteps}
           offset={[0, 0]}
           tileWidth={216}
           tileHeight={216}
           direction={npcStateSaga.direction}
           ticksPerFrame={npcStateSaga.ticksPerFrame}
-          left={spriteDefaultPos.left}
-          top={spriteDefaultPos.top}
+          left={getLeftPosition(npcStateSaga, this.watcher.currentStep)}
+          top={getTopPosition(npcStateSaga, this.watcher.currentStep)}
         />
       </View>
     );
   }
 }
+
+const npcSteps = [
+  0, //0 still
+  3, //1 idle
+  1, //2 jab
+  2, //3 cross
+  2, //4 uppercut
+  1, //5 body_jab
+  0, //6 hit_jab
+  0, //7 hit_cross
+  0, //8 hit_body
+  1, //9 dazed
+  0, //10 weave
+  0, //11 block_body
+  0, //12 block_jab
+  0, //13 block_uppercut
+  0, //14 block_cross
+  2, //15 knockdown
+  1, //16 get up
+  1 //17 pose
+];
 
 PistonHurricane.propTypes = {
   onBlockedPowerPunch: PropTypes.func,

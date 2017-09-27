@@ -104,7 +104,7 @@ export const playerStates = {
   },
   hitBody: { state: 1, position: { left: [10], top: [60] } },
   hitUppercut: { state: 2, position: { left: [50], top: [20] } },
-  hitHead: { state: 3, position: { left: [0], top: [10] } },
+  hitHead: { state: 3, position: { left: [10], top: [30] } },
   jab: { state: 4, ticksPerFrame: [1, 2] },
   bodyJab: { state: 5, ticksPerFrame: [1, 2] },
   powerCross: { state: 6, ticksPerFrame: [4, 2, 4] },

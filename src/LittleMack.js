@@ -3,10 +3,8 @@ import PropTypes from 'prop-types';
 import { Text, View } from 'react-native';
 import connect from 'react-redux/es/connect/connect';
 import Sprite from './native/components/sprite';
-import * as types from './Constants';
-import { spriteDefaultPos } from './Constants';
 import { screenDimensions } from './Main';
-import { translateState } from './helpers';
+import {getLeftPosition, getTopPosition, translateState} from './helpers';
 import { playerStates } from './Reducers';
 import {
   reduceNpcHealth, setNpcState, setNpcStateSaga, setPatternStateSaga, setPlayerStateSaga,
@@ -186,32 +184,6 @@ class LittleMack extends React.Component {
   render() {
     const {playerStateSaga, punchStatus} = this.props;
 
-    const getLeftPositionByDirection = () => {
-      if (playerStateSaga.position.left[this.watcher.currentStep]) {
-        if (playerStateSaga.direction) {
-          return playerStateSaga.position.left[this.watcher.currentStep];
-        } else {
-          return 1 - playerStateSaga.position.left[this.watcher.currentStep];
-        }
-      }
-      return 0;
-    };
-
-    const leftPosition = playerStateSaga.position
-     ? getLeftPositionByDirection() + spriteDefaultPos.left
-     : spriteDefaultPos.left;
-
-    const getTopPosition = () => {
-      if (playerStateSaga.position.top[this.watcher.currentStep]) {
-        return playerStateSaga.position.top[this.watcher.currentStep];
-      }
-      return 0;
-    };
-
-    const topPosition = playerStateSaga.position
-     ? getTopPosition() + spriteDefaultPos.top
-     : spriteDefaultPos.top;
-
     return (
       <View>
         {this.debug &&
@@ -233,8 +205,8 @@ class LittleMack extends React.Component {
           direction={playerStateSaga.direction}
           ticksPerFrame={playerStateSaga.ticksPerFrame}
           blockedPowerPunch={punchStatus}
-          left={leftPosition}
-          top={topPosition}
+          left={getLeftPosition(playerStateSaga, this.watcher.currentStep)}
+          top={getTopPosition(playerStateSaga, this.watcher.currentStep)}
         />
       </View>
     );
