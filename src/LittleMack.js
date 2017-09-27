@@ -201,6 +201,17 @@ class LittleMack extends React.Component {
      ? getLeftPositionByDirection() + spriteDefaultPos.left
      : spriteDefaultPos.left;
 
+    const getTopPosition = () => {
+      if (playerStateSaga.position.top[this.watcher.currentStep]) {
+        return playerStateSaga.position.top[this.watcher.currentStep];
+      }
+      return 0;
+    };
+
+    const topPosition = playerStateSaga.position
+     ? getTopPosition() + spriteDefaultPos.top
+     : spriteDefaultPos.top;
+
     return (
       <View>
         {this.debug &&
@@ -223,7 +234,7 @@ class LittleMack extends React.Component {
           ticksPerFrame={playerStateSaga.ticksPerFrame}
           blockedPowerPunch={punchStatus}
           left={leftPosition}
-          top={spriteDefaultPos.top}
+          top={topPosition}
         />
       </View>
     );

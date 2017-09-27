@@ -10,8 +10,8 @@ const initialState = {
 
 export const npcStates = {
   stillLeft: { state: 0, ticksPerFrame: 200, direction: 0, repeat: false },
-  danceLeft: { state: 1, ticksPerFrame: 6, direction: 0, repeat: false },
-  jabLeft: { state: 2, ticksPerFrame: 2, direction: 0, repeat: false },
+  danceLeft: { state: 1, ticksPerFrame: 10, direction: 0, repeat: false },
+  jabLeft: { state: 2, ticksPerFrame: 4, direction: 0, repeat: false },
   jabLeftSecond: { state: 2, ticksPerFrame: 4, direction: 0, repeat: false },
   crossLeft: {
     state: 3,
@@ -25,9 +25,9 @@ export const npcStates = {
     direction: 0,
     repeat: false
   },
-  bodyJabLeft: { state: 5, ticksPerFrame: 2, direction: 0, repeat: false },
+  bodyJabLeft: { state: 5, ticksPerFrame: 8, direction: 0, repeat: false },
   stillRight: { state: 0, ticksPerFrame: 200, direction: 1, repeat: false },
-  jabRight: { state: 2, ticksPerFrame: 2, direction: 1, repeat: false },
+  jabRight: { state: 2, ticksPerFrame: 4, direction: 1, repeat: false },
   jabRightSecond: { state: 2, ticksPerFrame: 4, direction: 1, repeat: false },
   crossRight: {
     state: 3,
@@ -41,7 +41,7 @@ export const npcStates = {
     direction: 1,
     repeat: false
   },
-  bodyJabRight: { state: 5, ticksPerFrame: 2, direction: 1, repeat: false }
+  bodyJabRight: { state: 5, ticksPerFrame: 8, direction: 1, repeat: false }
 };
 
 const npcHealth = (state = initialState.npcHealth, action) => {
@@ -96,10 +96,15 @@ const npcStateSaga = (state = initialState.npcStateSaga, action) => {
 };
 
 export const playerStates = {
-  idle: { state: 0, ticksPerFrame: 100, direction: 1, position: { left: [0], top: [0] } },
-  hitBody: { state: 1 },
-  hitUppercut: { state: 2, position: { left: [50], top: [0] } },
-  hitHead: { state: 3 },
+  idle: {
+    state: 0,
+    ticksPerFrame: 100,
+    direction: 1,
+    position: { left: [0], top: [0] }
+  },
+  hitBody: { state: 1, position: { left: [10], top: [60] } },
+  hitUppercut: { state: 2, position: { left: [50], top: [20] } },
+  hitHead: { state: 3, position: { left: [0], top: [10] } },
   jab: { state: 4, ticksPerFrame: [1, 2] },
   bodyJab: { state: 5, ticksPerFrame: [1, 2] },
   powerCross: { state: 6, ticksPerFrame: [4, 2, 4] },

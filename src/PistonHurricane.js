@@ -56,6 +56,7 @@ class PistonHurricane extends React.Component {
     this.isHitBody = this.isHitBody.bind(this);
     this.npcCounterPunch = this.npcCounterPunch.bind(this);
     this.handlePlayerHit = this.handlePlayerHit.bind(this);
+    this.isInIdleState = this.isInIdleState.bind(this);
   }
 
   componentDidMount() {
@@ -90,8 +91,7 @@ class PistonHurricane extends React.Component {
       if (this.isInHitState()) {
         return this.aiHitRecover();
       } else if (
-        playerIsInAttackState(playerStateSaga) ||
-        playerIsInIdleState(playerStateSaga)
+        playerIsInIdleState(playerStateSaga) || this.watcher.isPlayingPattern
       ) {
         return this.aiSetSagaSequence();
       } else {
@@ -143,12 +143,11 @@ class PistonHurricane extends React.Component {
     }
 
     if (this.watcher.hasStopped < selectedPattern.length) {
+      this.watcher.hasStopped = this.watcher.hasStopped+1;
+
       const npcState = Object.assign({}, this.props.npcStateSaga, {
-        sagaOrder: isNaN(this.watcher.hasStopped)
-          ? 0
-          : this.watcher.hasStopped + 1
+        sagaOrder: this.watcher.hasStopped,
       });
-      // console.log(patternType);
       return this.props.setPatternStateSaga(patternType, npcState);
     } else {
       this.watcher.hasStopped = 0;
@@ -161,7 +160,6 @@ class PistonHurricane extends React.Component {
     const { loop: { loopID } } = this.context;
     this.watcher = Object.assign({}, this.watcher, {
       spritePlaying: !!state,
-      hasStopped: state ? this.watcher.hasStopped : this.watcher.hasStopped + 1,
       isHit: this.watcher.isHit ? false : this.watcher.isHit,
       lastMoveBeforeHit: {
         move: translateState(npcStateSaga.state),
