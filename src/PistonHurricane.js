@@ -259,6 +259,9 @@ class PistonHurricane extends React.Component {
       }
     }
 
+    // temp beat his ass
+    hitSuccess = true;
+
     this.watcher.isHit = true;
 
     if (hitSuccess) {
@@ -273,18 +276,31 @@ class PistonHurricane extends React.Component {
     const { state } = playerStateSaga;
     this.watcher.comboCount = this.watcher.comboCount + 1;
     let npcHitState;
-    if (this.isHitBody(state)) {
-      npcHitState = 8;
-    } else {
-      npcHitState = [6, 7][Math.floor(Math.random() * 2)];
-    }
-    const testTouchState = {
-      state: npcHitState,
+    const baseHitState = {
       ticksPerFrame: punchPower,
       direction,
-      repeat: false
     };
-    this.props.setNpcStateSaga(testTouchState);
+    if (this.isHitBody(state)) {
+      npcHitState = {
+       ...baseHitState,
+       ...npcStates.hitBody,
+      };
+    } else {
+      if (playerStateSaga.state === 4) {
+        npcHitState = {
+          ...baseHitState,
+          ...npcStates.hitHead,
+        };
+      }
+      else {
+        npcHitState = {
+          ...baseHitState,
+          ...npcStates.hitHeadPower,
+          direction: playerStateSaga.direction?0:1,
+        };
+      }
+    }
+    this.props.setNpcStateSaga(npcHitState);
     return this.props.reduceNpcHealth(punchPower);
   }
 
