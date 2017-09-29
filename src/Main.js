@@ -18,7 +18,7 @@ import {
   setNpcStateSaga,
   setPatternStateSaga,
   setPlayerStateSaga,
-  setPunchStatus,
+  setPunchStatus
 } from './Actions';
 import LittleMack from './LittleMack';
 
@@ -34,8 +34,8 @@ export class Main extends React.Component {
     this.npcRef = null;
     this.playerRef = null;
     this.gestureStateWatcher = {
-      numberActiveTouches:null,
-    }
+      numberActiveTouches: null
+    };
   }
 
   componentWillMount() {
@@ -55,8 +55,15 @@ export class Main extends React.Component {
         // The most recent move distance is gestureState.move{X,Y}
         // The accumulated gesture distance since becoming responder is
         // gestureState.d{x,y}
-       this.gestureStateWatcher.numberActiveTouches = gestureState.numberActiveTouches; // detect === 2
-       // console.log(gestureState.numberActiveTouches);
+        this.gestureStateWatcher.numberActiveTouches =
+          gestureState.numberActiveTouches; // detect === 2
+        // console.log(gestureState.numberActiveTouches);
+        if (this.gestureStateWatcher.numberActiveTouches > 1) {
+          // blocking
+          if(this.playerRef.isInIdleState()) {
+            this.playerRef.handlePlayerIsBlocking(gestureState);
+          }
+        }
       },
       onPanResponderTerminationRequest: (evt, gestureState) => true,
       onPanResponderRelease: (evt, gestureState) => {
@@ -66,7 +73,10 @@ export class Main extends React.Component {
         // todo count how many touches (if > 1) is blocking (if > 1 && x0 > some value) is weavings
         // (power, touchData)
 
-        if (this.playerRef.isInIdleState()) {
+        if (
+          this.playerRef.isInIdleState() &&
+          !this.gestureStateWatcher.numberActiveTouches > 1
+        ) {
           this.playerRef.handlePlayerIsAttacking(gestureState);
         }
         this.gestureStateWatcher.numberActiveTouches = null;
@@ -113,7 +123,8 @@ export class Main extends React.Component {
               {`Move: ${translateState(npcStateSaga.state)}`}
             </Text>
             <Text style={{ marginTop: 5 }}>
-              {`Gesture Touches: ${this.gestureStateWatcher.numberActiveTouches}`}
+              {`Gesture Touches: ${this.gestureStateWatcher
+                .numberActiveTouches}`}
             </Text>
             <View
               style={{
@@ -127,10 +138,7 @@ export class Main extends React.Component {
                 ref={this.getNpcRef}
                 playerReference={this.playerRef}
               />
-              <LittleMack
-                ref={this.getPlayerRef}
-                npcReference={this.npcRef}
-              />
+              <LittleMack ref={this.getPlayerRef} npcReference={this.npcRef} />
             </View>
           </Stage>
         </Loop>
@@ -150,7 +158,7 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => ({
   npcHealth: state.npcHealth,
-  npcStateSaga: state.npcStateSaga,
+  npcStateSaga: state.npcStateSaga
 });
 
 const mapActionsToProps = (dispatch, store) => ({

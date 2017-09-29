@@ -111,7 +111,9 @@ export const playerStates = {
   jab: { state: 4, ticksPerFrame: [1, 2] },
   bodyJab: { state: 5, ticksPerFrame: [1, 2] },
   powerCross: { state: 6, ticksPerFrame: [4, 2, 4] },
-  powerBodyCross: { state: 7, ticksPerFrame: [4, 2, 4] }
+  powerBodyCross: { state: 7, ticksPerFrame: [4, 2, 4] },
+  blockHead: { state: 8 },
+  blockBody: { state: 9 },
 };
 
 const playerStateSaga = (state = initialState.playerStateSaga, action) => {

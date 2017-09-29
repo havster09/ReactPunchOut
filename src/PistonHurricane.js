@@ -260,7 +260,7 @@ class PistonHurricane extends React.Component {
     }
 
     // temp beat his ass
-    hitSuccess = true;
+    // hitSuccess = true;
 
     this.watcher.isHit = true;
 

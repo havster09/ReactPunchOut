@@ -4,7 +4,7 @@ import { Text, View } from 'react-native';
 import connect from 'react-redux/es/connect/connect';
 import Sprite from './native/components/sprite';
 import { screenDimensions } from './Main';
-import {getLeftPosition, getTopPosition, translateState} from './helpers';
+import {getLeftPosition, getTopPosition, targetHeadOrBody, translateState} from './helpers';
 import { playerStates } from './Reducers';
 import {
   reduceNpcHealth, setNpcState, setNpcStateSaga, setPatternStateSaga, setPlayerStateSaga,
@@ -37,6 +37,7 @@ class LittleMack extends React.Component {
 
     this.aiLoop = this.aiLoop.bind(this);
     this.handlePlayerIsAttacking = this.handlePlayerIsAttacking.bind(this);
+    this.handlePlayerIsBlocking = this.handlePlayerIsBlocking.bind(this);
     this.isInIdleState = this.isInIdleState.bind(this);
     this.isInHitState = this.isInHitState.bind(this);
     this.isInAttackState = this.isInAttackState.bind(this);
@@ -102,6 +103,18 @@ class LittleMack extends React.Component {
     });
   };
 
+  handlePlayerIsBlocking(gestureState) {
+    console.log(gestureState);
+    this.watcher.gestureState = gestureState;
+    const blockHead = targetHeadOrBody(screenDimensions, gestureState);
+    // todo time with npcContact frame check if not already in same block state
+    if (blockHead) {
+      return setPlayerStateSaga({
+       ...playerStates.blockHead
+      });
+    }
+  }
+
   handlePlayerIsAttacking(gestureState) {
     if (this.props.punchStatus.status) {
       return;
@@ -111,10 +124,7 @@ class LittleMack extends React.Component {
     let playerAttack;
     const { playerStateSaga, setPlayerStateSaga } = this.props;
     let direction = gestureState.x0 < screenDimensions.width / 2 ? 1 : 0;
-    const attackHead = screenDimensions.height - gestureState.y0 > screenDimensions.height / 2
-    || gestureState.dy < -50;
-
-    // console.log(gestureState);
+    const attackHead = targetHeadOrBody(screenDimensions, gestureState);
 
     if (Math.abs(gestureState.dx) <  10 && Math.abs(gestureState.dy) < 10) {
       if(attackHead) {

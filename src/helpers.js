@@ -10,7 +10,8 @@ export const translateState = state => {
 export const playerIsInAttackState = playerStateSaga =>
   [4, 5, 6, 7].indexOf(playerStateSaga.state) > -1;
 
-export const playerIsInIdleState = playerStateSaga => playerStateSaga.state === 0;
+export const playerIsInIdleState = playerStateSaga =>
+  playerStateSaga.state === 0;
 
 export const isPlayerPowerPunch = state => [6, 7].indexOf(state) > -1;
 
@@ -25,9 +26,10 @@ const leftPositionByDirection = (stateSaga, currentStep) => {
   return 0;
 };
 
-export const getLeftPosition = (stateSaga, currentStep) => stateSaga.position
- ? leftPositionByDirection(stateSaga, currentStep) + spriteDefaultPos.left
- : spriteDefaultPos.left;
+export const getLeftPosition = (stateSaga, currentStep) =>
+  stateSaga.position
+    ? leftPositionByDirection(stateSaga, currentStep) + spriteDefaultPos.left
+    : spriteDefaultPos.left;
 
 const topPosition = (stateSaga, currentStep) => {
   if (stateSaga.position.top[currentStep]) {
@@ -36,6 +38,11 @@ const topPosition = (stateSaga, currentStep) => {
   return 0;
 };
 
-export const getTopPosition = (stateSaga, currentStep) => stateSaga.position
- ? topPosition(stateSaga, currentStep) + spriteDefaultPos.top
- : spriteDefaultPos.top;
+export const getTopPosition = (stateSaga, currentStep) =>
+  stateSaga.position
+    ? topPosition(stateSaga, currentStep) + spriteDefaultPos.top
+    : spriteDefaultPos.top;
+
+export const targetHeadOrBody = (screenDimensions, gestureState) =>
+  screenDimensions.height - gestureState.y0 > screenDimensions.height / 2 ||
+  gestureState.dy < -50;
