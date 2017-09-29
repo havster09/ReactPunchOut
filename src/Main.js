@@ -34,7 +34,7 @@ export class Main extends React.Component {
     this.npcRef = null;
     this.playerRef = null;
     this.gestureStateWatcher = {
-      numberActiveTouches: null
+      numberActiveTouches: 1
     };
   }
 
@@ -72,10 +72,9 @@ export class Main extends React.Component {
         // todo set player redux state to handle player sprite and whether player can attack
         // todo count how many touches (if > 1) is blocking (if > 1 && x0 > some value) is weavings
         // (power, touchData)
-
-        if (
-          this.playerRef.isInIdleState() &&
-          !this.gestureStateWatcher.numberActiveTouches > 1
+        console.log('attack');
+        console.log(this.playerRef.isInIdleState(), this.gestureStateWatcher.numberActiveTouches);
+        if (this.playerRef.isInIdleState()
         ) {
           this.playerRef.handlePlayerIsAttacking(gestureState);
         }
