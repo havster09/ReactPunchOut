@@ -19,8 +19,7 @@ export default class Loop extends Component {
 
   constructor(props) {
     super(props);
-
-    this.loop = new GameLoop();
+    this.loop = new GameLoop(props.fps);
   }
 
   componentDidMount() {

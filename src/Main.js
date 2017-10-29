@@ -8,7 +8,8 @@ import {
   PanResponder,
   Image
 } from 'react-native';
-import { Loop, Stage } from 'react-game-kit/native';
+import { Stage } from 'react-game-kit/native';
+import Loop from './native/components/loop';
 import PistonHurricane from './PistonHurricane';
 import { translateState } from './helpers';
 
@@ -109,7 +110,7 @@ export class Main extends React.Component {
     const { npcHealth, npcStateSaga } = this.props;
     return (
       <View {...this._panResponder.panHandlers}>
-        <Loop>
+        <Loop fps={30}>
           <Stage
             width={this.dimensions.width}
             height={this.dimensions.height}
