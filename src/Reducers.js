@@ -11,37 +11,37 @@ const initialState = {
 export const npcStates = {
   stillLeft: { state: 0, ticksPerFrame: 200, direction: 0, repeat: false, position: { left: [0], top: [0] } },
   danceLeft: { state: 1, ticksPerFrame: 10, direction: 0, repeat: false, position: { left: [0], top: [0] } },
-  jabLeft: { state: 2, ticksPerFrame: 4, direction: 0, repeat: false },
-  jabLeftSecond: { state: 2, ticksPerFrame: 4, direction: 0, repeat: false },
+  jabLeft: { state: 2, ticksPerFrame: 2, direction: 0, repeat: false },
+  jabLeftSecond: { state: 2, ticksPerFrame: 2, direction: 0, repeat: false },
   crossLeft: {
     state: 3,
-    ticksPerFrame: [4, 8, 12],
+    ticksPerFrame: [2, 4, 6],
     direction: 0,
     repeat: false
   },
   uppercutLeft: {
     state: 4,
-    ticksPerFrame: [10, 6, 30],
+    ticksPerFrame: [2, 4, 10],
     direction: 0,
     repeat: false
   },
-  bodyJabLeft: { state: 5, ticksPerFrame: 8, direction: 0, repeat: false },
+  bodyJabLeft: { state: 5, ticksPerFrame: 4, direction: 0, repeat: false },
   stillRight: { state: 0, ticksPerFrame: 200, direction: 1, repeat: false },
-  jabRight: { state: 2, ticksPerFrame: 4, direction: 1, repeat: false },
-  jabRightSecond: { state: 2, ticksPerFrame: 4, direction: 1, repeat: false },
+  jabRight: { state: 2, ticksPerFrame: 2, direction: 1, repeat: false },
+  jabRightSecond: { state: 2, ticksPerFrame: 2, direction: 1, repeat: false },
   crossRight: {
     state: 3,
-    ticksPerFrame: [4, 8, 12],
+    ticksPerFrame: [2, 4, 6],
     direction: 1,
     repeat: false
   },
   uppercutRight: {
     state: 4,
-    ticksPerFrame: [10, 6, 30],
+    ticksPerFrame: [2, 4, 10],
     direction: 1,
     repeat: false
   },
-  bodyJabRight: { state: 5, ticksPerFrame: 8, direction: 1, repeat: false },
+  bodyJabRight: { state: 5, ticksPerFrame: 4, direction: 1, repeat: false },
   hitBody: { state: 8, repeat: false, position: { left: [-4], top: [-5] } },
   hitHead: { state: 6, repeat: false, position: { left: [-4], top: [-5] } },
   hitHeadPower: { state: 7, repeat: false, position: { left: [0], top: [-10] } },
@@ -110,8 +110,8 @@ export const playerStates = {
   hitHead: { state: 3, position: { left: [10], top: [30] } },
   jab: { state: 4, ticksPerFrame: [1, 2] },
   bodyJab: { state: 5, ticksPerFrame: [1, 2] },
-  powerCross: { state: 6, ticksPerFrame: [4, 2, 4] },
-  powerBodyCross: { state: 7, ticksPerFrame: [4, 2, 4] },
+  powerCross: { state: 6, ticksPerFrame: [2, 1, 2] },
+  powerBodyCross: { state: 7, ticksPerFrame: [2, 1, 2] },
   blockHead: { state: 8 },
   blockBody: { state: 9 },
 };
