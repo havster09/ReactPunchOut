@@ -56,28 +56,26 @@ export class Main extends React.Component {
         // The most recent move distance is gestureState.move{X,Y}
         // The accumulated gesture distance since becoming responder is
         // gestureState.d{x,y}
-        this.gestureStateWatcher.numberActiveTouches =
-          gestureState.numberActiveTouches; // detect === 2
-        // console.log(gestureState.numberActiveTouches);
-        if (this.gestureStateWatcher.numberActiveTouches > 1) {
+        if (gestureState.numberActiveTouches > 1) {
           // blocking
-          if(this.playerRef.isInIdleState()) {
+          if (this.playerRef.isInIdleState()) {
             this.playerRef.handlePlayerIsBlocking(gestureState);
           }
         }
+        this.gestureStateWatcher.numberActiveTouches =
+          gestureState.numberActiveTouches;
       },
       onPanResponderTerminationRequest: (evt, gestureState) => true,
       onPanResponderRelease: (evt, gestureState) => {
         // The user has released all touches while this view is the
         // responder. This typically means a gesture has succeeded
         // todo set player redux state to handle player sprite and whether player can attack
-        // todo count how many touches (if > 1) is blocking (if > 1 && x0 > some value) is weavings
-        // (power, touchData)
-        console.log('attack');
-        console.log(this.playerRef.isInIdleState(), this.gestureStateWatcher.numberActiveTouches);
-        if (this.playerRef.isInIdleState()
-        ) {
+        // todo count how many touches (if > 1) is blocking (if > 1 && x0 > some value) is weaving
+        if (this.playerRef.isInIdleState()) {
           this.playerRef.handlePlayerIsAttacking(gestureState);
+        }
+        if (this.playerRef.isInBlockState()) {
+          this.playerRef.handlePlayerIsNotBlocking();
         }
         this.gestureStateWatcher.numberActiveTouches = null;
       },
@@ -107,7 +105,7 @@ export class Main extends React.Component {
   }
 
   render() {
-    const { npcHealth, npcStateSaga } = this.props;
+    const { npcHealth, npcStateSaga, playerStateSaga } = this.props;
     return (
       <View {...this._panResponder.panHandlers}>
         <Loop fps={30}>

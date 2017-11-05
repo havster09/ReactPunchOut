@@ -10,7 +10,7 @@ const initialState = {
 
 export const npcStates = {
   stillLeft: { state: 0, ticksPerFrame: 200, direction: 0, repeat: false, position: { left: [0], top: [0] } },
-  danceLeft: { state: 1, ticksPerFrame: 10, direction: 0, repeat: false, position: { left: [0], top: [0] } },
+  danceLeft: { state: 1, ticksPerFrame: 6, direction: 0, repeat: false, position: { left: [0], top: [0] } },
   jabLeft: { state: 2, ticksPerFrame: 2, direction: 0, repeat: false },
   jabLeftSecond: { state: 2, ticksPerFrame: 2, direction: 0, repeat: false },
   crossLeft: {
@@ -44,7 +44,7 @@ export const npcStates = {
   bodyJabRight: { state: 5, ticksPerFrame: 4, direction: 1, repeat: false },
   hitBody: { state: 8, repeat: false, position: { left: [-4], top: [-5] } },
   hitHead: { state: 6, repeat: false, position: { left: [-4], top: [-5] } },
-  hitHeadPower: { state: 7, repeat: false, position: { left: [0], top: [-10] } },
+  hitHeadPower: { state: 8, repeat: false, position: { left: [0], top: [-10] } },
 };
 
 const npcHealth = (state = initialState.npcHealth, action) => {
@@ -112,8 +112,8 @@ export const playerStates = {
   bodyJab: { state: 5, ticksPerFrame: [1, 2] },
   powerCross: { state: 6, ticksPerFrame: [2, 1, 2] },
   powerBodyCross: { state: 7, ticksPerFrame: [2, 1, 2] },
-  blockHead: { state: 8 },
-  blockBody: { state: 9 },
+  blockHead: { state: 8, ticksPerFrame: 1 },
+  blockBody: { state: 9, ticksPerFrame: 1 },
 };
 
 const playerStateSaga = (state = initialState.playerStateSaga, action) => {

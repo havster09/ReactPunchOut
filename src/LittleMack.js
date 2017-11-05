@@ -4,10 +4,19 @@ import { Text, View } from 'react-native';
 import connect from 'react-redux/es/connect/connect';
 import Sprite from './native/components/sprite';
 import { screenDimensions } from './Main';
-import {getLeftPosition, getTopPosition, targetHeadOrBody, translateState} from './helpers';
+import {
+  getLeftPosition,
+  getTopPosition,
+  targetHeadOrBody,
+  translateState
+} from './helpers';
 import { playerStates } from './Reducers';
 import {
-  reduceNpcHealth, setNpcState, setNpcStateSaga, setPatternStateSaga, setPlayerStateSaga,
+  reduceNpcHealth,
+  setNpcState,
+  setNpcStateSaga,
+  setPatternStateSaga,
+  setPlayerStateSaga,
   setPunchStatus
 } from './Actions';
 
@@ -30,7 +39,7 @@ class LittleMack extends React.Component {
       lastMoveBeforeHit: null,
       comboCount: 0,
       gestureState: null,
-      currentStep: 0,
+      currentStep: 0
     };
 
     this.debug = false;
@@ -38,6 +47,7 @@ class LittleMack extends React.Component {
     this.aiLoop = this.aiLoop.bind(this);
     this.handlePlayerIsAttacking = this.handlePlayerIsAttacking.bind(this);
     this.handlePlayerIsBlocking = this.handlePlayerIsBlocking.bind(this);
+    this.handlePlayerIsNotBlocking = this.handlePlayerIsNotBlocking.bind(this);
     this.isInIdleState = this.isInIdleState.bind(this);
     this.isInHitState = this.isInHitState.bind(this);
     this.isInAttackState = this.isInAttackState.bind(this);
@@ -66,23 +76,29 @@ class LittleMack extends React.Component {
   toggleRepeat = () => {};
 
   aiLoop() {
-    const { playerStateSaga, setPlayerStateSaga, punchStatus, setPunchStatus } = this.props;
+    const {
+      playerStateSaga,
+      setPlayerStateSaga,
+      punchStatus,
+      setPunchStatus
+    } = this.props;
     if (
-      (this.isInHitState() || this.isInAttackState) &&
-      !this.watcher.spritePlaying
+      (this.isInHitState() || this.isInAttackState)
+      && !this.watcher.spritePlaying
+      && !this.isInBlockState()
     ) {
+      console.log('setting default idles');
       setPlayerStateSaga({ ...playerStateSaga, ...playerStates.idle });
     }
 
     if (punchStatus.status) {
-      if(punchStatus.timeStamp < this.context.loop.loopID) {
+      if (punchStatus.timeStamp < this.context.loop.loopID) {
         setPunchStatus({
           status: false,
           timeStamp: null
         });
       }
     }
-
   }
 
   aiHitRecover() {}
@@ -99,20 +115,32 @@ class LittleMack extends React.Component {
       lastMoveBeforeHit: {
         move: translateState(playerStateSaga.state),
         timeStamp: loopID
-      },
+      }
     });
   };
 
   handlePlayerIsBlocking(gestureState) {
-    console.log(gestureState);
-    this.watcher.gestureState = gestureState;
+    const { playerStateSaga, setPlayerStateSaga } = this.props;
     const blockHead = targetHeadOrBody(screenDimensions, gestureState);
     // todo time with npcContact frame check if not already in same block state
+    let blockState;
     if (blockHead) {
-      return setPlayerStateSaga({
-       ...playerStates.blockHead
-      });
+      blockState = playerStates.blockHead;
+    } else {
+      blockState = playerStates.blockBody;
     }
+    return setPlayerStateSaga({
+      ...playerStateSaga,
+      ...blockState
+    });
+  }
+
+  handlePlayerIsNotBlocking() {
+    const { playerStateSaga, setPlayerStateSaga } = this.props;
+    return setPlayerStateSaga({
+      ...playerStateSaga,
+      ...playerStates.idle
+    });
   }
 
   handlePlayerIsAttacking(gestureState) {
@@ -126,11 +154,10 @@ class LittleMack extends React.Component {
     let direction = gestureState.x0 < screenDimensions.width / 2 ? 1 : 0;
     const attackHead = targetHeadOrBody(screenDimensions, gestureState);
 
-    if (Math.abs(gestureState.dx) <  10 && Math.abs(gestureState.dy) < 10) {
-      if(attackHead) {
+    if (Math.abs(gestureState.dx) < 10 && Math.abs(gestureState.dy) < 10) {
+      if (attackHead) {
         playerAttack = playerStates.jab;
-      }
-      else {
+      } else {
         playerAttack = playerStates.bodyJab;
       }
       return setPlayerStateSaga({
@@ -138,12 +165,10 @@ class LittleMack extends React.Component {
         ...{ direction },
         ...playerAttack
       });
-    }
-    else {
-      if(attackHead) {
+    } else {
+      if (attackHead) {
         playerAttack = playerStates.powerCross;
-      }
-      else {
+      } else {
         playerAttack = playerStates.powerBodyCross;
       }
       return setPlayerStateSaga({
@@ -161,12 +186,17 @@ class LittleMack extends React.Component {
       // todo switch for attack type
       if (playerStateSaga.state === 4 || playerStateSaga.state === 5) {
         if (currentStep === 0) {
-          return npcReference.handleNpcIsAttacked(this.watcher.gestureState, playerStateSaga);
+          return npcReference.handleNpcIsAttacked(
+            this.watcher.gestureState,
+            playerStateSaga
+          );
         }
-      }
-      else if (playerStateSaga.state === 6 || playerStateSaga.state === 7) {
+      } else if (playerStateSaga.state === 6 || playerStateSaga.state === 7) {
         if (currentStep === 1) {
-          return npcReference.handleNpcIsAttacked(this.watcher.gestureState, playerStateSaga);
+          return npcReference.handleNpcIsAttacked(
+            this.watcher.gestureState,
+            playerStateSaga
+          );
         }
       }
     }
@@ -181,6 +211,11 @@ class LittleMack extends React.Component {
     return [0].indexOf(playerStateSaga.state) > -1;
   }
 
+  isInBlockState() {
+    const { playerStateSaga } = this.props;
+    return [8, 9].indexOf(playerStateSaga.state) > -1;
+  }
+
   isInHitState() {
     const { playerStateSaga } = this.props;
     return [1, 2, 3].indexOf(playerStateSaga.state) > -1;
@@ -188,11 +223,11 @@ class LittleMack extends React.Component {
 
   isInAttackState() {
     const { playerStateSaga } = this.props;
-    return [4,5,6,7].indexOf(playerStateSaga.state) > -1;
+    return [4, 5, 6, 7].indexOf(playerStateSaga.state) > -1;
   }
 
   render() {
-    const {playerStateSaga, punchStatus} = this.props;
+    const { playerStateSaga, punchStatus } = this.props;
 
     return (
       <View>
@@ -233,13 +268,13 @@ const playerSteps = [
   2, //6 attack_power_cross
   2, //7 attack_power_body_cross
   0, //8 block_head
-  0, //9 block_body
+  0 //9 block_body
 ];
 
 // todo add ref PropType
 LittleMack.propTypes = {
   setPlayerStateSaga: PropTypes.func,
-  playerStateSaga: PropTypes.object,
+  playerStateSaga: PropTypes.object
 };
 LittleMack.contextTypes = {
   loop: PropTypes.object,
@@ -276,4 +311,6 @@ const mapActionsToProps = (dispatch, store) => ({
   }
 });
 
-export default (LittleMack = connect(mapStateToProps, mapActionsToProps, null, { withRef: true })(LittleMack));
+export default (LittleMack = connect(mapStateToProps, mapActionsToProps, null, {
+  withRef: true
+})(LittleMack));
